@@ -1,0 +1,47 @@
+﻿  AStar.cpp
+src\AStar.cpp(17): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(35): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(40): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(50): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(53): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(76): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(81): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(121): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(141): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+src\AStar.cpp(159): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(163): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(173): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(177): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(192): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(196): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(205): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(209): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(217): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(223): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(228): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(288): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(296): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(311): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(318): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(327): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(335): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  Character.cpp
+src\Character.cpp(16): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(45): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+src\Character.cpp(90): warning C4018: '<': signed/unsigned mismatch
+  Game.cpp
+src\Game.cpp(31): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  Map.cpp
+src\Map.cpp(17): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+src\Map.cpp(23): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Map.cpp(29): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+src\Map.cpp(30): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+src\Map.cpp(30): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  TextureLoader.cpp
+src\TextureLoader.cpp(13): warning C4018: '<': signed/unsigned mismatch
+  Generating code
+  All 756 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\Win32\Release\SWAT_AI.exe
+  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\Win32\Release\SWAT_AI.pdb (Full PDB)

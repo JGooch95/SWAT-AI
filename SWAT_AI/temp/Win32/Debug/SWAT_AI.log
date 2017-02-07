@@ -1,0 +1,9 @@
+﻿  Weapon.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\weapon.cpp(8): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  main.cpp
+  Game.cpp
+  Character.cpp
+  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\Win32\Debug\SWAT_AI.exe
+  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\Win32\Debug\SWAT_AI.pdb (Partial PDB)
