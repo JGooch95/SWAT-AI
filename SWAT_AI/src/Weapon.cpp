@@ -4,7 +4,7 @@ Weapon::Weapon()
 {
 	m_AimLine = sf::VertexArray(sf::Lines, 2);
 	m_AimLine[0].position = m_MainSprite.getPosition();
-	m_AimLine[1].position = sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y - 2000);
+	m_AimLine[1].position = sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y - 2000.0f);
 	for (int i = 0; i < m_AimLine.getVertexCount(); i++)
 	{
 		m_AimLine[i].color = sf::Color(255, 0, 0, 255);
@@ -12,6 +12,7 @@ Weapon::Weapon()
 
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 25, 50));
 	m_MainSprite.setOrigin(m_MainSprite.getLocalBounds().width / 2, -m_MainSprite.getLocalBounds().height / 2 + 10);
+	m_LazerIntersect = sf::Vector2f(0.0f,0.0f);
 }
 
 void Weapon::shoot()
@@ -30,17 +31,41 @@ void Weapon::aim(sf::Vector2f Location)
 	float fMagnitude = sqrtf(pow(Location.x, 2.0f) + pow(Location.y, 2.0f));
 	Location /= fMagnitude;
 
-	Location *= LazerLength(sf::FloatRect(1,1,1,1)); //Multiplies it by the length
+	Location *= 2000.0f; //Multiplies it by the length
 
 	float fRotAngle = -atan2f(Location.x, Location.y) * (180.0f / 3.14f); // Finding the angle of the vector for the sprite
 
 	m_AimLine[0].position = m_MainSprite.getPosition();
-	m_AimLine[1].position = m_MainSprite.getPosition() + Location;
+	LazerPoint = m_MainSprite.getPosition() + Location;
 
+	m_AimLine[1].position = LazerPoint;
 	m_MainSprite.setRotation(fRotAngle);
 }
 
-float Weapon::LazerLength(sf::FloatRect ColliderRect)
+sf::Vector2f Weapon::calcLazerIntersect(sf::Vector2f a, sf::Vector2f b)
 {
-	return 2000.0f;
+	//Aim edge
+	sf::Vector2f c = m_MainSprite.getPosition();
+	sf::Vector2f d = LazerPoint;
+
+	sf::Vector2f r(b - a);
+	sf::Vector2f s(d - c);
+	float crossed = Calculator.cross(r, s);
+	float t = Calculator.cross(c - a, s) / crossed;
+	float u = Calculator.cross(c - a, r) / crossed;
+
+	if (t >= 0 && t <= 1 && u >= 0 && u <= 1)
+	{
+		return a + (t * r);
+	}
+	else
+	{
+		return sf::Vector2f(0, 2000);
+	}
+}
+
+void Weapon::setIntersect(sf::Vector2f Vect)
+{
+	LazerPoint = Vect;
+	m_AimLine[1].position = LazerPoint;
 }

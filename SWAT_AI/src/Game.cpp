@@ -43,6 +43,25 @@ Game::Game(sf::Vector2u WindowSize)
 		}
 	}
 
+	for (int i = 0; i < m_Walls.size(); i++)
+	{
+		//Left Edge
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+
+		//Top Edge
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
+
+		//Right Edge
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+
+		//Bottom Edge
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+	}
+
 	//Sets up the pathfinder
 	m_Pathfinder.Setup(&m_CurrentMap);
 }
@@ -53,6 +72,7 @@ void Game::Update(sf::Vector2i MousePos)
 	{
 		m_Units.at(i)->lookAt((sf::Vector2f)MousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
 		m_Units.at(i)->update();
+		m_Units.at(i)->LazerChecks(Edges);
 	}
 }
 

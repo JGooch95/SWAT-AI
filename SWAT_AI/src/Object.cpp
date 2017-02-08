@@ -26,6 +26,10 @@ void Object::setSize(sf::Vector2f Dims)
 {
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, Dims.x, Dims.y));
 }
+sf::FloatRect Object::getRect()
+{
+	return m_MainSprite.getGlobalBounds();
+}
 
 void Object::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {

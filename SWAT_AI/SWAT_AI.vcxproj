@@ -171,6 +171,7 @@
     <ClInclude Include="include\Character.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Map.h" />
+    <ClInclude Include="include\MathUtils.h" />
     <ClInclude Include="include\Object.h" />
     <ClInclude Include="include\TextureLoader.h" />
     <ClInclude Include="include\Weapon.h" />

@@ -23,6 +23,7 @@ class Character : public Object
 		void lookAt(sf::Vector2f Position);
 		void update();
 		void setGunTexture(sf::Texture* Tex2);
+		void LazerChecks(std::vector<sf::Vector2f>Edges);
 		sf::Vector2f getPosition();
 		std::deque<Node*> Path;
 };

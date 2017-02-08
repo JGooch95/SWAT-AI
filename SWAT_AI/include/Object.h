@@ -17,5 +17,6 @@ public:
 	void linkMap(Map* NewMap);
 	void setPosition(sf::Vector2f Pos);
 	void setSize(sf::Vector2f Dims);
+	sf::FloatRect getRect();
 
 };

@@ -119,6 +119,31 @@ void Character::setGunTexture(sf::Texture* Tex2)
 	m_Weapon1.setTexture(Tex2); //Applies the texture to the sprite.
 }
 
+void Character::LazerChecks(std::vector<sf::Vector2f>Edges)
+{
+	bool bIntersectFound = false;
+	sf::Vector2f lowestIntersect(0, 2000);
+	float fLength;
+	float fMagnitude;
+
+	for (int i = 0; i < Edges.size(); i+=2)
+	{
+		sf::Vector2f currentIntersect = m_Weapon1.calcLazerIntersect(Edges.at(i), Edges.at(i+1));
+		fLength = sqrtf(pow(currentIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(currentIntersect.y - m_MainSprite.getPosition().y, 2.0f));
+		fMagnitude = sqrtf(pow(lowestIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(lowestIntersect.y - m_MainSprite.getPosition().y, 2.0f));
+	
+		if (fLength < fMagnitude)
+		{
+			lowestIntersect = currentIntersect;
+			bIntersectFound = true;
+		}
+	}
+	if (bIntersectFound)
+	{
+		m_Weapon1.setIntersect(lowestIntersect);
+	}
+
+}
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	//Draws the character Sprite

@@ -68,5 +68,8 @@
     <ClInclude Include="include\Weapon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\MathUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

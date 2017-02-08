@@ -16,6 +16,7 @@ class Game : public sf::Drawable
 		TextureLoader m_Textures;
 		AStar m_Pathfinder;
 		Map m_CurrentMap;
+		std::vector<sf::Vector2f> Edges;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:
