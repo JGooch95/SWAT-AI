@@ -12,6 +12,7 @@ class Game : public sf::Drawable
 {
 	private:
 		std::vector<Character*> m_Units;
+		std::vector<Character*> m_Enemies;
 		std::vector<Object*> m_Walls;
 		TextureLoader m_Textures;
 		AStar m_Pathfinder;
@@ -23,4 +24,5 @@ class Game : public sf::Drawable
 		Game(sf::Vector2u WindowSize);
 		void Update(sf::Vector2i MousePos);
 		void ClickRight(sf::Vector2i MousePos);
+		void ClickLeft(sf::Vector2i MousePos);
 };

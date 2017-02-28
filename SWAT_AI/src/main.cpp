@@ -37,6 +37,10 @@ int main()
 				{
 					Game1.ClickRight(sf::Mouse::getPosition() - MainWindow.getPosition() - sf::Vector2i(8, 30));
 				}
+				if (event.key.code == sf::Mouse::Left)
+				{
+					Game1.ClickLeft(sf::Mouse::getPosition() - MainWindow.getPosition() - sf::Vector2i(8, 30));
+				}
 			}
 		}
 

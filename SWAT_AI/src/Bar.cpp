@@ -32,9 +32,13 @@ void Bar::setBarColor(sf::Color newColor)
 void Bar::setLevel(float fLevel)
 {
 	m_LevelLimits.x = fLevel;
-	if (m_LevelLimits.x <= 0.0f)
+	if (m_LevelLimits.x < 0.0f)
 	{
 		m_LevelLimits.x = 0.0f;
+	}
+	else if (m_LevelLimits.x > m_LevelLimits.y)
+	{
+		m_LevelLimits.x = m_LevelLimits.y;
 	}
 	update();
 }
@@ -53,7 +57,7 @@ void Bar::setLimit(float fLimit)
 }
 void Bar::update()
 {
-	m_FrontBox.setSize(sf::Vector2f(m_BackBox.getSize().x * (m_LevelLimits.x / m_LevelLimits.y), m_FrontBox.getSize().y));
+		m_FrontBox.setSize(sf::Vector2f(m_BackBox.getSize().x * (m_LevelLimits.x / m_LevelLimits.y), m_FrontBox.getSize().y));
 }
 
 sf::Vector2f Bar::getSize()

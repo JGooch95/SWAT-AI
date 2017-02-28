@@ -23,13 +23,20 @@ Character::Character()
 	//Sets up the Path line
 	m_PathLine.setPrimitiveType(sf::LinesStrip); 
 
+	m_CollisionLine.setPrimitiveType(sf::LinesStrip);
+	m_CollisionLine.resize(2);
+	for (int i = 0; i < m_CollisionLine.getVertexCount(); i++)
+	{
+		m_CollisionLine[i].color = sf::Color(255, 255, 0, 255);
+	}
+	//getCollisionLine();
+
 	m_HealthBar.setSize(sf::Vector2f(70, 5));
 	m_HealthBar.setBarColor(sf::Color(255, 0, 0, 255));
 	m_HealthBar.setLevelColor(sf::Color(0, 255, 0, 255));
 	m_HealthBar.setLevel(100);
 	m_HealthBar.setLimit(100);
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
-
 }
 
 void Character::lookAt(sf::Vector2f Position)
@@ -52,7 +59,6 @@ void Character::lookAt(sf::Vector2f Position)
 
 	m_Weapon1.aim(RotVect);
 	m_Weapon1.setPosition(m_MainSprite.getPosition());
-
 }
 
 void Character::setPath(std::deque<Node*> NewPath)
@@ -111,7 +117,7 @@ void Character::update()
 {
 	Move();
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
-	m_HealthBar.setLevel(m_HealthBar.getLevelLimits().x - 1);
+	//m_HealthBar.setLevel(m_HealthBar.getLevelLimits().x - 1);
 }
 
 void Character::setGunTexture(sf::Texture* Tex2)
@@ -119,7 +125,7 @@ void Character::setGunTexture(sf::Texture* Tex2)
 	m_Weapon1.setTexture(Tex2); //Applies the texture to the sprite.
 }
 
-void Character::LazerChecks(std::vector<sf::Vector2f>Edges)
+bool Character::LazerChecks(std::vector<sf::Vector2f>Edges)
 {
 	bool bIntersectFound = false;
 	sf::Vector2f lowestIntersect(0, 2000);
@@ -141,9 +147,49 @@ void Character::LazerChecks(std::vector<sf::Vector2f>Edges)
 	if (bIntersectFound)
 	{
 		m_Weapon1.setIntersect(lowestIntersect);
+		return true;
 	}
+	else
+	{
+		return false;
+	}
+}
+
+std::vector<sf::Vector2f> Character::getCollisionLine(float angle)
+{
+	sf::Vector2f lineA = sf::Vector2f(m_MainSprite.getLocalBounds().width * cos(angle * (3.14159265359 / 180)) ,
+									  m_MainSprite.getLocalBounds().width * sin(angle * (3.14159265359 / 180)));
+
+	sf::Vector2f radiusLine = sf::Vector2f(m_MainSprite.getLocalBounds().width /2  * cos(angle * (3.14159265359 / 180)),
+										   m_MainSprite.getLocalBounds().width / 2 * sin(angle * (3.14159265359 / 180)));
+
+	std::vector<sf::Vector2f> blob = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() - radiusLine + lineA};
+	m_CollisionLine[0].position = blob[0];
+	m_CollisionLine[1].position = blob[1];
+	return blob;
 
 }
+
+float Character::getRotation()
+{
+	return m_MainSprite.getRotation();
+}
+
+void Character::setHealth(float fLevel)
+{
+	m_HealthBar.setLevel(fLevel);
+}
+
+float Character::getHealth()
+{
+	return m_HealthBar.getLevelLimits().x;
+}
+
+float Character::shoot()
+{
+	return m_Weapon1.shoot();
+}
+
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	//Draws the character Sprite
@@ -151,5 +197,6 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_MainSprite);
 	target.draw(m_OrientationLine);
 	target.draw(m_PathLine);
+	target.draw(m_CollisionLine);
 	target.draw(m_HealthBar);
 }

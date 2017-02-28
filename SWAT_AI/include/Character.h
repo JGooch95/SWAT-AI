@@ -12,6 +12,7 @@ class Character : public Object
 	private:
 		sf::VertexArray m_OrientationLine;
 		sf::VertexArray m_PathLine;
+		sf::VertexArray m_CollisionLine;
 		Weapon m_Weapon1;
 		Bar m_HealthBar;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
@@ -23,7 +24,12 @@ class Character : public Object
 		void lookAt(sf::Vector2f Position);
 		void update();
 		void setGunTexture(sf::Texture* Tex2);
-		void LazerChecks(std::vector<sf::Vector2f>Edges);
+		bool LazerChecks(std::vector<sf::Vector2f>Edges);
+		std::vector<sf::Vector2f> getCollisionLine(float angle);
 		sf::Vector2f getPosition();
+		float getRotation();
+		void setHealth(float fLevel);
+		float getHealth();
 		std::deque<Node*> Path;
+		float shoot();
 };
