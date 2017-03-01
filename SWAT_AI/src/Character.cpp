@@ -37,7 +37,16 @@ Character::Character()
 	m_HealthBar.setLimit(100);
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
 
+	m_AmmoBar.setSize(sf::Vector2f(70, 5));
+	m_AmmoBar.setBarColor(sf::Color(255, 0, 0, 255));
+	m_AmmoBar.setLevelColor(sf::Color(255, 255, 0, 255));
+	m_AmmoBar.setLevel(30);
+	m_AmmoBar.setLimit(30);
+	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 40));
+
 	m_CurrentState = SEARCH_SWEEP;
+	m_ReloadClock.restart();
+	m_FireRateClock.restart();
 }
 
 void Character::lookAt(sf::Vector2f position)
@@ -71,7 +80,7 @@ void Character::move()
 {
 	if (!m_Path.empty())
 	{
-		const float kfMoveSpeed = 2; //The amount of pixels the character moves per frame
+		const float kfMoveSpeed = 2.0f; //The amount of pixels the character moves per frame
 
 		//Sets the node to reach to be the next node in the path
 		sf::Vector2f Destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
@@ -118,7 +127,17 @@ void Character::update()
 {
 	move();
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
+	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_AmmoBar.getSize().x / 2, m_MainSprite.getPosition().y - 40));
 	
+	if (m_bReloading)
+	{
+		if (m_ReloadClock.getElapsedTime().asSeconds() >= 2.0f)
+		{
+			m_AmmoBar.setLevel(m_AmmoBar.getLevelLimits().y);
+			m_bReloading = false;
+		}
+	}
+
 	switch (m_CurrentState)
 	{
 		case SEARCH_SWEEP:
@@ -197,7 +216,28 @@ float Character::getHealth()
 
 float Character::shoot()
 {
-	return m_Weapon1.shoot();
+	if (!m_bReloading)
+	{
+		//If there is no ammo then reload
+		if (m_AmmoBar.getLevelLimits().x <= 0)
+		{
+			reload();
+		}
+		//Otherwise if the gun can shoot then shoot
+		else if (m_FireRateClock.getElapsedTime().asSeconds() >= m_Weapon1.getFireRate())
+		{
+			m_FireRateClock.restart();
+			m_AmmoBar.setLevel(m_AmmoBar.getLevelLimits().x - 1);
+			return m_Weapon1.getDamage();
+		}
+	}
+	return 0.0f; //Deal no damage
+}
+
+void Character::reload()
+{
+	m_bReloading = true;
+	m_ReloadClock.restart();
 }
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -208,5 +248,6 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_OrientationLine);
 	target.draw(m_PathLine);
 	target.draw(m_CollisionLine);
+	target.draw(m_AmmoBar);
 	target.draw(m_HealthBar);
 }

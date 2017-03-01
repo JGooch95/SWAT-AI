@@ -6,12 +6,17 @@
 #include "Bar.h"
 #include "Weapon.h"
 
-
 class Character : public Object
 {
 	private:
 		Weapon m_Weapon1;
 		Bar m_HealthBar;
+
+		Bar m_AmmoBar;
+		sf::Clock m_FireRateClock; //Holds how long its been since firing the weapon
+
+		sf::Clock m_ReloadClock;
+		bool m_bReloading;
 
 		//AI
 		std::deque<Node*> m_Path; //Holds the current path
@@ -42,7 +47,7 @@ class Character : public Object
 		void setHealth(float fLevel); 
 		void setGunTexture(sf::Texture* tex2);
 		void setPath(std::deque<Node*> newPath); //Sets a new path to follow
-
+		void reload();
 		//MAYBE CHANGE =============================================================
 		void lookAt(sf::Vector2f position); //Looks towards the position stated.
 		bool lazerChecks(std::vector<sf::Vector2f> vEdges); //Checks if the weapons lazer has collided

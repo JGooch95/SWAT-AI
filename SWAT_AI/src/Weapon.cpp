@@ -13,21 +13,7 @@ Weapon::Weapon()
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 25, 50));
 	m_MainSprite.setOrigin(m_MainSprite.getLocalBounds().width / 2, -m_MainSprite.getLocalBounds().height / 2 + 10);
 	m_fFireRate = 0.2f;
-	m_fDamage = 10.0f;
-	m_FireRateClock.restart();
-}
-
-float Weapon::shoot()
-{
-	if (m_FireRateClock.getElapsedTime().asSeconds() >= m_fFireRate)
-	{
-		m_FireRateClock.restart();
-		return m_fDamage;
-	}
-	else
-	{
-		return 0;
-	}
+	m_fDamage = 5.0f;
 }
 
 void Weapon::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -54,7 +40,7 @@ void Weapon::aim(sf::Vector2f location)
 
 sf::Vector2f Weapon::calcLazerIntersect(sf::Vector2f a, sf::Vector2f b)
 {
-	return  Calculator.lineIntersect(a, b, m_MainSprite.getPosition(), m_LazerPoint);
+	return  Util::lineIntersect(a, b, m_MainSprite.getPosition(), m_LazerPoint);
 }
 
 void Weapon::setIntersect(sf::Vector2f vect)
@@ -66,4 +52,14 @@ void Weapon::setIntersect(sf::Vector2f vect)
 sf::Vector2f Weapon::getIntersect()
 {
 	return m_AimLine[1].position;
+}
+
+float Weapon::getDamage()
+{
+	return m_fDamage;
+}
+
+float Weapon::getFireRate()
+{
+	return m_fFireRate;
 }
