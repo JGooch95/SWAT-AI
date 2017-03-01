@@ -21,19 +21,19 @@ class AStar
 		std::vector<Node*> m_OpenList;
 		std::vector<Node*> m_ClosedList;
 		Map* m_CurrentMap;
-		std::vector<int>m_TilesToCheck;
+		std::vector<int>m_viTilesToCheck;
 		bool m_bPathFound;
 		bool m_bEndWall;
 
 	public:
 		AStar();
-		AStar(Map* Map1);
-		void Setup(Map* Map1);
-		std::deque<Node*> FindPath(sf::Vector2f StartPos, sf::Vector2f EndPos);
-		void SetupLists();
-		void CalculateManhattan(int iStartTile, int iEndTile);
-		void CalculateMoveCost(int iCurrentTile, int iEndTile);
-		void CheckNode(int iTile, int iCurrentTile, int iMoveCost);
-		bool ValidVacinity(int iEndTile);
+		AStar(Map* map1);
+		void setup(Map* map1);
+		std::deque<Node*> findPath(sf::Vector2f startPos, sf::Vector2f endPos);
+		void setupLists();
+		void calculateManhattan(int iStartTile, int iEndTile);
+		void calculateMoveCost(int iCurrentTile, int iEndTile);
+		void checkNode(int iTile, int iCurrentTile, int iMoveCost);
+		bool validVacinity(int iEndTile);
 		std::deque<Node*> m_Path;
 };

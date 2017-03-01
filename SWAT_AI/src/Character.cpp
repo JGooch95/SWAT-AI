@@ -37,11 +37,13 @@ Character::Character()
 	m_HealthBar.setLevel(100);
 	m_HealthBar.setLimit(100);
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
+
+	m_CurrentState = SEARCH_SWEEP;
 }
 
-void Character::lookAt(sf::Vector2f Position)
+void Character::lookAt(sf::Vector2f position)
 {
-	sf::Vector2f RotVect (Position - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
+	sf::Vector2f RotVect (position - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
 
 	//Finding the unit normal
 	float fMagnitude = sqrtf(pow(RotVect.x, 2.0f) + pow(RotVect.y, 2.0f)); 
@@ -61,20 +63,20 @@ void Character::lookAt(sf::Vector2f Position)
 	m_Weapon1.setPosition(m_MainSprite.getPosition());
 }
 
-void Character::setPath(std::deque<Node*> NewPath)
+void Character::setPath(std::deque<Node*> newPath)
 {
-	Path = NewPath;
+	m_Path = newPath;
 }
 
-void Character::Move()
+void Character::move()
 {
-	if (!Path.empty())
+	if (!m_Path.empty())
 	{
 		const float kfMoveSpeed = 2; //The amount of pixels the character moves per frame
 
 		//Sets the node to reach to be the next node in the path
-		sf::Vector2f Destination((((Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-								 (((Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+		sf::Vector2f Destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+								 (((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 
 		sf::Vector2f Velocity(Destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
 
@@ -91,18 +93,18 @@ void Character::Move()
 			m_MainSprite.getPosition().y <= Destination.y + 10 &&
 			m_MainSprite.getPosition().y >= Destination.y - 10)
 		{
-			Path.pop_front();
+			m_Path.pop_front();
 		}
 
 		//Sets up the path line ready to start drawing a new path
 		m_PathLine.clear();
-		m_PathLine.resize(Path.size());
-		for (int i = 0; i < Path.size(); i++)
+		m_PathLine.resize(m_Path.size());
+		for (int i = 0; i < m_Path.size(); i++)
 		{
 
 			m_PathLine[i] = sf::Vertex(sf::Vector2f(
-				(((Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-				(((Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
+				(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+				(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
 				sf::Color(0, 255, 0, 255));
 		}
 	}
@@ -115,26 +117,38 @@ sf::Vector2f Character::getPosition()
 
 void Character::update()
 {
-	Move();
+	move();
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
-	//m_HealthBar.setLevel(m_HealthBar.getLevelLimits().x - 1);
+	
+	switch (m_CurrentState)
+	{
+		case SEARCH_SWEEP:
+		{
+
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
-void Character::setGunTexture(sf::Texture* Tex2)
+void Character::setGunTexture(sf::Texture* tex2)
 {
-	m_Weapon1.setTexture(Tex2); //Applies the texture to the sprite.
+	m_Weapon1.setTexture(tex2); //Applies the texture to the sprite.
 }
 
-bool Character::LazerChecks(std::vector<sf::Vector2f>Edges)
+bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 {
 	bool bIntersectFound = false;
 	sf::Vector2f lowestIntersect(0, 2000);
 	float fLength;
 	float fMagnitude;
 
-	for (int i = 0; i < Edges.size(); i+=2)
+	for (int i = 0; i < vEdges.size(); i+=2)
 	{
-		sf::Vector2f currentIntersect = m_Weapon1.calcLazerIntersect(Edges.at(i), Edges.at(i+1));
+		sf::Vector2f currentIntersect = m_Weapon1.calcLazerIntersect(vEdges.at(i), vEdges.at(i+1));
 		fLength = sqrtf(pow(currentIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(currentIntersect.y - m_MainSprite.getPosition().y, 2.0f));
 		fMagnitude = sqrtf(pow(lowestIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(lowestIntersect.y - m_MainSprite.getPosition().y, 2.0f));
 	
@@ -155,15 +169,12 @@ bool Character::LazerChecks(std::vector<sf::Vector2f>Edges)
 	}
 }
 
-std::vector<sf::Vector2f> Character::getCollisionLine(float angle)
+std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 {
-	sf::Vector2f lineA = sf::Vector2f(m_MainSprite.getLocalBounds().width * cos(angle * (3.14159265359 / 180)) ,
-									  m_MainSprite.getLocalBounds().width * sin(angle * (3.14159265359 / 180)));
+	sf::Vector2f radiusLine = sf::Vector2f(m_MainSprite.getLocalBounds().width /2  * cos(fAngle * (3.14159265359 / 180)),
+										   m_MainSprite.getLocalBounds().width / 2 * sin(fAngle * (3.14159265359 / 180)));
 
-	sf::Vector2f radiusLine = sf::Vector2f(m_MainSprite.getLocalBounds().width /2  * cos(angle * (3.14159265359 / 180)),
-										   m_MainSprite.getLocalBounds().width / 2 * sin(angle * (3.14159265359 / 180)));
-
-	std::vector<sf::Vector2f> blob = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() - radiusLine + lineA};
+	std::vector<sf::Vector2f> blob = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine};
 	m_CollisionLine[0].position = blob[0];
 	m_CollisionLine[1].position = blob[1];
 	return blob;

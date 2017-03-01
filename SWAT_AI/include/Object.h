@@ -13,10 +13,10 @@ protected:
 
 public:
 	Object();
-	void setTexture(sf::Texture* Tex2);
-	void linkMap(Map* NewMap);
-	void setPosition(sf::Vector2f Pos);
-	void setSize(sf::Vector2f Dims);
+	void setTexture(sf::Texture* tex2);
+	void linkMap(Map* newMap);
+	void setPosition(sf::Vector2f pos);
+	void setSize(sf::Vector2f dims);
 	sf::FloatRect getRect();
 
 };

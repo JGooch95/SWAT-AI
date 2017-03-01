@@ -12,18 +12,17 @@ Weapon::Weapon()
 
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 25, 50));
 	m_MainSprite.setOrigin(m_MainSprite.getLocalBounds().width / 2, -m_MainSprite.getLocalBounds().height / 2 + 10);
-	m_LazerIntersect = sf::Vector2f(0.0f,0.0f);
-	FireRate = 0.2f;
-	Damage = 10.0f;
-	FireRateClock.restart();
+	m_fFireRate = 0.2f;
+	m_fDamage = 10.0f;
+	m_FireRateClock.restart();
 }
 
 float Weapon::shoot()
 {
-	if (FireRateClock.getElapsedTime().asSeconds() >= FireRate)
+	if (m_FireRateClock.getElapsedTime().asSeconds() >= m_fFireRate)
 	{
-		FireRateClock.restart();
-		return Damage;
+		m_FireRateClock.restart();
+		return m_fDamage;
 	}
 	else
 	{
@@ -37,48 +36,31 @@ void Weapon::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_MainSprite);
 }
 
-void Weapon::aim(sf::Vector2f Location)
+void Weapon::aim(sf::Vector2f location)
 {
-	float fMagnitude = sqrtf(pow(Location.x, 2.0f) + pow(Location.y, 2.0f));
-	Location /= fMagnitude;
+	float fMagnitude = sqrtf(pow(location.x, 2.0f) + pow(location.y, 2.0f));
+	location /= fMagnitude;
 
-	Location *= 2000.0f; //Multiplies it by the length
+	location *= 2000.0f; //Multiplies it by the length
 
-	float fRotAngle = -atan2f(Location.x, Location.y) * (180.0f / 3.14f); // Finding the angle of the vector for the sprite
+	float fRotAngle = -atan2f(location.x, location.y) * (180.0f / 3.14f); // Finding the angle of the vector for the sprite
 
 	m_AimLine[0].position = m_MainSprite.getPosition();
-	LazerPoint = m_MainSprite.getPosition() + Location;
+	m_LazerPoint = m_MainSprite.getPosition() + location;
 
-	m_AimLine[1].position = LazerPoint;
+	m_AimLine[1].position = m_LazerPoint;
 	m_MainSprite.setRotation(fRotAngle);
 }
 
 sf::Vector2f Weapon::calcLazerIntersect(sf::Vector2f a, sf::Vector2f b)
 {
-	//Aim edge
-	sf::Vector2f c = m_MainSprite.getPosition();
-	sf::Vector2f d = LazerPoint;
-
-	sf::Vector2f r(b - a);
-	sf::Vector2f s(d - c);
-	float crossed = Calculator.cross(r, s);
-	float t = Calculator.cross(c - a, s) / crossed;
-	float u = Calculator.cross(c - a, r) / crossed;
-
-	if (t >= 0 && t <= 1 && u >= 0 && u <= 1)
-	{
-		return a + (t * r);
-	}
-	else
-	{
-		return sf::Vector2f(0, 2000);
-	}
+	return  Calculator.lineIntersect(a, b, m_MainSprite.getPosition(), m_LazerPoint);
 }
 
-void Weapon::setIntersect(sf::Vector2f Vect)
+void Weapon::setIntersect(sf::Vector2f vect)
 {
-	LazerPoint = Vect;
-	m_AimLine[1].position = LazerPoint;
+	m_LazerPoint = vect;
+	m_AimLine[1].position = m_LazerPoint;
 }
 
 sf::Vector2f Weapon::getIntersect()

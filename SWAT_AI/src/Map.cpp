@@ -4,17 +4,17 @@ Map::Map()
 {
 }
 
-void Map::Setup(sf::Vector2u WindowSize, sf::Vector2f NewTileSize, sf::Vector2f NewGridDims)
+void Map::setup(sf::Vector2u windowSize, sf::Vector2f newTileSize, sf::Vector2f newGridDims)
 {
 	//Sets the main variables
-	m_WindowSize = WindowSize;
-	m_TileSize = NewTileSize;
-	m_GridDimensions = NewGridDims;
+	m_WindowSize = windowSize;
+	m_TileSize = newTileSize;
+	m_GridDimensions = newGridDims;
 	
-	SetupGrid();
+	setupGrid();
 }
 
-void Map::Load(std::string sDir)
+void Map::load(std::string sDir)
 {
 	std::ifstream MapFile;
 	std::string sLine;
@@ -30,7 +30,7 @@ void Map::Load(std::string sDir)
 
 			if (sLine != "EOF") //If this is not the end of the file
 			{
-				m_LevelBits.resize(m_LevelBits.size() + 1); //Adds another row
+				m_vcLevelBits.resize(m_vcLevelBits.size() + 1); //Adds another row
 
 				if (sLine.length() > iLongestLineLength) //If the length of the line is longer than the longest current line
 				{
@@ -40,7 +40,7 @@ void Map::Load(std::string sDir)
 				//For every bit read it into the data vector
 				for (int i = 0; i < sLine.length(); i++)
 				{
-					m_LevelBits.at(m_LevelBits.size() - 1).push_back(sLine.at(i));
+					m_vcLevelBits.at(m_vcLevelBits.size() - 1).push_back(sLine.at(i));
 				}
 			}
 		}
@@ -51,12 +51,12 @@ void Map::Load(std::string sDir)
 	}
 
 	m_GridDimensions.x = iLongestLineLength;
-	m_GridDimensions.y = m_LevelBits.size();
+	m_GridDimensions.y = m_vcLevelBits.size();
 	m_TileSize = sf::Vector2f(m_WindowSize.x / m_GridDimensions.x, m_WindowSize.y / m_GridDimensions.y);
-	SetupGrid();
+	setupGrid();
 }
 
-void Map::SetupGrid()
+void Map::setupGrid()
 {
 	//Sets up the grid
 	m_Grid.setPrimitiveType(sf::Lines);
@@ -93,7 +93,7 @@ sf::Vector2u Map::getWindowSize()
 
 std::vector<std::vector<char>> Map::getMapData()
 {
-	return m_LevelBits;
+	return m_vcLevelBits;
 }
 
 void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const

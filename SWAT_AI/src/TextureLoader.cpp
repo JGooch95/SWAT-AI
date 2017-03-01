@@ -5,7 +5,7 @@ TextureLoader::TextureLoader()
 
 }
 
-void TextureLoader::LoadTextures(std::vector<std::string> fileDirs)
+void TextureLoader::loadTextures(std::vector<std::string> fileDirs)
 {
 	sf::Texture CurrentTexture;
 

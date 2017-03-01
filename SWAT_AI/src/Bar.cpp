@@ -55,6 +55,7 @@ void Bar::setLimit(float fLimit)
 		std::printf("Bar Error: Cannot set limit to 0 \n");
 	}
 }
+
 void Bar::update()
 {
 		m_FrontBox.setSize(sf::Vector2f(m_BackBox.getSize().x * (m_LevelLimits.x / m_LevelLimits.y), m_FrontBox.getSize().y));

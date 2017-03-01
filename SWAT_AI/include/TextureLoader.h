@@ -5,11 +5,11 @@
 class TextureLoader
 {
 	private:
-		std::vector<sf::Texture> m_Textures;
-		std::string m_sBaseDirectory;
+		std::vector<sf::Texture> m_Textures; //Container of textures
+		std::string m_sBaseDirectory; //Directory where the textures are kept
 	public:
-		TextureLoader();
-		void setBaseDirectory(std::string sDir);
-		void LoadTextures(std::vector<std::string> fileDirs);
-		sf::Texture* getTexture(const int &k_iIndex);
+		TextureLoader(); //Constructor
+		void loadTextures(std::vector<std::string> fileDirs); //Loads the textures from the direcotries given
+		sf::Texture* getTexture(const int &k_iIndex); //Gets the texture at the index given
+		void setBaseDirectory(std::string sDir); //Sets the directory holding the textures
 };

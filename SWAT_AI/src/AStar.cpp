@@ -5,44 +5,44 @@ AStar::AStar()
 
 }
 
-AStar::AStar(Map* Map1)
+AStar::AStar(Map* map1)
 {
-	Setup(Map1);
+	setup(map1);
 }
 
-void AStar::Setup(Map* Map1)
+void AStar::setup(Map* map1)
 {
-	m_CurrentMap = Map1;
+	m_CurrentMap = map1;
 	m_Grid.resize(m_CurrentMap->getGridDims().x * m_CurrentMap->getGridDims().y);
-	SetupLists();
-	m_TilesToCheck.clear();
-	m_TilesToCheck.push_back(1);
-	m_TilesToCheck.push_back(-1);
-	m_TilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x);
-	m_TilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x + 1);
-	m_TilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x - 1);
-	m_TilesToCheck.push_back((int)m_CurrentMap->getGridDims().x);
-	m_TilesToCheck.push_back((int)m_CurrentMap->getGridDims().x + 1);
-	m_TilesToCheck.push_back((int)m_CurrentMap->getGridDims().x - 1);
+	setupLists();
+	m_viTilesToCheck.clear();
+	m_viTilesToCheck.push_back(1);
+	m_viTilesToCheck.push_back(-1);
+	m_viTilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x);
+	m_viTilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x + 1);
+	m_viTilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x - 1);
+	m_viTilesToCheck.push_back((int)m_CurrentMap->getGridDims().x);
+	m_viTilesToCheck.push_back((int)m_CurrentMap->getGridDims().x + 1);
+	m_viTilesToCheck.push_back((int)m_CurrentMap->getGridDims().x - 1);
 }
 
-std::deque<Node*> AStar::FindPath(sf::Vector2f StartPos, sf::Vector2f EndPos)
+std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 {
 	//Calculates the Position of the Start Tile in the Grid
-	int iXTile = (int)StartPos.x / (int)m_CurrentMap->getTileSize().x;
-	int iYTile = (int)StartPos.y / (int)m_CurrentMap->getTileSize().y;
+	int iXTile = (int)startPos.x / (int)m_CurrentMap->getTileSize().x;
+	int iYTile = (int)startPos.y / (int)m_CurrentMap->getTileSize().y;
 	int iStartTile = iXTile + ((int)m_CurrentMap->getGridDims().x * iYTile);
 
 	//Calculates the Position of the End Tile in the Grid
-	iXTile = (int)EndPos.x / (int)m_CurrentMap->getTileSize().x;
-	iYTile = (int)EndPos.y / (int)m_CurrentMap->getTileSize().y;
+	iXTile = (int)endPos.x / (int)m_CurrentMap->getTileSize().x;
+	iYTile = (int)endPos.y / (int)m_CurrentMap->getTileSize().y;
 	int iEndTile = iXTile +  ((int)m_CurrentMap->getGridDims().x * iYTile);
 
 	m_bEndWall = false;
 
 	int iCurrentTile = iStartTile; //Holds the tile being checked
 
-	if (iStartTile != iEndTile && iStartTile < m_Grid.size() && iEndTile < m_Grid.size() && ValidVacinity(iEndTile))
+	if (iStartTile != iEndTile && iStartTile < m_Grid.size() && iEndTile < m_Grid.size() && validVacinity(iEndTile))
 	{
 		//Checks that the end tile isn't on the closed list
 		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile)) != m_ClosedList.end())
@@ -53,11 +53,11 @@ std::deque<Node*> AStar::FindPath(sf::Vector2f StartPos, sf::Vector2f EndPos)
 		//Calculates the Manhattan distance for every node to the end node.
 		for (int i = 0; i < m_Grid.size(); i++)
 		{
-			CalculateManhattan(i, iEndTile);
+			calculateManhattan(i, iEndTile);
 			m_Grid.at(i).index = i;
 		}
 
-		int NextIndex = NULL;
+		int iNextIndex = NULL;
 		while (!m_bPathFound)
 		{
 			//If the tile being checked isn't the end tile
@@ -68,7 +68,7 @@ std::deque<Node*> AStar::FindPath(sf::Vector2f StartPos, sf::Vector2f EndPos)
 			}
 
 			//Calculates the move cost for the surrounding nodes
-			CalculateMoveCost(iCurrentTile, iEndTile);
+			calculateMoveCost(iCurrentTile, iEndTile);
 
 			if (!m_bPathFound)
 			{
@@ -80,10 +80,10 @@ std::deque<Node*> AStar::FindPath(sf::Vector2f StartPos, sf::Vector2f EndPos)
 					{
 						iCurrentTile = m_OpenList.at(i)->index;
 						iLowestF = m_OpenList.at(i)->f;
-						NextIndex = i;
+						iNextIndex = i;
 					}
 				}
-				m_OpenList.erase(m_OpenList.begin() + NextIndex);
+				m_OpenList.erase(m_OpenList.begin() + iNextIndex);
 			}
 		}
 
@@ -115,7 +115,7 @@ std::deque<Node*> AStar::FindPath(sf::Vector2f StartPos, sf::Vector2f EndPos)
 	return m_Path;
 }
 
-void AStar::SetupLists()
+void AStar::setupLists()
 {
 	//Clears the open and closed lists
 	m_ClosedList.clear();
@@ -141,7 +141,7 @@ void AStar::SetupLists()
 		m_Grid.at(i).g = 0;
 	}
 }
-void AStar::CalculateManhattan(int iStartTile, int iEndTile)
+void AStar::calculateManhattan(int iStartTile, int iEndTile)
 {	
 	//Calculates the difference between the nodes in the y axis
 	int iStartPos = (iStartTile / (int)m_CurrentMap->getGridDims().y);
@@ -156,14 +156,14 @@ void AStar::CalculateManhattan(int iStartTile, int iEndTile)
 	m_Grid.at(iStartTile).h = iXDiff + iYDiff;
 }
 
-void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
+void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 {
 	if (!m_bPathFound)
 	{
 		//If not on the right edge of the screen
 		if (iCurrentTile % (int)m_CurrentMap->getGridDims().x < (int)m_CurrentMap->getGridDims().x - 1)
 		{
-			CheckNode(iCurrentTile + 1, iCurrentTile, 10); //Assign right node a cost
+			checkNode(iCurrentTile + 1, iCurrentTile, 10); //Assign right node a cost
 
 			//If also not on the top edge of the screen
 			if (iCurrentTile - m_CurrentMap->getGridDims().x > 0)
@@ -173,11 +173,11 @@ void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
 				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x + 1)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + 1)) != m_ClosedList.end()) {
-					CheckNode(iCurrentTile - m_CurrentMap->getGridDims().x + 1, iCurrentTile, 100);  //Make the cost so high its more probable to walk around it
+					checkNode(iCurrentTile - m_CurrentMap->getGridDims().x + 1, iCurrentTile, 100);  //Make the cost so high its more probable to walk around it
 				}
 				else
 				{
-					CheckNode(iCurrentTile - m_CurrentMap->getGridDims().x + 1, iCurrentTile, 14); //Otherwise allow diagonal movement
+					checkNode(iCurrentTile - m_CurrentMap->getGridDims().x + 1, iCurrentTile, 14); //Otherwise allow diagonal movement
 				}
 			}
 
@@ -189,18 +189,18 @@ void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
 				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x + 1)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + 1)) != m_ClosedList.end()) {
-					CheckNode(iCurrentTile + m_CurrentMap->getGridDims().x + 1, iCurrentTile, 100); //Make the cost so high its more probable to walk around it
+					checkNode(iCurrentTile + m_CurrentMap->getGridDims().x + 1, iCurrentTile, 100); //Make the cost so high its more probable to walk around it
 				}
 				else
 				{
-					CheckNode(iCurrentTile + m_CurrentMap->getGridDims().x + 1, iCurrentTile, 14);//Otherwise allow diagonal movement
+					checkNode(iCurrentTile + m_CurrentMap->getGridDims().x + 1, iCurrentTile, 14);//Otherwise allow diagonal movement
 				}
 			}
 		}
 		//If not on the left edge of the screen
 		if (iCurrentTile % (int)m_CurrentMap->getGridDims().x > 0)
 		{
-			CheckNode(iCurrentTile - 1, iCurrentTile, 10); //Assign left node a cost
+			checkNode(iCurrentTile - 1, iCurrentTile, 10); //Assign left node a cost
 
 			//If also not on the top edge of the screen
 			if (iCurrentTile - m_CurrentMap->getGridDims().x > 0)
@@ -210,11 +210,11 @@ void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
 				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x - 1)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - 1)) != m_ClosedList.end()) {
-					CheckNode(iCurrentTile - m_CurrentMap->getGridDims().x - 1, iCurrentTile, 100);  //Make the cost so high its more probable to walk around it
+					checkNode(iCurrentTile - m_CurrentMap->getGridDims().x - 1, iCurrentTile, 100);  //Make the cost so high its more probable to walk around it
 				}
 				else
 				{
-					CheckNode(iCurrentTile - m_CurrentMap->getGridDims().x - 1, iCurrentTile, 14);//Otherwise allow diagonal movement
+					checkNode(iCurrentTile - m_CurrentMap->getGridDims().x - 1, iCurrentTile, 14);//Otherwise allow diagonal movement
 				}
 			}
 
@@ -226,11 +226,11 @@ void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
 				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x - 1)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
 					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - 1)) != m_ClosedList.end()) {
-					CheckNode(iCurrentTile + m_CurrentMap->getGridDims().x - 1, iCurrentTile, 100); //Make the cost so high its more probable to walk around it
+					checkNode(iCurrentTile + m_CurrentMap->getGridDims().x - 1, iCurrentTile, 100); //Make the cost so high its more probable to walk around it
 				}
 				else
 				{
-					CheckNode(iCurrentTile + m_CurrentMap->getGridDims().x - 1, iCurrentTile, 14);//Otherwise allow diagonal movement
+					checkNode(iCurrentTile + m_CurrentMap->getGridDims().x - 1, iCurrentTile, 14);//Otherwise allow diagonal movement
 				}
 			}
 		}
@@ -238,13 +238,13 @@ void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
 		//If not on the top edge of the screen
 		if (iCurrentTile - m_CurrentMap->getGridDims().x > 0)
 		{
-			CheckNode(iCurrentTile - m_CurrentMap->getGridDims().x, iCurrentTile, 10); //Assign top node a cost
+			checkNode(iCurrentTile - m_CurrentMap->getGridDims().x, iCurrentTile, 10); //Assign top node a cost
 		}
 
 		//If not on the bottom edge of the screen.
 		if (iCurrentTile + m_CurrentMap->getGridDims().x < m_Grid.size())
 		{
-			CheckNode(iCurrentTile + m_CurrentMap->getGridDims().x, iCurrentTile, 10); //Assign bottom node a cost
+			checkNode(iCurrentTile + m_CurrentMap->getGridDims().x, iCurrentTile, 10); //Assign bottom node a cost
 		}
 		
 		
@@ -252,10 +252,10 @@ void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
 		if (m_bEndWall)
 		{
 			//Checks all the surrounding tiles for the end tile
-			for (int i = 0; i < m_TilesToCheck.size(); i++)
+			for (int i = 0; i < m_viTilesToCheck.size(); i++)
 			{
 				//If any of the surrounding tiles are the end tile parent it and set the path
-				if (iCurrentTile + m_TilesToCheck.at(i) == iEndTile)
+				if (iCurrentTile + m_viTilesToCheck.at(i) == iEndTile)
 				{
 					m_bPathFound = true;
 					m_Grid.at(iEndTile).parent = &m_Grid.at(iCurrentTile);
@@ -270,7 +270,7 @@ void AStar::CalculateMoveCost(int iCurrentTile, int iEndTile)
 	}
 }
 
-void AStar::CheckNode(int iTile, int iCurrentTile, int iMoveCost)
+void AStar::checkNode(int iTile, int iCurrentTile, int iMoveCost)
 {
 	//If the node isn't on the open list
 	if (std::find(m_OpenList.begin(), m_OpenList.end(), &m_Grid.at(iTile)) == m_OpenList.end()){
@@ -291,7 +291,7 @@ void AStar::CheckNode(int iTile, int iCurrentTile, int iMoveCost)
 }
 
 //Used to check if the end node is surrounded by impassable nodes
-bool AStar::ValidVacinity(int iEndTile)
+bool AStar::validVacinity(int iEndTile)
 {
 	//If not on the right edge of the screen
 	if (iEndTile % (int)m_CurrentMap->getGridDims().x < (int)m_CurrentMap->getGridDims().x - 1)

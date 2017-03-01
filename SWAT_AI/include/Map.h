@@ -10,14 +10,14 @@ class Map : public sf::Drawable
 		sf::Vector2f m_GridDimensions;
 		sf::Vector2u m_WindowSize;
 		sf::VertexArray m_Grid;
-		std::vector<std::vector<char>> m_LevelBits;
+		std::vector<std::vector<char>> m_vcLevelBits;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:
 		Map();
-		void Setup(sf::Vector2u WindowSize, sf::Vector2f NewTileSize, sf::Vector2f NewGridDims);
-		void Load(std::string sDir);
-		void SetupGrid();
+		void setup(sf::Vector2u windowSize, sf::Vector2f newTileSize, sf::Vector2f newGridDims);
+		void load(std::string sDir);
+		void setupGrid();
 		std::vector<std::vector<char>> getMapData();
 		sf::Vector2f getTileSize();
 		sf::Vector2f getGridDims();

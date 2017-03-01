@@ -7,24 +7,24 @@ Object::Object()
 	m_MainSprite.setPosition(100, 100);
 }
 
-void Object::linkMap(Map* NewMap)
+void Object::linkMap(Map* newMap)
 {
-	m_CurrentMap = NewMap;
+	m_CurrentMap = newMap;
 }
 
-void Object::setTexture(sf::Texture* Tex2)
+void Object::setTexture(sf::Texture* tex2)
 {
-	m_MainSprite.setTexture(*Tex2); //Applies the texture to the sprite.
+	m_MainSprite.setTexture(*tex2); //Applies the texture to the sprite.
 }
 
-void Object::setPosition(sf::Vector2f Pos)
+void Object::setPosition(sf::Vector2f pos)
 {
-	m_MainSprite.setPosition(Pos);
+	m_MainSprite.setPosition(pos);
 }
 
-void Object::setSize(sf::Vector2f Dims)
+void Object::setSize(sf::Vector2f dims)
 {
-	m_MainSprite.setTextureRect(sf::IntRect(0, 0, Dims.x, Dims.y));
+	m_MainSprite.setTextureRect(sf::IntRect(0, 0, dims.x, dims.y));
 }
 sf::FloatRect Object::getRect()
 {

@@ -1,17 +1,17 @@
 #include "../include/Game.h"
 
-Game::Game(sf::Vector2u WindowSize)
+Game::Game(sf::Vector2u windowSize)
 {
 	//Sets up the map
 	sf::Vector2f GridDimensions = sf::Vector2f(20, 20);
-	m_CurrentMap.Setup(WindowSize,
-		sf::Vector2f(WindowSize.x / GridDimensions.x, WindowSize.y / GridDimensions.y),
+	m_CurrentMap.setup(windowSize,
+		sf::Vector2f(windowSize.x / GridDimensions.x, windowSize.y / GridDimensions.y),
 		GridDimensions
 	);
-	m_CurrentMap.Load("./Assets/Maps/1.txt");
+	m_CurrentMap.load("./Assets/Maps/1.txt");
 
 	//Loads the main textures into the software
-	m_Textures.LoadTextures(std::vector<std::string>{
+	m_Textures.loadTextures(std::vector<std::string>{
 		"Assets/Sprites/Unit.png",
 		"Assets/Sprites/Wood.jpg",
 		"Assets/Sprites/Sniper.png",
@@ -55,42 +55,42 @@ Game::Game(sf::Vector2u WindowSize)
 	for (int i = 0; i < m_Walls.size(); i++)
 	{
 		//Left Edge
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
 
 		//Top Edge
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
 
 		//Right Edge
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
 
 		//Bottom Edge
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-		Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
 	}
 
 	//Sets up the pathfinder
-	m_Pathfinder.Setup(&m_CurrentMap);
+	m_Pathfinder.setup(&m_CurrentMap);
 }
 
-void Game::Update(sf::Vector2i MousePos)
+void Game::update(sf::Vector2i mousePos)
 {
 	for (int i = 0; i < m_Units.size(); i++)
 	{
-		m_Units.at(i)->lookAt((sf::Vector2f)MousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
+		m_Units.at(i)->lookAt((sf::Vector2f)mousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
 		m_Units.at(i)->update();
-		m_Units.at(i)->LazerChecks(Edges);
+		m_Units.at(i)->lazerChecks(m_Edges);
 	}
 
 	for (int i = 0; i < m_Enemies.size(); i++)
 	{
-		m_Enemies.at(i)->lookAt((sf::Vector2f)MousePos - sf::Vector2f(8, 30)); //Points the unit towards the mouse
+		m_Enemies.at(i)->lookAt((sf::Vector2f)mousePos - sf::Vector2f(8, 30)); //Points the unit towards the mouse
 		m_Enemies.at(i)->update();
-		m_Enemies.at(i)->LazerChecks(Edges);
+		m_Enemies.at(i)->lazerChecks(m_Edges);
 		
-		if (m_Units.at(0)->LazerChecks({m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(0),
+		if (m_Units.at(0)->lazerChecks({m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(0),
 										m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(1)}))
 		{
 			m_Enemies.at(i)->setHealth(m_Enemies.at(i)->getHealth() - m_Units.at(0)->shoot());
@@ -98,16 +98,16 @@ void Game::Update(sf::Vector2i MousePos)
 	}
 }
 
-void Game::ClickRight(sf::Vector2i MousePos)
+void Game::clickRight(sf::Vector2i mousePos)
 {
-	m_Pathfinder.SetupLists(); //Sets up the pathfinder for a new path
-	m_Units.at(0)->setPath(m_Pathfinder.FindPath(m_Units.at(0)->getPosition(), (sf::Vector2f)MousePos)); //Sets a path towards the clicked area
+	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
+	m_Units.at(0)->setPath(m_Pathfinder.findPath(m_Units.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
 }
 
-void Game::ClickLeft(sf::Vector2i MousePos)
+void Game::clickLeft(sf::Vector2i mousePos)
 {
-	m_Pathfinder.SetupLists(); //Sets up the pathfinder for a new path
-	m_Enemies.at(0)->setPath(m_Pathfinder.FindPath(m_Enemies.at(0)->getPosition(), (sf::Vector2f)MousePos)); //Sets a path towards the clicked area
+	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
+	m_Enemies.at(0)->setPath(m_Pathfinder.findPath(m_Enemies.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
 }
 
 void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -120,4 +120,23 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	}
 	target.draw(*m_Units.at(0)); //Draws the units
 	target.draw(*m_Enemies.at(0)); //Draws the units
+}
+
+Game::~Game()
+{
+	for (int i = 0; i < m_Units.size(); i++)
+	{
+		delete(m_Units.at(i));
+		m_Units.at(i) = NULL;
+	}
+	for (int i = 0; i < m_Enemies.size(); i++)
+	{
+		delete(m_Enemies.at(i));
+		m_Enemies.at(i) = NULL;
+	}
+	for (int i = 0; i < m_Walls.size(); i++)
+	{
+		delete(m_Walls.at(i));
+		m_Walls.at(i) = NULL;
+	}
 }

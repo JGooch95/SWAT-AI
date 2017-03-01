@@ -11,18 +11,28 @@
 class Game : public sf::Drawable
 {
 	private:
-		std::vector<Character*> m_Units;
-		std::vector<Character*> m_Enemies;
-		std::vector<Object*> m_Walls;
-		TextureLoader m_Textures;
+		//Tools
 		AStar m_Pathfinder;
 		Map m_CurrentMap;
-		std::vector<sf::Vector2f> Edges;
+
+		TextureLoader m_Textures; //Contains all textures used in the game
+
+		//Objects
+		std::vector<Character*> m_Units; //Holds the friendly units
+		std::vector<Character*> m_Enemies; //Holds the enemy units
+		std::vector<Object*> m_Walls; //Holds the walls
+
+		std::vector<sf::Vector2f> m_Edges; //Holds the wall edges
+
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:
-		Game(sf::Vector2u WindowSize);
-		void Update(sf::Vector2i MousePos);
-		void ClickRight(sf::Vector2i MousePos);
-		void ClickLeft(sf::Vector2i MousePos);
+		Game(sf::Vector2u windowSize); //Constructor
+
+		void update(sf::Vector2i mousePos); //Updates all objects in game
+
+		void clickRight(sf::Vector2i mousePos); //Processes right click
+		void clickLeft(sf::Vector2i mousePos); //Processes left click
+
+		~Game(); //Deconstructor
 };

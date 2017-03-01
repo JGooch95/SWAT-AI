@@ -1,3 +1,22 @@
-﻿  Weapon.cpp
+﻿  main.cpp
+  Weapon.cpp
+  TextureLoader.cpp
+  Object.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\object.cpp(27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Map.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(37): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(54): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(64): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(70): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(76): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(77): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(77): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Game.cpp
+  Character.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(175): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  AStar.cpp
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.pdb (Partial PDB)
