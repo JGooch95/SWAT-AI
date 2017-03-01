@@ -38,6 +38,21 @@ void Weapon::aim(sf::Vector2f location)
 	m_MainSprite.setRotation(fRotAngle);
 }
 
+void Weapon::aim(float fAngle)
+{
+	sf::Vector2f RotVect(2000.0f * cos((fAngle + 90.0f) * (3.14159265359 / 180)),
+						 2000.0f * sin((fAngle + 90.0f) * (3.14159265359 / 180))); //Finding the vector between the character's center and the mouse
+
+
+	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
+	m_AimLine[0].position = m_MainSprite.getPosition();
+	m_AimLine[1].position = m_MainSprite.getPosition() + RotVect;
+	m_LazerPoint = m_MainSprite.getPosition() + RotVect;
+
+	m_MainSprite.setRotation(fAngle);
+	
+}
+
 sf::Vector2f Weapon::calcLazerIntersect(sf::Vector2f a, sf::Vector2f b)
 {
 	return  Util::lineIntersect(a, b, m_MainSprite.getPosition(), m_LazerPoint);

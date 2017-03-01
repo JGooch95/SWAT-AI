@@ -81,7 +81,7 @@ void Game::update(sf::Vector2i mousePos)
 {
 	for (int i = 0; i < m_Characters.size(); i++)
 	{
-		m_Characters.at(i)->lookAt((sf::Vector2f)mousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
+		//m_Characters.at(i)->lookAt(45.0f);//(sf::Vector2f)mousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
 		m_Characters.at(i)->update();
 		m_Characters.at(i)->lazerChecks(m_Edges);
 	}
@@ -91,7 +91,12 @@ void Game::update(sf::Vector2i mousePos)
 		if (m_Units.at(0)->lazerChecks({m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(0),
 										m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(1)}))
 		{
+			m_Units.at(0)->setTarget(m_Enemies.at(i));
 			m_Enemies.at(i)->setHealth(m_Enemies.at(i)->getHealth() - m_Units.at(0)->shoot());
+		}
+		else
+		{
+			m_Units.at(0)->setTarget(NULL);
 		}
 	}
 }

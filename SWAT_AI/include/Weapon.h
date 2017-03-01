@@ -17,9 +17,11 @@ class Weapon : public Object
 	public:
 		Weapon(); //Constructor
 		void aim(sf::Vector2f location); //Aims towards the location given
+		void aim(float fAngle);
 		sf::Vector2f calcLazerIntersect(sf::Vector2f a, sf::Vector2f b); //Calculates where the lazer collides
-		sf::Vector2f getIntersect(); //Returns where the lazer has intersected
 		void setIntersect(sf::Vector2f vect); //Sets the lines intersect
+
 		float getDamage();
 		float getFireRate();
+		sf::Vector2f getIntersect(); //Returns where the lazer has intersected
 };

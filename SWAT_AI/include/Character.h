@@ -12,21 +12,27 @@ class Character : public Object
 		Weapon m_Weapon1;
 		Bar m_HealthBar;
 
+		//Weapon data
 		Bar m_AmmoBar;
 		sf::Clock m_FireRateClock; //Holds how long its been since firing the weapon
-
 		sf::Clock m_ReloadClock;
 		bool m_bReloading;
-
+		float m_fMovementAngle;
+		float m_fAimingAngle;
+		int m_iAimingDirection;
+		
 		//AI
 		std::deque<Node*> m_Path; //Holds the current path
-		enum States { SEARCH_SWEEP };
+		enum States { SEARCH_SWEEP, AIM};
 		States m_CurrentState;  
 
 		//Debug lines
 		sf::VertexArray m_OrientationLine; //Shows the direction the unit is facing
+		sf::VertexArray m_MovementLine; //Shows the direction the unit is facing
 		sf::VertexArray m_PathLine; //Shows the path the unit is following
 		sf::VertexArray m_CollisionLine; //Shows the line used for shooting collisions
+
+		Character* m_CurrentTarget;
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
@@ -48,8 +54,12 @@ class Character : public Object
 		void setGunTexture(sf::Texture* tex2);
 		void setPath(std::deque<Node*> newPath); //Sets a new path to follow
 		void reload();
+
+		void setTarget(Character* newTarget);
+
 		//MAYBE CHANGE =============================================================
 		void lookAt(sf::Vector2f position); //Looks towards the position stated.
+		void lookAt(float fAngle);
 		bool lazerChecks(std::vector<sf::Vector2f> vEdges); //Checks if the weapons lazer has collided
 		// =========================================================================
 };

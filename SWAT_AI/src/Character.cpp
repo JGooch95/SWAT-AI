@@ -23,6 +23,13 @@ Character::Character()
 	//Sets up the Path line
 	m_PathLine.setPrimitiveType(sf::LinesStrip); 
 
+	m_MovementLine.setPrimitiveType(sf::LinesStrip);
+	m_MovementLine.resize(2);
+	for (int i = 0; i < m_MovementLine.getVertexCount(); i++)
+	{
+		m_MovementLine[i].color = sf::Color(0, 255, 255, 255);
+	}
+
 	m_CollisionLine.setPrimitiveType(sf::LinesStrip);
 	m_CollisionLine.resize(2);
 	for (int i = 0; i < m_CollisionLine.getVertexCount(); i++)
@@ -47,6 +54,8 @@ Character::Character()
 	m_CurrentState = SEARCH_SWEEP;
 	m_ReloadClock.restart();
 	m_FireRateClock.restart();
+	m_iAimingDirection = 1;
+	m_CurrentTarget = NULL;
 }
 
 void Character::lookAt(sf::Vector2f position)
@@ -66,9 +75,20 @@ void Character::lookAt(sf::Vector2f position)
 	m_OrientationLine[1].position = m_MainSprite.getPosition() + RotVect;
 
 	m_MainSprite.setRotation(fRotAngle);
-
 	m_Weapon1.aim(RotVect);
-	m_Weapon1.setPosition(m_MainSprite.getPosition());
+}
+
+void Character::lookAt(float fAngle)
+{
+	sf::Vector2f RotVect((m_MainSprite.getLocalBounds().height / 2) * cos((fAngle + 90.0f) * (3.14159265359f / 180.0f)),
+						 (m_MainSprite.getLocalBounds().height / 2) * sin((fAngle + 90.0f) * (3.14159265359f / 180.0f))); //Finding the vector between the character's center and the mouse
+
+	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
+	m_OrientationLine[0].position = m_MainSprite.getPosition();
+	m_OrientationLine[1].position = m_MainSprite.getPosition() + RotVect;
+
+	m_MainSprite.setRotation(fAngle);
+	m_Weapon1.aim(fAngle);
 }
 
 void Character::setPath(std::deque<Node*> newPath)
@@ -92,6 +112,11 @@ void Character::move()
 		float fMagnitude = sqrtf(pow(Velocity.x, 2) + pow(Velocity.y, 2));
 		Velocity /= fMagnitude; 
 
+		m_MovementLine[0].position = m_MainSprite.getPosition();
+		m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height / 2));
+
+		m_fMovementAngle = -atan2f(Velocity.x, Velocity.y) * (180.0f / 3.14f);
+
 		Velocity *= kfMoveSpeed; //Multiplies it by the speed
 
 		m_MainSprite.setPosition(m_MainSprite.getPosition() + Velocity); //Moves the Sprite
@@ -109,7 +134,6 @@ void Character::move()
 		m_PathLine.resize(m_Path.size());
 		for (int i = 0; i < m_Path.size(); i++)
 		{
-
 			m_PathLine[i] = sf::Vertex(sf::Vector2f(
 				(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
 				(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
@@ -128,7 +152,8 @@ void Character::update()
 	move();
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
 	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_AmmoBar.getSize().x / 2, m_MainSprite.getPosition().y - 40));
-	
+	m_Weapon1.setPosition(m_MainSprite.getPosition());
+
 	if (m_bReloading)
 	{
 		if (m_ReloadClock.getElapsedTime().asSeconds() >= 2.0f)
@@ -138,11 +163,40 @@ void Character::update()
 		}
 	}
 
+	float fCone = 30.0f;
+
 	switch (m_CurrentState)
 	{
 		case SEARCH_SWEEP:
 		{
-
+			if (m_fAimingAngle > fCone)
+			{
+				m_fAimingAngle = fCone;
+				m_iAimingDirection *= -1;
+			}
+			if (m_fAimingAngle < -fCone)
+			{
+				m_fAimingAngle = -fCone;
+				m_iAimingDirection *= -1;
+			}
+			m_fAimingAngle += m_iAimingDirection;
+			lookAt(m_fMovementAngle + m_fAimingAngle);
+			break;
+		}
+		case AIM:
+		{
+			if (m_CurrentTarget != NULL)
+			{
+				lookAt(m_CurrentTarget->getPosition());
+				if (m_CurrentTarget->getHealth() < 100)
+				{
+					m_CurrentTarget = NULL;
+				}
+			}
+			else
+			{
+				m_CurrentState = SEARCH_SWEEP;
+			}
 			break;
 		}
 		default:
@@ -192,10 +246,10 @@ std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 	sf::Vector2f radiusLine = sf::Vector2f(m_MainSprite.getLocalBounds().width /2  * cos(fAngle * (3.14159265359 / 180)),
 										   m_MainSprite.getLocalBounds().width / 2 * sin(fAngle * (3.14159265359 / 180)));
 
-	std::vector<sf::Vector2f> blob = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine};
-	m_CollisionLine[0].position = blob[0];
-	m_CollisionLine[1].position = blob[1];
-	return blob;
+	std::vector<sf::Vector2f> newCollisionLine = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine};
+	m_CollisionLine[0].position = newCollisionLine[0];
+	m_CollisionLine[1].position = newCollisionLine[1];
+	return newCollisionLine;
 
 }
 
@@ -240,6 +294,15 @@ void Character::reload()
 	m_ReloadClock.restart();
 }
 
+void Character::setTarget(Character* newTarget)
+{
+	m_CurrentTarget = newTarget;
+	if (m_CurrentTarget != NULL)
+	{
+		m_CurrentState = AIM;
+	}
+}
+
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	//Draws the character Sprite
@@ -247,6 +310,7 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_MainSprite);
 	target.draw(m_OrientationLine);
 	target.draw(m_PathLine);
+	target.draw(m_MovementLine);
 	target.draw(m_CollisionLine);
 	target.draw(m_AmmoBar);
 	target.draw(m_HealthBar);
