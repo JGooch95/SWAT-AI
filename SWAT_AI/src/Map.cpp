@@ -16,17 +16,17 @@ void Map::setup(sf::Vector2u windowSize, sf::Vector2f newTileSize, sf::Vector2f 
 
 void Map::load(std::string sDir)
 {
-	std::ifstream MapFile;
+	std::ifstream mapFile;
 	std::string sLine;
 	int iLongestLineLength = 0;
 
-	MapFile.open(sDir); //Open the map file
+	mapFile.open(sDir); //Open the map file
 
-	if (MapFile.is_open()) //If the map is open
+	if (mapFile.is_open()) //If the map is open
 	{
 		while (sLine!="EOF") //Repeat until end of file reached
 		{  
-			getline(MapFile, sLine); //Get the next line
+			getline(mapFile, sLine); //Get the next line
 
 			if (sLine != "EOF") //If this is not the end of the file
 			{

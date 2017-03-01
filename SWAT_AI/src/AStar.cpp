@@ -15,15 +15,15 @@ void AStar::setup(Map* map1)
 	m_CurrentMap = map1;
 	m_Grid.resize(m_CurrentMap->getGridDims().x * m_CurrentMap->getGridDims().y);
 	setupLists();
-	m_viTilesToCheck.clear();
-	m_viTilesToCheck.push_back(1);
-	m_viTilesToCheck.push_back(-1);
-	m_viTilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x);
-	m_viTilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x + 1);
-	m_viTilesToCheck.push_back(-(int)m_CurrentMap->getGridDims().x - 1);
-	m_viTilesToCheck.push_back((int)m_CurrentMap->getGridDims().x);
-	m_viTilesToCheck.push_back((int)m_CurrentMap->getGridDims().x + 1);
-	m_viTilesToCheck.push_back((int)m_CurrentMap->getGridDims().x - 1);
+	m_viTilesToCheck = {
+		1,										 //Right
+		-1,										 //Left
+		-(int)m_CurrentMap->getGridDims().x,	 //Top
+		-(int)m_CurrentMap->getGridDims().x + 1, //Top right
+		-(int)m_CurrentMap->getGridDims().x - 1, //Top left
+		(int)m_CurrentMap->getGridDims().x,      //Bottom
+		(int)m_CurrentMap->getGridDims().x + 1,  //Bottom right
+		(int)m_CurrentMap->getGridDims().x - 1}; //Bottom left
 }
 
 std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
@@ -277,92 +277,46 @@ void AStar::checkNode(int iTile, int iCurrentTile, int iMoveCost)
 		//If the node isn't on the closed list
 		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iTile)) == m_ClosedList.end()) {
 			m_OpenList.push_back(&m_Grid.at(iTile)); //Add the node to the open list
-			m_Grid.at(iTile).parent = &m_Grid.at(iCurrentTile); //Make the parent the current node
-			m_Grid.at(iTile).g = m_Grid.at(iTile).parent->g + iMoveCost; //The node gets its parents movecost plus the travel cost
-			m_Grid.at(iTile).f = m_Grid.at(iTile).g + m_Grid.at(iTile).h; //Calculate the node's F value
+			makeCurrent(iTile, iCurrentTile, iMoveCost);
 		}
 	}
 	//If it's faster to move to an already checked node from this node than the previous node
 	else if(m_Grid.at(iCurrentTile).g + iMoveCost < m_Grid.at(iTile).g){
-		m_Grid.at(iTile).parent = &m_Grid.at(iCurrentTile); //Make the parent the current node
-		m_Grid.at(iTile).g = m_Grid.at(iTile).parent->g + iMoveCost; //The node gets its parents movecost plus the travel cost
-		m_Grid.at(iTile).f = m_Grid.at(iTile).g + m_Grid.at(iTile).h; //Calculate the node's F value
+		makeCurrent(iTile, iCurrentTile, iMoveCost);
 	}
+}
+
+void AStar::makeCurrent(int iTile, int iCurrentTile, int iMoveCost)
+{
+	m_Grid.at(iTile).parent = &m_Grid.at(iCurrentTile); //Make the parent the current node
+	m_Grid.at(iTile).g = m_Grid.at(iTile).parent->g + iMoveCost; //The node gets its parents movecost plus the travel cost
+	m_Grid.at(iTile).f = m_Grid.at(iTile).g + m_Grid.at(iTile).h; //Calculate the node's F value
 }
 
 //Used to check if the end node is surrounded by impassable nodes
 bool AStar::validVacinity(int iEndTile)
 {
-	//If not on the right edge of the screen
-	if (iEndTile % (int)m_CurrentMap->getGridDims().x < (int)m_CurrentMap->getGridDims().x - 1)
+	for (int i = 0; i < m_viTilesToCheck.size(); i++) // For every surrounding node
 	{
-		//And it's not on the closed list
-		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile + 1)) == m_ClosedList.end()) {
-			return true;
-		}
-
-		//If also not on the top right edge of the screen
-		if (iEndTile - m_CurrentMap->getGridDims().x > 0)
+		if (iEndTile + m_viTilesToCheck.at(i) > 0 && iEndTile + m_viTilesToCheck.at(i) < m_Grid.size())// If within the grid space
 		{
-			//And it's not on the closed list
-			if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile - m_CurrentMap->getGridDims().x + 1)) == m_ClosedList.end()) {
-				return true;
-			}
-		}
-
-		//If also not on the bottom right edge of the screen
-		if (iEndTile + m_CurrentMap->getGridDims().x < m_Grid.size())
-		{
-			//And it's not on the closed list
-			if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile + m_CurrentMap->getGridDims().x + 1)) == m_ClosedList.end()) {
+			if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile + m_viTilesToCheck.at(i))) == m_ClosedList.end()) { //And not on the closed list
 				return true;
 			}
 		}
 	}
-	//If not on the left edge of the screen
-	if (iEndTile % (int)m_CurrentMap->getGridDims().x > 0)
-	{
-		//And it's not on the closed list
-		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile - 1)) == m_ClosedList.end()) {
-			return true;
-		}
 
-		//If also not on the top left edge of the screen
-		if (iEndTile - m_CurrentMap->getGridDims().x > 0)
-		{
-			//And it's not on the closed list
-			if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile - m_CurrentMap->getGridDims().x - 1)) == m_ClosedList.end()) {
-				return true;
-			}
-		}
-		//If also not on the bottom left edge of the screen
-		if (iEndTile + m_CurrentMap->getGridDims().x < m_Grid.size())
-		{
-			//And it's not on the closed list
-			if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile + m_CurrentMap->getGridDims().x - 1)) == m_ClosedList.end()) {
-				return true;
-			}
-		}	
-	}
+	return false; //If all of the tests are false return false
+}
 
-	//If not on the top edge of the screen
-	if (iEndTile - m_CurrentMap->getGridDims().x > 0)
+AStar::~AStar()
+{
+	for (int i = 0; i < m_OpenList.size(); i++)
 	{
-		//And it's not on the closed list
-		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile - m_CurrentMap->getGridDims().x)) == m_ClosedList.end()) {
-			return true;
-		}
+		m_OpenList.at(i) = NULL;
 	}
-
-	//If not on the bottom edge of the screen.
-	if (iEndTile + m_CurrentMap->getGridDims().x < m_Grid.size())
+	for (int i = 0; i < m_ClosedList.size(); i++)
 	{
-		//And it's not on the closed list
-		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile + m_CurrentMap->getGridDims().x)) == m_ClosedList.end()) {
-			return true;
-		}
+		m_ClosedList.at(i) = NULL;
 	}
-	
-	//If all of the tests are false return false
-	return false;
 }

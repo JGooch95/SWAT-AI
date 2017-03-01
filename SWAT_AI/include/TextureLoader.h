@@ -10,6 +10,6 @@ class TextureLoader
 	public:
 		TextureLoader(); //Constructor
 		void loadTextures(std::vector<std::string> fileDirs); //Loads the textures from the direcotries given
-		sf::Texture* getTexture(const int &k_iIndex); //Gets the texture at the index given
+		sf::Texture* getTexture(const int &kiIndex); //Gets the texture at the index given
 		void setBaseDirectory(std::string sDir); //Sets the directory holding the textures
 };

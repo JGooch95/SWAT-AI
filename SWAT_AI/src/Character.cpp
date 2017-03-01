@@ -29,7 +29,6 @@ Character::Character()
 	{
 		m_CollisionLine[i].color = sf::Color(255, 255, 0, 255);
 	}
-	//getCollisionLine();
 
 	m_HealthBar.setSize(sf::Vector2f(70, 5));
 	m_HealthBar.setBarColor(sf::Color(255, 0, 0, 255));

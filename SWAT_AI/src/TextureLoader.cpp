@@ -26,7 +26,7 @@ void TextureLoader::setBaseDirectory(std::string sDir)
 	m_sBaseDirectory = sDir;
 }
 
-sf::Texture* TextureLoader::getTexture(const int &k_iIndex)
+sf::Texture* TextureLoader::getTexture(const int &kiIndex)
 {
-	return  std::vector<sf::Texture>::iterator(m_Textures.begin() + k_iIndex)._Ptr;
+	return  std::vector<sf::Texture>::iterator(m_Textures.begin() + kiIndex)._Ptr;
 }

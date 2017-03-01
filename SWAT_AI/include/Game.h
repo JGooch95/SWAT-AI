@@ -18,6 +18,7 @@ class Game : public sf::Drawable
 		TextureLoader m_Textures; //Contains all textures used in the game
 
 		//Objects
+		std::vector<Character*> m_Characters; //Holds all of the characters
 		std::vector<Character*> m_Units; //Holds the friendly units
 		std::vector<Character*> m_Enemies; //Holds the enemy units
 		std::vector<Object*> m_Walls; //Holds the walls

@@ -20,8 +20,9 @@ class AStar
 		std::vector<Node> m_Grid;
 		std::vector<Node*> m_OpenList;
 		std::vector<Node*> m_ClosedList;
+		std::deque<Node*> m_Path;
 		Map* m_CurrentMap;
-		std::vector<int>m_viTilesToCheck;
+		std::vector<int> m_viTilesToCheck;
 		bool m_bPathFound;
 		bool m_bEndWall;
 
@@ -34,6 +35,7 @@ class AStar
 		void calculateManhattan(int iStartTile, int iEndTile);
 		void calculateMoveCost(int iCurrentTile, int iEndTile);
 		void checkNode(int iTile, int iCurrentTile, int iMoveCost);
+		void makeCurrent(int iTile, int iCurrentTile, int iMoveCost);
 		bool validVacinity(int iEndTile);
-		std::deque<Node*> m_Path;
+		~AStar();
 };

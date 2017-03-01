@@ -17,7 +17,7 @@ int main()
 	//Sets up the game ready for use
 	Game Game1(mainWindow.getSize());
 
-	const float k_fTargetFPS = 60; //Holds the target frames per second
+	const float kfTargetFPS = 60; //Holds the target frames per second
 
 	//Main Loop
 	while (mainWindow.isOpen())
@@ -44,7 +44,7 @@ int main()
 			}
 		}
 
-		if (timer.getElapsedTime().asSeconds() > 1.0f / k_fTargetFPS)
+		if (timer.getElapsedTime().asSeconds() > 1.0f / kfTargetFPS)
 		{
 			//Update
 			Game1.update(sf::Mouse::getPosition() - mainWindow.getPosition());

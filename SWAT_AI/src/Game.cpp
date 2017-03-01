@@ -25,6 +25,7 @@ Game::Game(sf::Vector2u windowSize)
 		m_Units.at(i)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
 		m_Units.at(i)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
 		m_Units.at(i)->linkMap(&m_CurrentMap); //Sets up the grid values for units
+		m_Characters.push_back(m_Units.at(i));
 	}
 	//Creates new units
 	for (int i = 0; i < 1; i++)
@@ -33,6 +34,7 @@ Game::Game(sf::Vector2u windowSize)
 		m_Enemies.at(i)->setTexture(m_Textures.getTexture(3)); //Sets the unit texture
 		m_Enemies.at(i)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
 		m_Enemies.at(i)->linkMap(&m_CurrentMap); //Sets up the grid values for units
+		m_Characters.push_back(m_Enemies.at(i));
 	}
 
 	//For every bit within the map Check the object type location and create it
@@ -77,19 +79,15 @@ Game::Game(sf::Vector2u windowSize)
 
 void Game::update(sf::Vector2i mousePos)
 {
-	for (int i = 0; i < m_Units.size(); i++)
+	for (int i = 0; i < m_Characters.size(); i++)
 	{
-		m_Units.at(i)->lookAt((sf::Vector2f)mousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
-		m_Units.at(i)->update();
-		m_Units.at(i)->lazerChecks(m_Edges);
+		m_Characters.at(i)->lookAt((sf::Vector2f)mousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
+		m_Characters.at(i)->update();
+		m_Characters.at(i)->lazerChecks(m_Edges);
 	}
 
 	for (int i = 0; i < m_Enemies.size(); i++)
 	{
-		m_Enemies.at(i)->lookAt((sf::Vector2f)mousePos - sf::Vector2f(8, 30)); //Points the unit towards the mouse
-		m_Enemies.at(i)->update();
-		m_Enemies.at(i)->lazerChecks(m_Edges);
-		
 		if (m_Units.at(0)->lazerChecks({m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(0),
 										m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(1)}))
 		{
@@ -118,21 +116,18 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(*m_Walls.at(i)); //Draws the units
 	}
-	target.draw(*m_Units.at(0)); //Draws the units
-	target.draw(*m_Enemies.at(0)); //Draws the units
+	for (int i = 0; i < m_Characters.size(); i++)
+	{
+		target.draw(*m_Characters.at(i)); //Draws the characters
+	}
 }
 
 Game::~Game()
 {
-	for (int i = 0; i < m_Units.size(); i++)
+	for (int i = 0; i < m_Characters.size(); i++)
 	{
-		delete(m_Units.at(i));
-		m_Units.at(i) = NULL;
-	}
-	for (int i = 0; i < m_Enemies.size(); i++)
-	{
-		delete(m_Enemies.at(i));
-		m_Enemies.at(i) = NULL;
+		delete(m_Characters.at(i));
+		m_Characters.at(i) = NULL;
 	}
 	for (int i = 0; i < m_Walls.size(); i++)
 	{
