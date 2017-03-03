@@ -37,6 +37,8 @@ Character::Character()
 		m_CollisionLine[i].color = sf::Color(255, 255, 0, 255);
 	}
 
+	m_VisionRays.setPrimitiveType(sf::Lines);
+
 	m_HealthBar.setSize(sf::Vector2f(70, 5));
 	m_HealthBar.setBarColor(sf::Color(255, 0, 0, 255));
 	m_HealthBar.setLevelColor(sf::Color(0, 255, 0, 255));
@@ -241,6 +243,56 @@ bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 	}
 }
 
+void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
+{
+	std::vector<sf::Vector2f> useRays;
+	sf::Vector2f lowestIntersect;
+	float angle = 0;
+	std::vector<float> angles;
+	for (int i = 0; i < vEdges.size(); i++)
+	{
+		sf::Vector2f Ray = vEdges.at(i) - m_MainSprite.getPosition();
+		float fMagnitude = sqrtf(pow(Ray.x, 2) + pow(Ray.y, 2));
+		Ray /= fMagnitude;
+		Ray *= 2000.0f;
+		useRays.push_back(Ray);
+	}
+
+	
+	for (int i = 0; i < useRays.size(); i++)
+	{
+		lowestIntersect = useRays.at(i);
+		for (int j = 0; j < vEdges.size(); j += 2)
+		{
+			sf::Vector2f currentIntersect = Util::lineIntersect(vEdges.at(j), vEdges.at(j + 1), m_MainSprite.getPosition(), m_MainSprite.getPosition() + useRays.at(i));
+			float fLength = sqrtf(pow(currentIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(currentIntersect.y - m_MainSprite.getPosition().y, 2.0f));
+			float fMagnitude = sqrtf(pow(lowestIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(lowestIntersect.y - m_MainSprite.getPosition().y, 2.0f));
+
+			if (fLength < fMagnitude)
+			{
+				lowestIntersect = currentIntersect;
+			}
+		}
+		useRays.at(i) = lowestIntersect;
+	}
+
+	m_VisionRays.clear();
+	m_VisionRays.resize(2*useRays.size());
+
+	sf::Vertex newVertex;
+	newVertex.color = sf::Color(255, 125, 40, 255);
+
+	for (int i = 0; i < useRays.size(); i+=2)
+	{
+		newVertex.position = m_MainSprite.getPosition();
+		m_VisionRays[i] = newVertex;
+
+		newVertex.position = useRays.at(i);
+		m_VisionRays[i+1] = newVertex;
+	}
+}
+
+
 std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 {
 	sf::Vector2f radiusLine = sf::Vector2f(m_MainSprite.getLocalBounds().width /2  * cos(fAngle * (3.14159265359 / 180)),
@@ -306,6 +358,7 @@ void Character::setTarget(Character* newTarget)
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	//Draws the character Sprite
+	target.draw(m_VisionRays);
 	target.draw(m_Weapon1);
 	target.draw(m_MainSprite);
 	target.draw(m_OrientationLine);

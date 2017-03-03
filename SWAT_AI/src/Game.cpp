@@ -8,7 +8,7 @@ Game::Game(sf::Vector2u windowSize)
 		sf::Vector2f(windowSize.x / GridDimensions.x, windowSize.y / GridDimensions.y),
 		GridDimensions
 	);
-	m_CurrentMap.load("./Assets/Maps/1.txt");
+	m_CurrentMap.load("./Assets/Maps/1.txt"); 
 
 	//Loads the main textures into the software
 	m_Textures.loadTextures(std::vector<std::string>{
@@ -37,6 +37,22 @@ Game::Game(sf::Vector2u windowSize)
 		m_Characters.push_back(m_Enemies.at(i));
 	}
 
+	std::vector<sf::Vector2f> m_EdgesX; //Holds the wall edges
+	std::vector<sf::Vector2f> m_EdgesY; //Holds the wall edges
+
+	//Adds borders of the window to the edge checks
+	m_EdgesY.push_back(sf::Vector2f(0, 0));
+	m_EdgesY.push_back(sf::Vector2f(windowSize.x, 0));
+
+	m_EdgesY.push_back(sf::Vector2f(0, windowSize.y));
+	m_EdgesY.push_back(sf::Vector2f(windowSize.x, windowSize.y));
+
+	m_EdgesX.push_back(sf::Vector2f(0, 0));
+	m_EdgesX.push_back(sf::Vector2f(0, windowSize.y));
+
+	m_EdgesX.push_back(sf::Vector2f(windowSize.x, 0));
+	m_EdgesX.push_back(sf::Vector2f(windowSize.x, windowSize.y));
+
 	//For every bit within the map Check the object type location and create it
 	for (int i = 0; i < m_CurrentMap.getMapData().size(); i++)
 	{
@@ -50,10 +66,38 @@ Game::Game(sf::Vector2u windowSize)
 				m_Walls.at(m_Walls.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
 				m_Walls.at(m_Walls.size() - 1)->setPosition(sf::Vector2f(j * m_CurrentMap.getTileSize().x, i * m_CurrentMap.getTileSize().y));
 				m_Walls.at(m_Walls.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y));
+
+			
+				if (m_CurrentMap.getMapData().at(i - 1).at(j) != 'W' && i > 0)
+				{
+					//Top Edge
+					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top));
+					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top));
+				}
+				if (m_CurrentMap.getMapData().at(i + 1).at(j) != 'W' && i < m_CurrentMap.getMapData().at(i).size())
+				{
+					//Bottom Edge
+					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
+					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
+				}
+				
+				if (m_CurrentMap.getMapData().at(i).at(j-1) != 'W' && j > 0)
+				{
+					//Left Edge
+					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top));
+					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
+				}
+				if (m_CurrentMap.getMapData().at(i).at(j + 1) != 'W' && j < m_CurrentMap.getMapData().size())
+				{
+					//Right Edge
+					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top));
+					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
+				}
 			}
 		}
 	}
 
+	/*
 	for (int i = 0; i < m_Walls.size(); i++)
 	{
 		//Left Edge
@@ -71,6 +115,218 @@ Game::Game(sf::Vector2u windowSize)
 		//Bottom Edge
 		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
 		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+	}*/
+
+	//std::vector<sf::Vector2f> m_EdgesX; //Holds the wall edges
+	//std::vector<sf::Vector2f> m_EdgesY; //Holds the wall edges
+	/*
+	for (int i = 0; i < m_Walls.size(); i++)
+	{
+		//Left Edge
+		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
+		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+
+		//Right Edge
+		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
+		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+	}
+
+	for (int i = 0; i < m_Walls.size(); i++)
+	{
+		//Top Edge
+		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
+		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
+
+		//Bottom Edge
+		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
+	}*/
+
+
+	std::vector<float> XValues;
+	std::vector<float> YValues;
+	float currentX;
+	float currentY;
+	std::vector<std::vector<sf::Vector2f>> ComparissonVectsX;
+	std::vector<std::vector<sf::Vector2f>> ComparissonVectsY;
+	bool bFoundMatch = false;
+
+	//For every edge
+	for (int i = 0; i < m_EdgesX.size(); i++)
+	{
+		bFoundMatch = false;
+		if (XValues.size() == 0) //If there are no current x values add one
+		{
+			XValues.push_back(m_EdgesX.at(i).x);
+		}
+		else
+		{
+			for (int j = 0; j < XValues.size(); j++) //For every current x value found
+			{
+				if (m_EdgesX.at(i).x == XValues.at(j)) //If the x matches to the current Xs
+				{
+					//A match has been found
+					bFoundMatch = true;
+				}
+			}
+			if (!bFoundMatch) //If none of the xs match add the x to the list of xs
+			{
+				XValues.push_back(m_EdgesX.at(i).x);
+			}
+		}
+	}
+
+	for (int i = 0; i < m_EdgesY.size(); i++)
+	{
+		bFoundMatch = false;
+		if (YValues.size() == 0) //If there are no current x values add one
+		{
+			YValues.push_back(m_EdgesY.at(i).y);
+		}
+		else
+		{
+			for (int j = 0; j < YValues.size(); j++) //For every current x value found
+			{
+				if (m_EdgesY.at(i).y == YValues.at(j)) //If the x matches to the current Xs
+				{
+					//A match has been found
+					bFoundMatch = true;
+				}
+			}
+			if (!bFoundMatch) //If none of the xs match add the x to the list of xs
+			{
+				YValues.push_back(m_EdgesY.at(i).y);
+			}
+		}
+	}
+	ComparissonVectsX.resize(XValues.size());
+	bool inVect;
+	for (int i = 0; i < XValues.size(); i++)
+	{
+		for (int j = 0; j < m_EdgesX.size(); j++)
+		{
+			if (m_EdgesX.at(j).x == XValues.at(i)) //If the x matches to the current Xs
+			{
+				ComparissonVectsX.at(i).push_back(m_EdgesX.at(j));
+			}
+		}
+	}
+
+	ComparissonVectsY.resize(YValues.size());
+	for (int i = 0; i < YValues.size(); i++)
+	{
+		for (int j = 0; j < m_EdgesY.size(); j++)
+		{
+			if (m_EdgesY.at(j).y == YValues.at(i)) //If the x matches to the current Xs
+			{
+				ComparissonVectsY.at(i).push_back(m_EdgesY.at(j));
+			}
+		}
+	}
+
+	bool currentlyEqual = true;
+	int j = 0;
+	int begin = 0;
+	int end = 0;
+	std::vector<sf::Vector2f> Edges;
+
+	
+	for (int i = 0; i < ComparissonVectsX.size(); i++)
+	{
+		begin = 0;
+		end = 0;
+		for (int j = 0; j < ComparissonVectsX.at(i).size(); j++)
+		{
+			while (currentlyEqual)
+			{
+				if (j + 2 < ComparissonVectsX.at(i).size())
+				{
+					if (ComparissonVectsX.at(i).at(j + 1).y == ComparissonVectsX.at(i).at(j + 2).y)
+					{
+						j+=2;
+					}
+					else
+					{
+						j++;
+						end = j;
+						currentlyEqual = false;
+					}
+				}
+				else if (j + 2 == ComparissonVectsX.at(i).size())
+				{
+					end = j+ 1;
+					currentlyEqual = false;
+				}
+				else
+				{
+					end = j;
+					currentlyEqual = false;
+				}
+			}
+			if (j < ComparissonVectsX.at(i).size() - 1)
+			{
+				Edges.push_back(ComparissonVectsX.at(i).at(begin));
+				Edges.push_back(ComparissonVectsX.at(i).at(end));
+				begin = j + 1;
+			}
+			//j++;
+			currentlyEqual = true;
+		}
+		
+	}
+
+	
+	for (int i = 0; i < ComparissonVectsY.size(); i++)
+	{
+		begin = 0;
+		end = 0;
+		for (int j = 0; j < ComparissonVectsY.at(i).size(); j++)
+		{
+			while (currentlyEqual)
+			{
+				if (j + 2 < ComparissonVectsY.at(i).size())
+				{
+					if (ComparissonVectsY.at(i).at(j + 1).x == ComparissonVectsY.at(i).at(j + 2).x)
+					{
+						j += 2;
+					}
+					else
+					{
+						j++;
+						end = j;
+						currentlyEqual = false;
+					}
+				}
+				else if (j + 2 == ComparissonVectsY.at(i).size())
+				{
+					end = j + 1;
+					currentlyEqual = false;
+				}
+				else
+				{
+					end = j;
+					currentlyEqual = false;
+				}
+			}
+			if (j < ComparissonVectsY.at(i).size() - 1)
+			{
+				Edges.push_back(ComparissonVectsY.at(i).at(begin));
+				Edges.push_back(ComparissonVectsY.at(i).at(end));
+				begin = j + 1;
+			}
+			//j++;
+			currentlyEqual = true;
+		}
+
+	}
+
+	m_Edges = Edges;
+	m_EdgeLines.resize(m_Edges.size());
+	m_EdgeLines.setPrimitiveType(sf::Lines);
+
+	for (int i = 0; i < m_Edges.size(); i++)
+	{
+		m_EdgeLines[i] = sf::Vertex(m_Edges.at(i), sf::Color(255,0,0,255));
 	}
 
 	//Sets up the pathfinder
@@ -84,6 +340,21 @@ void Game::update(sf::Vector2i mousePos)
 		//m_Characters.at(i)->lookAt(45.0f);//(sf::Vector2f)mousePos - sf::Vector2f(8,30)); //Points the unit towards the mouse
 		m_Characters.at(i)->update();
 		m_Characters.at(i)->lazerChecks(m_Edges);
+		m_Characters.at(i)->visionCalculation(m_Edges);
+	}
+
+	for (int i = 0; i < m_Units.size(); i++)
+	{
+		if (m_Enemies.at(0)->lazerChecks({ m_Units.at(i)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(0),
+			m_Units.at(i)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(1) }))
+		{
+			m_Enemies.at(0)->setTarget(m_Units.at(i));
+			m_Units.at(i)->setHealth(m_Units.at(i)->getHealth() - m_Enemies.at(0)->shoot());
+		}
+		else
+		{
+			m_Enemies.at(0)->setTarget(NULL);
+		}
 	}
 
 	for (int i = 0; i < m_Enemies.size(); i++)
@@ -121,10 +392,11 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(*m_Walls.at(i)); //Draws the units
 	}
-	for (int i = 0; i < m_Characters.size(); i++)
+	for (int i = 0; i < 1; i++)
 	{
 		target.draw(*m_Characters.at(i)); //Draws the characters
 	}
+	target.draw(m_EdgeLines);
 }
 
 Game::~Game()

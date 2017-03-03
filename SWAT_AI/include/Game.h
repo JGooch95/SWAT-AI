@@ -22,7 +22,7 @@ class Game : public sf::Drawable
 		std::vector<Character*> m_Units; //Holds the friendly units
 		std::vector<Character*> m_Enemies; //Holds the enemy units
 		std::vector<Object*> m_Walls; //Holds the walls
-
+		sf::VertexArray m_EdgeLines;
 		std::vector<sf::Vector2f> m_Edges; //Holds the wall edges
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;

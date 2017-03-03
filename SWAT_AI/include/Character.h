@@ -31,6 +31,7 @@ class Character : public Object
 		sf::VertexArray m_MovementLine; //Shows the direction the unit is facing
 		sf::VertexArray m_PathLine; //Shows the path the unit is following
 		sf::VertexArray m_CollisionLine; //Shows the line used for shooting collisions
+		sf::VertexArray m_VisionRays;
 
 		Character* m_CurrentTarget;
 
@@ -61,5 +62,6 @@ class Character : public Object
 		void lookAt(sf::Vector2f position); //Looks towards the position stated.
 		void lookAt(float fAngle);
 		bool lazerChecks(std::vector<sf::Vector2f> vEdges); //Checks if the weapons lazer has collided
+		void visionCalculation(std::vector<sf::Vector2f>vEdges);
 		// =========================================================================
 };
