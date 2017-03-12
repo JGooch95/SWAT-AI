@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <deque>
+#include <set>
 #include "AStar.h"
 #include "Object.h"
 #include "Bar.h"
@@ -36,6 +37,7 @@ class Character : public Object
 		Character* m_CurrentTarget;
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+		std::pair<bool, sf::Vector2f> findLowestIntersect(std::vector<sf::Vector2f>vEdges, std::vector<sf::Vector2f> newRay);
 
 	public:
 		Character(); //Default constructor

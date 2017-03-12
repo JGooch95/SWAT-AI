@@ -37,7 +37,7 @@ Character::Character()
 		m_CollisionLine[i].color = sf::Color(255, 255, 0, 255);
 	}
 
-	m_VisionRays.setPrimitiveType(sf::Lines);
+	m_VisionRays.setPrimitiveType(sf::Triangles);
 
 	m_HealthBar.setSize(sf::Vector2f(70, 5));
 	m_HealthBar.setBarColor(sf::Color(255, 0, 0, 255));
@@ -213,28 +213,75 @@ void Character::setGunTexture(sf::Texture* tex2)
 	m_Weapon1.setTexture(tex2); //Applies the texture to the sprite.
 }
 
-bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
+struct Ray
 {
-	bool bIntersectFound = false;
-	sf::Vector2f lowestIntersect(0, 2000);
-	float fLength;
-	float fMagnitude;
+	int index;
+	float angle;
+	sf::Vector2f Vect;
+	sf::Vector2f OriginalVect;
+};
 
-	for (int i = 0; i < vEdges.size(); i+=2)
+int iPartition(std::vector<Ray>& A, int p, int q)
+{
+	float x = A.at(p).angle;
+	int i = p;
+	int j;
+
+	for (j = p + 1; j<q; j++)
 	{
-		sf::Vector2f currentIntersect = m_Weapon1.calcLazerIntersect(vEdges.at(i), vEdges.at(i+1));
-		fLength = sqrtf(pow(currentIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(currentIntersect.y - m_MainSprite.getPosition().y, 2.0f));
-		fMagnitude = sqrtf(pow(lowestIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(lowestIntersect.y - m_MainSprite.getPosition().y, 2.0f));
-	
-		if (fLength < fMagnitude)
+		if (A.at(j).angle <= x)
+		{
+			i = i + 1;
+			iter_swap(A.begin() + i, A.begin() + j);
+		}
+
+	}
+
+	iter_swap(A.begin() + i, A.begin() + p);
+	//swap(A[i], A[p]);
+	return i;
+}
+
+void QuickSort(std::vector<Ray>& A, int p, int q)
+{
+	int r;
+	if (p < q)
+	{
+		r = iPartition(A, p, q);
+		QuickSort(A, p, r);
+		QuickSort(A, r + 1, q);
+	}
+}
+
+std::pair<bool, sf::Vector2f> Character::findLowestIntersect(std::vector<sf::Vector2f>vEdges, std::vector<sf::Vector2f> newRay)
+{
+	sf::Vector2f lowestIntersect = newRay.at(1);
+	bool intersected = false;
+
+	//For every edge
+	for (int j = 0; j < vEdges.size(); j += 2)
+	{
+		//Checks where the ray and the edge intersect
+		sf::Vector2f currentIntersect = Util::lineIntersect(vEdges.at(j), vEdges.at(j + 1), newRay.at(0), newRay.at(1));
+
+		//If the ray is shorter than the previous rays then set the ray to be the shortest ray
+		if (Util::magnitude(currentIntersect - m_MainSprite.getPosition()) < Util::magnitude(lowestIntersect - m_MainSprite.getPosition()))
 		{
 			lowestIntersect = currentIntersect;
-			bIntersectFound = true;
+			intersected = true;
 		}
 	}
-	if (bIntersectFound)
+	return std::pair<bool, sf::Vector2f>{ intersected, lowestIntersect };
+}
+
+bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
+{
+	std::vector<sf::Vector2f> lazerRay = { m_Weapon1.getPosition(), m_Weapon1.getIntersect()};
+	std::pair<bool, sf::Vector2f> lowestIntersect = findLowestIntersect(vEdges, lazerRay);
+
+	if (lowestIntersect.first)
 	{
-		m_Weapon1.setIntersect(lowestIntersect);
+		m_Weapon1.setIntersect(lowestIntersect.second);
 		return true;
 	}
 	else
@@ -245,51 +292,87 @@ bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 
 void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 {
-	std::vector<sf::Vector2f> useRays;
-	sf::Vector2f lowestIntersect;
-	float angle = 0;
-	std::vector<float> angles;
+	std::vector<Ray> Rays;
+	std::vector<Ray> useRays;
+	Ray tempRay;
+	
+	//Generate the rays
 	for (int i = 0; i < vEdges.size(); i++)
 	{
-		sf::Vector2f Ray = vEdges.at(i) - m_MainSprite.getPosition();
-		float fMagnitude = sqrtf(pow(Ray.x, 2) + pow(Ray.y, 2));
-		Ray /= fMagnitude;
-		Ray *= 2000.0f;
-		useRays.push_back(Ray);
+		//Create a ray pointing towards the corner given
+		sf::Vector2f RayVect = vEdges.at(i) - m_MainSprite.getPosition();
+
+		//Gets the unit vector
+		RayVect /= Util::magnitude(RayVect);
+
+		//Gets the angle of the vector
+		float fRotAngle = -atan2f(RayVect.y, RayVect.x) * (180.0f / 3.14f);
+
+		//Makes the length of the ray the maximum range
+		RayVect *= 2000.0f;
+
+		//Adds the data to a temp Ray to be added to the ray vector.
+		tempRay.Vect = RayVect;
+		tempRay.OriginalVect = vEdges.at(i);
+		tempRay.index = i;
+		tempRay.angle = fRotAngle;
+		Rays.push_back(tempRay);
 	}
 
-	
-	for (int i = 0; i < useRays.size(); i++)
+	//Check for ray collision
+	//For every ray
+	for (int i = 0; i < Rays.size(); i++)
 	{
-		lowestIntersect = useRays.at(i);
-		for (int j = 0; j < vEdges.size(); j += 2)
+		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), m_MainSprite.getPosition() + Rays.at(i).Vect };
+		//Set the lowest intersect to the rays location
+		Rays.at(i).Vect = findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
+		
+		//If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
+		if (Util::magnitude(Rays.at(i).OriginalVect - m_MainSprite.getPosition()) < Util::magnitude(Rays.at(i).Vect - m_MainSprite.getPosition()))
 		{
-			sf::Vector2f currentIntersect = Util::lineIntersect(vEdges.at(j), vEdges.at(j + 1), m_MainSprite.getPosition(), m_MainSprite.getPosition() + useRays.at(i));
-			float fLength = sqrtf(pow(currentIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(currentIntersect.y - m_MainSprite.getPosition().y, 2.0f));
-			float fMagnitude = sqrtf(pow(lowestIntersect.x - m_MainSprite.getPosition().x, 2.0f) + pow(lowestIntersect.y - m_MainSprite.getPosition().y, 2.0f));
-
-			if (fLength < fMagnitude)
-			{
-				lowestIntersect = currentIntersect;
-			}
+			tempRay.Vect = vEdges.at(Rays.at(i).index);
+			tempRay.angle = Rays.at(i).angle;
+			useRays.push_back(tempRay);
 		}
-		useRays.at(i) = lowestIntersect;
 	}
 
+	//Pushes the vector of rays to the new vector
+	for (int i = 0; i < Rays.size(); i++)
+	{
+		useRays.push_back(Rays.at(i));
+	}
+
+	//Sort the rays into angle order
+	QuickSort(useRays, 0, useRays.size());
+
+	//Add the rays to the vertex array
 	m_VisionRays.clear();
-	m_VisionRays.resize(2*useRays.size());
+	m_VisionRays.resize((useRays.size()*3));
 
 	sf::Vertex newVertex;
-	newVertex.color = sf::Color(255, 125, 40, 255);
+	newVertex.color = sf::Color(255, 125, 40, 70);
 
-	for (int i = 0; i < useRays.size(); i+=2)
+	//For every ray create a triangle
+	for (int i = 0; i < useRays.size()-1; i++)
 	{
 		newVertex.position = m_MainSprite.getPosition();
-		m_VisionRays[i] = newVertex;
+		m_VisionRays[3*i] = newVertex;
 
-		newVertex.position = useRays.at(i);
-		m_VisionRays[i+1] = newVertex;
+		newVertex.position = useRays.at(i).Vect;
+		m_VisionRays[(3 * i)+1] = newVertex;
+
+		newVertex.position = useRays.at(i+1).Vect;
+		m_VisionRays[(3 * i)+2] = newVertex;
 	}
+
+	newVertex.position = m_MainSprite.getPosition();
+	m_VisionRays[(3 * (useRays.size() - 1))] = newVertex;
+
+	newVertex.position = useRays.at(useRays.size() - 1).Vect;
+	m_VisionRays[(3 * (useRays.size()-1)) + 1] = newVertex;
+
+	newVertex.position = useRays.at(0).Vect;
+	m_VisionRays[(3 * (useRays.size() - 1)) + 2] = newVertex;
 }
 
 

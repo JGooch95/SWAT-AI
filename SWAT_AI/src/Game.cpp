@@ -392,7 +392,7 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(*m_Walls.at(i)); //Draws the units
 	}
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		target.draw(*m_Characters.at(i)); //Draws the characters
 	}

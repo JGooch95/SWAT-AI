@@ -31,4 +31,10 @@ namespace Util
 			return sf::Vector2f(0, 2000); //Out of range value
 		}
 	}
+
+	
+	static float magnitude(sf::Vector2f vect)
+	{
+		return sqrtf(pow(vect.x, 2.0f) + pow(vect.y, 2.0f));
+	}
 }
