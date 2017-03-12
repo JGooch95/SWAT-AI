@@ -37,7 +37,7 @@ Character::Character()
 		m_CollisionLine[i].color = sf::Color(255, 255, 0, 255);
 	}
 
-	m_VisionRays.setPrimitiveType(sf::Triangles);
+	m_VisionRays.setPrimitiveType(sf::TrianglesFan);
 
 	m_HealthBar.setSize(sf::Vector2f(70, 5));
 	m_HealthBar.setBarColor(sf::Color(255, 0, 0, 255));
@@ -117,7 +117,7 @@ void Character::move()
 		m_MovementLine[0].position = m_MainSprite.getPosition();
 		m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height / 2));
 
-		m_fMovementAngle = -atan2f(Velocity.x, Velocity.y) * (180.0f / 3.14f);
+		m_fMovementAngle = (atan2f(Velocity.y, Velocity.x) * (180.0f / 3.14f))-90;
 
 		Velocity *= kfMoveSpeed; //Multiplies it by the speed
 
@@ -229,12 +229,11 @@ int iPartition(std::vector<Ray>& A, int p, int q)
 
 	for (j = p + 1; j<q; j++)
 	{
-		if (A.at(j).angle <= x)
+		if (A.at(j).angle < x)
 		{
 			i = i + 1;
 			iter_swap(A.begin() + i, A.begin() + j);
 		}
-
 	}
 
 	iter_swap(A.begin() + i, A.begin() + p);
@@ -302,17 +301,23 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		//Create a ray pointing towards the corner given
 		sf::Vector2f RayVect = vEdges.at(i) - m_MainSprite.getPosition();
 
-		//Gets the unit vector
-		RayVect /= Util::magnitude(RayVect);
-
 		//Gets the angle of the vector
-		float fRotAngle = -atan2f(RayVect.y, RayVect.x) * (180.0f / 3.14f);
+		float fRotAngle = atan2f(RayVect.y, RayVect.x) * (180.0f / 3.14f);
 
-		//Makes the length of the ray the maximum range
-		RayVect *= 2000.0f;
+		while (fRotAngle < 0)
+		{
+			fRotAngle += 360;
+		}
+		while (fRotAngle >= 360)
+		{
+			fRotAngle -= 360;
+		}
+
+		sf::Vector2f RayVect2 = sf::Vector2f(2000.0f * cos((fRotAngle) * (3.14159265359f / 180.0f)),
+								2000.0f * sin((fRotAngle) * (3.14159265359f / 180.0f)));
 
 		//Adds the data to a temp Ray to be added to the ray vector.
-		tempRay.Vect = RayVect;
+		tempRay.Vect = m_MainSprite.getPosition() + RayVect2;
 		tempRay.OriginalVect = vEdges.at(i);
 		tempRay.index = i;
 		tempRay.angle = fRotAngle;
@@ -323,22 +328,34 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	//For every ray
 	for (int i = 0; i < Rays.size(); i++)
 	{
-		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), m_MainSprite.getPosition() + Rays.at(i).Vect };
+		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), Rays.at(i).Vect };
 		//Set the lowest intersect to the rays location
 		Rays.at(i).Vect = findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
 		
 		//If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
 		if (Util::magnitude(Rays.at(i).OriginalVect - m_MainSprite.getPosition()) < Util::magnitude(Rays.at(i).Vect - m_MainSprite.getPosition()))
 		{
-			tempRay.Vect = vEdges.at(Rays.at(i).index);
+			tempRay.Vect = Rays.at(i).OriginalVect;
+			tempRay.index= i;
 			tempRay.angle = Rays.at(i).angle;
 			useRays.push_back(tempRay);
 		}
 	}
 
-	//Pushes the vector of rays to the new vector
+	// Recalculates the angle and Pushes the vector of rays to the new vector
 	for (int i = 0; i < Rays.size(); i++)
 	{
+		float fRotAngle = atan2f(Rays.at(i).Vect.y - m_MainSprite.getPosition().y, Rays.at(i).Vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
+
+		while (fRotAngle < 0)
+		{
+			fRotAngle += 360;
+		}
+		while (fRotAngle >= 360)
+		{
+			fRotAngle -= 360;
+		}
+		Rays.at(i).angle = fRotAngle;
 		useRays.push_back(Rays.at(i));
 	}
 
@@ -347,32 +364,21 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 
 	//Add the rays to the vertex array
 	m_VisionRays.clear();
-	m_VisionRays.resize((useRays.size()*3));
+	m_VisionRays.resize((useRays.size()+1));
 
 	sf::Vertex newVertex;
 	newVertex.color = sf::Color(255, 125, 40, 70);
+	newVertex.position = m_MainSprite.getPosition();
+	m_VisionRays[0] = newVertex;
 
 	//For every ray create a triangle
-	for (int i = 0; i < useRays.size()-1; i++)
+	for (int i = 0; i < useRays.size(); i++)
 	{
-		newVertex.position = m_MainSprite.getPosition();
-		m_VisionRays[3*i] = newVertex;
-
 		newVertex.position = useRays.at(i).Vect;
-		m_VisionRays[(3 * i)+1] = newVertex;
-
-		newVertex.position = useRays.at(i+1).Vect;
-		m_VisionRays[(3 * i)+2] = newVertex;
+		m_VisionRays[i+1] = newVertex;
 	}
-
-	newVertex.position = m_MainSprite.getPosition();
-	m_VisionRays[(3 * (useRays.size() - 1))] = newVertex;
-
-	newVertex.position = useRays.at(useRays.size() - 1).Vect;
-	m_VisionRays[(3 * (useRays.size()-1)) + 1] = newVertex;
-
 	newVertex.position = useRays.at(0).Vect;
-	m_VisionRays[(3 * (useRays.size() - 1)) + 2] = newVertex;
+	m_VisionRays[m_VisionRays.getVertexCount()-1] = newVertex;
 }
 
 
@@ -385,7 +391,6 @@ std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 	m_CollisionLine[0].position = newCollisionLine[0];
 	m_CollisionLine[1].position = newCollisionLine[1];
 	return newCollisionLine;
-
 }
 
 float Character::getRotation()
