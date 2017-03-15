@@ -21,7 +21,7 @@ class Character : public Object
 		float m_fMovementAngle;
 		float m_fAimingAngle;
 		int m_iAimingDirection;
-		
+		bool bDrawVision;
 		//AI
 		std::deque<Node*> m_Path; //Holds the current path
 		enum States { SEARCH_SWEEP, AIM};
@@ -57,6 +57,7 @@ class Character : public Object
 		void setGunTexture(sf::Texture* tex2);
 		void setPath(std::deque<Node*> newPath); //Sets a new path to follow
 		void reload();
+		void setVision(bool bState);
 
 		void setTarget(Character* newTarget);
 

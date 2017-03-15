@@ -13,16 +13,17 @@ src\AStar.cpp(229): warning C4244: 'argument': conversion from 'float' to 'int',
 src\AStar.cpp(233): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 src\AStar.cpp(241): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 src\AStar.cpp(247): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(308): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
-src\AStar.cpp(317): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
-src\AStar.cpp(334): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
-src\AStar.cpp(342): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
-src\AStar.cpp(352): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
-src\AStar.cpp(361): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
   Bar.cpp
   Character.cpp
+src\Character.cpp(415): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+src\Character.cpp(439): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Game.cpp
-  main.cpp
+src\Game.cpp(38): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(40): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(41): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(44): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(46): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
   Map.cpp
 src\Map.cpp(37): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 src\Map.cpp(53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
@@ -36,10 +37,12 @@ src\Map.cpp(77): warning C4244: 'argument': conversion from 'unsigned int' to 'f
 src\Object.cpp(27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   TextureLoader.cpp
   Weapon.cpp
+src\Weapon.cpp(43): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  main.cpp
   Generating code
-  520 of 1193 functions (43.6%) were compiled, the rest were copied from previous compilation.
-    443 functions were new in current compilation
-    74 functions had inline decision re-evaluated but remain unchanged
+  469 of 1485 functions (31.6%) were compiled, the rest were copied from previous compilation.
+    327 functions were new in current compilation
+    118 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.pdb (Full PDB)

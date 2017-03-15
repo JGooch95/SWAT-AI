@@ -37,4 +37,16 @@ namespace Util
 	{
 		return sqrtf(pow(vect.x, 2.0f) + pow(vect.y, 2.0f));
 	}
+	static float setWithinRange(float fAngle, float fLowerBound, float fUpperBound)
+	{
+		while (fAngle < fLowerBound)
+		{
+			fAngle += (fUpperBound - fLowerBound);
+		}
+		while (fAngle >= fUpperBound)
+		{
+			fAngle -= (fUpperBound - fLowerBound);
+		}
+		return fAngle;
+	}
 }

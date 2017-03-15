@@ -18,6 +18,7 @@ Game::Game(sf::Vector2u windowSize)
 		"Assets/Sprites/Enemy.png"
 	});
 
+	/*
 	//Creates new units
 	for (int i = 0; i < 1; i++)
 	{
@@ -25,17 +26,9 @@ Game::Game(sf::Vector2u windowSize)
 		m_Units.at(i)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
 		m_Units.at(i)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
 		m_Units.at(i)->linkMap(&m_CurrentMap); //Sets up the grid values for units
+		m_Units.at(i)->setVision(true);
 		m_Characters.push_back(m_Units.at(i));
-	}
-	//Creates new units
-	for (int i = 0; i < 1; i++)
-	{
-		m_Enemies.push_back(new Character);
-		m_Enemies.at(i)->setTexture(m_Textures.getTexture(3)); //Sets the unit texture
-		m_Enemies.at(i)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
-		m_Enemies.at(i)->linkMap(&m_CurrentMap); //Sets up the grid values for units
-		m_Characters.push_back(m_Enemies.at(i));
-	}
+	}*/
 
 	std::vector<sf::Vector2f> m_EdgesX; //Holds the wall edges
 	std::vector<sf::Vector2f> m_EdgesY; //Holds the wall edges
@@ -94,59 +87,30 @@ Game::Game(sf::Vector2u windowSize)
 					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
 				}
 			}
+			if (m_CurrentMap.getMapData().at(i).at(j) == 'E')
+			{
+				m_Enemies.push_back(new Character);
+				m_Enemies.at(m_Enemies.size()-1)->setPosition(sf::Vector2f(j * m_CurrentMap.getTileSize().x, i * m_CurrentMap.getTileSize().y));
+				m_Enemies.at(m_Enemies.size()-1)->setTexture(m_Textures.getTexture(3)); //Sets the unit texture
+				m_Enemies.at(m_Enemies.size()-1)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
+				m_Enemies.at(m_Enemies.size()-1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
+				m_Characters.push_back(m_Enemies.at(m_Enemies.size() - 1));
+			}
+			if (m_CurrentMap.getMapData().at(i).at(j) == 'P')
+			{
+				m_Units.push_back(new Character);
+				m_Units.at(m_Units.size() - 1)->setPosition(sf::Vector2f(j * m_CurrentMap.getTileSize().x, i * m_CurrentMap.getTileSize().y));
+				m_Units.at(m_Units.size() - 1)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
+				m_Units.at(m_Units.size() - 1)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
+				m_Units.at(m_Units.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
+				m_Units.at(m_Units.size() - 1)->setVision(true);
+				m_Characters.push_back(m_Units.at(m_Units.size() - 1));
+			}
 		}
 	}
 
-	/*
-	for (int i = 0; i < m_Walls.size(); i++)
-	{
-		//Left Edge
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-
-		//Top Edge
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
-
-		//Right Edge
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-
-		//Bottom Edge
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-		m_Edges.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-	}*/
-
-	//std::vector<sf::Vector2f> m_EdgesX; //Holds the wall edges
-	//std::vector<sf::Vector2f> m_EdgesY; //Holds the wall edges
-	/*
-	for (int i = 0; i < m_Walls.size(); i++)
-	{
-		//Left Edge
-		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
-		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-
-		//Right Edge
-		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
-		m_EdgesX.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-	}
-
-	for (int i = 0; i < m_Walls.size(); i++)
-	{
-		//Top Edge
-		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top));
-		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top));
-
-		//Bottom Edge
-		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-		m_EdgesY.push_back(sf::Vector2f(m_Walls.at(i)->getRect().left + m_Walls.at(i)->getRect().width, m_Walls.at(i)->getRect().top + m_Walls.at(i)->getRect().height));
-	}*/
-
-
 	std::vector<float> XValues;
 	std::vector<float> YValues;
-	float currentX;
-	float currentY;
 	std::vector<std::vector<sf::Vector2f>> ComparissonVectsX;
 	std::vector<std::vector<sf::Vector2f>> ComparissonVectsY;
 	bool bFoundMatch = false;
@@ -200,7 +164,6 @@ Game::Game(sf::Vector2u windowSize)
 		}
 	}
 	ComparissonVectsX.resize(XValues.size());
-	bool inVect;
 	for (int i = 0; i < XValues.size(); i++)
 	{
 		for (int j = 0; j < m_EdgesX.size(); j++)
@@ -225,11 +188,9 @@ Game::Game(sf::Vector2u windowSize)
 	}
 
 	bool currentlyEqual = true;
-	int j = 0;
 	int begin = 0;
 	int end = 0;
 	std::vector<sf::Vector2f> Edges;
-
 	
 	for (int i = 0; i < ComparissonVectsX.size(); i++)
 	{
@@ -269,10 +230,8 @@ Game::Game(sf::Vector2u windowSize)
 				Edges.push_back(ComparissonVectsX.at(i).at(end));
 				begin = j + 1;
 			}
-			//j++;
 			currentlyEqual = true;
 		}
-		
 	}
 
 	
@@ -317,7 +276,6 @@ Game::Game(sf::Vector2u windowSize)
 			//j++;
 			currentlyEqual = true;
 		}
-
 	}
 
 	m_Edges = Edges;
@@ -345,29 +303,33 @@ void Game::update(sf::Vector2i mousePos)
 
 	for (int i = 0; i < m_Units.size(); i++)
 	{
-		if (m_Enemies.at(0)->lazerChecks({ m_Units.at(i)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(0),
-			m_Units.at(i)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(1) }))
+		for (int j = 0; j < m_Enemies.size(); j++)
 		{
-			m_Enemies.at(0)->setTarget(m_Units.at(i));
-			m_Units.at(i)->setHealth(m_Units.at(i)->getHealth() - m_Enemies.at(0)->shoot());
-		}
-		else
-		{
-			m_Enemies.at(0)->setTarget(NULL);
+			if (m_Units.at(i)->lazerChecks({ m_Enemies.at(j)->getCollisionLine(m_Units.at(i)->getRotation()).at(0),
+											 m_Enemies.at(j)->getCollisionLine(m_Units.at(i)->getRotation()).at(1) }))
+			{
+				if (m_Enemies.at(j)->getHealth() > 0)
+				{
+					m_Units.at(i)->setTarget(m_Enemies.at(j));
+					m_Enemies.at(j)->setHealth(m_Enemies.at(j)->getHealth() - m_Units.at(i)->shoot());
+				}
+			}
 		}
 	}
 
 	for (int i = 0; i < m_Enemies.size(); i++)
 	{
-		if (m_Units.at(0)->lazerChecks({m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(0),
-										m_Enemies.at(i)->getCollisionLine(m_Units.at(i)->getRotation()).at(1)}))
+		for (int j = 0; j < m_Units.size(); j++)
 		{
-			m_Units.at(0)->setTarget(m_Enemies.at(i));
-			m_Enemies.at(i)->setHealth(m_Enemies.at(i)->getHealth() - m_Units.at(0)->shoot());
-		}
-		else
-		{
-			m_Units.at(0)->setTarget(NULL);
+			if (m_Enemies.at(i)->lazerChecks({ m_Units.at(j)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(0),
+				m_Units.at(j)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(1) }))
+			{
+				if (m_Units.at(j)->getHealth() > 0)
+				{
+					m_Enemies.at(i)->setTarget(m_Units.at(j));
+					m_Units.at(j)->setHealth(m_Units.at(j)->getHealth() - m_Enemies.at(i)->shoot());
+				}
+			}
 		}
 	}
 }
@@ -392,7 +354,7 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(*m_Walls.at(i)); //Draws the units
 	}
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < m_Characters.size(); i++)
 	{
 		target.draw(*m_Characters.at(i)); //Draws the characters
 	}

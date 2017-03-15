@@ -58,6 +58,7 @@ Character::Character()
 	m_FireRateClock.restart();
 	m_iAimingDirection = 1;
 	m_CurrentTarget = NULL;
+	bDrawVision = false;
 }
 
 void Character::lookAt(sf::Vector2f position)
@@ -82,8 +83,8 @@ void Character::lookAt(sf::Vector2f position)
 
 void Character::lookAt(float fAngle)
 {
-	sf::Vector2f RotVect((m_MainSprite.getLocalBounds().height / 2) * cos((fAngle + 90.0f) * (3.14159265359f / 180.0f)),
-						 (m_MainSprite.getLocalBounds().height / 2) * sin((fAngle + 90.0f) * (3.14159265359f / 180.0f))); //Finding the vector between the character's center and the mouse
+	sf::Vector2f RotVect((m_MainSprite.getLocalBounds().height / 2) * cos((fAngle +90) * (3.14159265359f / 180.0f)),
+						 (m_MainSprite.getLocalBounds().height / 2) * sin((fAngle +90) * (3.14159265359f / 180.0f))); //Finding the vector between the character's center and the mouse
 
 	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
@@ -118,7 +119,8 @@ void Character::move()
 		m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height / 2));
 
 		m_fMovementAngle = (atan2f(Velocity.y, Velocity.x) * (180.0f / 3.14f))-90;
-
+		m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
+		
 		Velocity *= kfMoveSpeed; //Multiplies it by the speed
 
 		m_MainSprite.setPosition(m_MainSprite.getPosition() + Velocity); //Moves the Sprite
@@ -178,10 +180,11 @@ void Character::update()
 			}
 			if (m_fAimingAngle < -fCone)
 			{
-				m_fAimingAngle = -fCone;
+				m_fAimingAngle= -fCone;
 				m_iAimingDirection *= -1;
 			}
 			m_fAimingAngle += m_iAimingDirection;
+
 			lookAt(m_fMovementAngle + m_fAimingAngle);
 			break;
 		}
@@ -190,7 +193,11 @@ void Character::update()
 			if (m_CurrentTarget != NULL)
 			{
 				lookAt(m_CurrentTarget->getPosition());
-				if (m_CurrentTarget->getHealth() < 100)
+				sf::Vector2f Vect = m_CurrentTarget->getPosition() - m_MainSprite.getPosition();
+				m_fAimingAngle = (atan2f(Vect.y, Vect.x) * (180.0f / 3.14f)) - m_fMovementAngle - 90;// -m_fMovementAngle; // Finding the angle of the vector for the sprite
+				m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
+
+				if (m_CurrentTarget->getHealth() <= 0)
 				{
 					m_CurrentTarget = NULL;
 				}
@@ -215,40 +222,35 @@ void Character::setGunTexture(sf::Texture* tex2)
 
 struct Ray
 {
-	int index;
 	float angle;
 	sf::Vector2f Vect;
 	sf::Vector2f OriginalVect;
 };
 
-int iPartition(std::vector<Ray>& A, int p, int q)
+int partition(std::vector<Ray>& Rays, int startIndex, int endIndex)
 {
-	float x = A.at(p).angle;
-	int i = p;
-	int j;
+	int i = startIndex;
 
-	for (j = p + 1; j<q; j++)
+	for (int j = startIndex + 1; j < endIndex; j++)
 	{
-		if (A.at(j).angle < x)
+		if (Rays.at(j).angle < Rays.at(startIndex).angle)
 		{
 			i = i + 1;
-			iter_swap(A.begin() + i, A.begin() + j);
+			iter_swap(Rays.begin() + i, Rays.begin() + j);
 		}
 	}
 
-	iter_swap(A.begin() + i, A.begin() + p);
-	//swap(A[i], A[p]);
+	iter_swap(Rays.begin() + i, Rays.begin() + startIndex);
 	return i;
 }
 
-void QuickSort(std::vector<Ray>& A, int p, int q)
+void QuickSort(std::vector<Ray>& Rays, int startIndex, int endIndex)
 {
-	int r;
-	if (p < q)
+	if (startIndex < endIndex)
 	{
-		r = iPartition(A, p, q);
-		QuickSort(A, p, r);
-		QuickSort(A, r + 1, q);
+		int r = partition(Rays, startIndex, endIndex);
+		QuickSort(Rays, startIndex, r);
+		QuickSort(Rays, r + 1, endIndex);
 	}
 }
 
@@ -291,94 +293,143 @@ bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 
 void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 {
-	std::vector<Ray> Rays;
-	std::vector<Ray> useRays;
+	std::vector<Ray> vRays;
+	std::vector<Ray> vFinalRays;
 	Ray tempRay;
+	float fViewDistance = 2000.0f;
+	float fVisionCone = 45.0f;
 	
+	//Edges
+	for (int i = -1; i <= 1; i += 2)
+	{
+		float fRotAngle = m_fMovementAngle + m_fAimingAngle + (i*fVisionCone) + 90;
+		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+
+		sf::Vector2f rayVect = sf::Vector2f(fViewDistance * cos((fRotAngle) * (3.14159265359f / 180.0f)),
+			fViewDistance * sin((fRotAngle) * (3.14159265359f / 180.0f)));
+
+		//Adds the data to a temp Ray to be added to the ray vector.
+		tempRay.Vect = m_MainSprite.getPosition() + rayVect;
+		tempRay.OriginalVect = sf::Vector2f(fViewDistance, fViewDistance);
+		tempRay.angle = fRotAngle;
+		vRays.push_back(tempRay);
+	}
+
 	//Generate the rays
 	for (int i = 0; i < vEdges.size(); i++)
 	{
 		//Create a ray pointing towards the corner given
-		sf::Vector2f RayVect = vEdges.at(i) - m_MainSprite.getPosition();
+		sf::Vector2f rayVect = vEdges.at(i) - m_MainSprite.getPosition();
 
 		//Gets the angle of the vector
-		float fRotAngle = atan2f(RayVect.y, RayVect.x) * (180.0f / 3.14f);
-
-		while (fRotAngle < 0)
-		{
-			fRotAngle += 360;
-		}
-		while (fRotAngle >= 360)
-		{
-			fRotAngle -= 360;
-		}
-
-		sf::Vector2f RayVect2 = sf::Vector2f(2000.0f * cos((fRotAngle) * (3.14159265359f / 180.0f)),
-								2000.0f * sin((fRotAngle) * (3.14159265359f / 180.0f)));
+		float fRotAngle = atan2f(rayVect.y, rayVect.x) * (180.0f / 3.14f);
+		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+		
+		rayVect = sf::Vector2f(fViewDistance * cos((fRotAngle) * (3.14159265359f / 180.0f)),
+			fViewDistance * sin((fRotAngle) * (3.14159265359f / 180.0f)));
 
 		//Adds the data to a temp Ray to be added to the ray vector.
-		tempRay.Vect = m_MainSprite.getPosition() + RayVect2;
+		tempRay.Vect = m_MainSprite.getPosition() + rayVect;
 		tempRay.OriginalVect = vEdges.at(i);
-		tempRay.index = i;
 		tempRay.angle = fRotAngle;
-		Rays.push_back(tempRay);
+		vRays.push_back(tempRay);
 	}
 
-	//Check for ray collision
-	//For every ray
-	for (int i = 0; i < Rays.size(); i++)
+	//Check for ray collisions
+	//Edges of vision cone
+	for (int i = 0; i < 2; i++)
 	{
-		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), Rays.at(i).Vect };
 		//Set the lowest intersect to the rays location
-		Rays.at(i).Vect = findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
-		
+		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).Vect };
+		vRays.at(i).Vect = findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
+		vFinalRays.push_back(vRays.at(i));
+	}
+
+	//For every ray
+	for (int i = 2; i < vRays.size(); i++)
+	{
+		//Set the lowest intersect to the rays location
+		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).Vect };
+		vRays.at(i).Vect = findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
+
 		//If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
-		if (Util::magnitude(Rays.at(i).OriginalVect - m_MainSprite.getPosition()) < Util::magnitude(Rays.at(i).Vect - m_MainSprite.getPosition()))
+		if (Util::magnitude(vRays.at(i).OriginalVect - m_MainSprite.getPosition()) < Util::magnitude(vRays.at(i).Vect - m_MainSprite.getPosition()))
 		{
-			tempRay.Vect = Rays.at(i).OriginalVect;
-			tempRay.index= i;
-			tempRay.angle = Rays.at(i).angle;
-			useRays.push_back(tempRay);
+			tempRay.Vect = vRays.at(i).OriginalVect;
+			tempRay.angle = vRays.at(i).angle;
+			tempRay.OriginalVect = sf::Vector2f(fViewDistance, fViewDistance);
+			tempRay.angle = Util::setWithinRange(tempRay.angle, 0.0f, 360.0f);
+			vRays.push_back(tempRay);
+		}
+
+		// Recalculates the angle and Pushes the vector of rays to the new vector
+		vRays.at(i).angle = atan2f(vRays.at(i).Vect.y - m_MainSprite.getPosition().y, vRays.at(i).Vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
+		vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
+	}
+	
+	//For every ray position them in such a way that they are all within range
+	for (int i = 2; i < vRays.size(); i++)
+	{
+		//If the limits overlap the maximum angle
+		if ((vRays.at(0).angle >= 360 - fVisionCone && vRays.at(0).angle <= 360))
+		{
+			//If the ray lies within this zone
+			if (vRays.at(i).angle >= 360 - fVisionCone && vRays.at(i).angle <= 360)
+			{
+				vRays.at(i).angle -= 360; //Move the ray to the lower limit
+			}
+		}
+		//If the limits overlap the minimum angle
+		if (vRays.at(1).angle >= 0 && vRays.at(1).angle <= fVisionCone)
+		{
+			//If the ray lies within this zone
+			if (vRays.at(i).angle >= 0 && vRays.at(i).angle <= fVisionCone)
+			{
+				vRays.at(i).angle += 360; //Move the ray to the upper limit
+			}
 		}
 	}
 
-	// Recalculates the angle and Pushes the vector of rays to the new vector
-	for (int i = 0; i < Rays.size(); i++)
+	//If the limits overlap the maximum angle
+	if (vFinalRays.at(0).angle >= 360 - fVisionCone && vFinalRays.at(0).angle <= 360)
 	{
-		float fRotAngle = atan2f(Rays.at(i).Vect.y - m_MainSprite.getPosition().y, Rays.at(i).Vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
+		vFinalRays.at(0).angle -= 360; //Move the limit to the lower limit
+	}
+	//If the limits overlap the minimum angle
+	if (vFinalRays.at(1).angle >= 0 && vFinalRays.at(1).angle <= fVisionCone)
+	{
+		vFinalRays.at(1).angle += 360; //Move the limit to the upper limit
+	}
 
-		while (fRotAngle < 0)
+	//For every ray
+	for (int i = 2; i < vRays.size(); i++)
+	{
+		//If the ray is within the vision cone add the ray to the vector of rays
+		if (vRays.at(i).angle >= vFinalRays.at(0).angle && vRays.at(i).angle <= vFinalRays.at(1).angle)
 		{
-			fRotAngle += 360;
+			vFinalRays.push_back(vRays.at(i));
 		}
-		while (fRotAngle >= 360)
-		{
-			fRotAngle -= 360;
-		}
-		Rays.at(i).angle = fRotAngle;
-		useRays.push_back(Rays.at(i));
 	}
 
 	//Sort the rays into angle order
-	QuickSort(useRays, 0, useRays.size());
-
+	QuickSort(vFinalRays, 0, vFinalRays.size());
+	
 	//Add the rays to the vertex array
 	m_VisionRays.clear();
-	m_VisionRays.resize((useRays.size()+1));
+	m_VisionRays.resize((vFinalRays.size()+1));
 
+	//Center Point
 	sf::Vertex newVertex;
-	newVertex.color = sf::Color(255, 125, 40, 70);
+	newVertex.color = sf::Color(255, 255, 255, 70);
 	newVertex.position = m_MainSprite.getPosition();
 	m_VisionRays[0] = newVertex;
 
-	//For every ray create a triangle
-	for (int i = 0; i < useRays.size(); i++)
+	//For every ray create a triangle 
+	for (int i = 0; i < vFinalRays.size(); i++)
 	{
-		newVertex.position = useRays.at(i).Vect;
-		m_VisionRays[i+1] = newVertex;
+		newVertex.position = vFinalRays.at(i).Vect;
+		m_VisionRays[i + 1] = newVertex;
 	}
-	newVertex.position = useRays.at(0).Vect;
-	m_VisionRays[m_VisionRays.getVertexCount()-1] = newVertex;
 }
 
 
@@ -443,10 +494,18 @@ void Character::setTarget(Character* newTarget)
 	}
 }
 
+void Character::setVision(bool bState)
+{
+	bDrawVision = bState;
+}
+
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	//Draws the character Sprite
-	target.draw(m_VisionRays);
+	if (bDrawVision)
+	{
+		target.draw(m_VisionRays);
+	}
 	target.draw(m_Weapon1);
 	target.draw(m_MainSprite);
 	target.draw(m_OrientationLine);
