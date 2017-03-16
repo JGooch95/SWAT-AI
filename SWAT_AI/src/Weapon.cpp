@@ -13,7 +13,11 @@ Weapon::Weapon()
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 25, 50));
 	m_MainSprite.setOrigin(m_MainSprite.getLocalBounds().width / 2, -m_MainSprite.getLocalBounds().height / 2 + 10);
 	m_fFireRate = 0.2f;
-	m_fDamage = 5.0f;
+	m_fMaxRange = 500.0f;
+	m_fMinRange = 200.0f;
+
+	m_fBaseDamage = 5.0f;
+	m_fMinDamage = 1.0f;
 }
 
 void Weapon::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -68,7 +72,24 @@ sf::Vector2f Weapon::getIntersect()
 
 float Weapon::getDamage()
 {
-	return m_fDamage;
+	float dist = Util::magnitude(m_AimLine[1].position - m_MainSprite.getPosition());
+	float damage = m_fBaseDamage;
+	if (dist > m_fMaxRange)
+	{
+		dist = dist - m_fMaxRange;
+		damage = m_fBaseDamage * (1-(dist / m_fMaxRange));
+	}
+	else if (dist < m_fMinRange)
+	{
+		damage = m_fBaseDamage * (dist / m_fMinRange);
+	}
+
+	if (damage < m_fMinDamage)
+	{
+		damage = m_fMinDamage;
+	}
+
+	return damage;
 }
 
 float Weapon::getFireRate()

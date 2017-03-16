@@ -301,13 +301,16 @@ void Game::update(sf::Vector2i mousePos)
 		m_Characters.at(i)->visionCalculation(m_Edges);
 	}
 
+	bool bSeenEnemy = false;
 	for (int i = 0; i < m_Units.size(); i++)
 	{
+		bSeenEnemy = false;
 		for (int j = 0; j < m_Enemies.size(); j++)
 		{
 			if (m_Units.at(i)->lazerChecks({ m_Enemies.at(j)->getCollisionLine(m_Units.at(i)->getRotation()).at(0),
 											 m_Enemies.at(j)->getCollisionLine(m_Units.at(i)->getRotation()).at(1) }))
 			{
+				bSeenEnemy = true;
 				if (m_Enemies.at(j)->getHealth() > 0)
 				{
 					m_Units.at(i)->setTarget(m_Enemies.at(j));
@@ -315,21 +318,32 @@ void Game::update(sf::Vector2i mousePos)
 				}
 			}
 		}
+		if (bSeenEnemy == false)
+		{
+			m_Units.at(i)->setTarget(NULL);
+		}
 	}
 
 	for (int i = 0; i < m_Enemies.size(); i++)
 	{
+		bSeenEnemy = false;
 		for (int j = 0; j < m_Units.size(); j++)
 		{
 			if (m_Enemies.at(i)->lazerChecks({ m_Units.at(j)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(0),
 				m_Units.at(j)->getCollisionLine(m_Enemies.at(i)->getRotation()).at(1) }))
 			{
+				bSeenEnemy = true;
 				if (m_Units.at(j)->getHealth() > 0)
 				{
 					m_Enemies.at(i)->setTarget(m_Units.at(j));
 					m_Units.at(j)->setHealth(m_Units.at(j)->getHealth() - m_Enemies.at(i)->shoot());
 				}
 			}
+			if (bSeenEnemy == false)
+			{
+				m_Enemies.at(i)->setTarget(NULL);
+			}
+
 		}
 	}
 }

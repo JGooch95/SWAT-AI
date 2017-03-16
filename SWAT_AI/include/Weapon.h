@@ -9,7 +9,11 @@ class Weapon : public Object
 	private:
 		sf::VertexArray m_AimLine; //Holds the lazer pointer line
 		float m_fFireRate; //How many shots can be fired per second
-		float m_fDamage; //How much damage is done per shot
+		float m_fBaseDamage; //How much damage is done per shot
+		float m_fMinDamage; 
+		float m_fMaxRange;
+		float m_fMinRange;
+		
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
