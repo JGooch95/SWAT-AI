@@ -16,7 +16,9 @@ public:
 	void setTexture(sf::Texture* tex2);
 	void linkMap(Map* newMap);
 	void setPosition(sf::Vector2f pos);
+	void setOrigin(sf::Vector2f pos);
 	void setSize(sf::Vector2f dims);
+	sf::Vector2f getPosition();
 	sf::FloatRect getRect();
 
 };

@@ -5,6 +5,7 @@
 #include "Character.h"
 #include "TextureLoader.h"
 #include "Object.h"
+#include "Entrance.h"
 #include "Map.h"
 #include "AStar.h"
 
@@ -22,6 +23,7 @@ class Game : public sf::Drawable
 		std::vector<Character*> m_Units; //Holds the friendly units
 		std::vector<Character*> m_Enemies; //Holds the enemy units
 		std::vector<Object*> m_Walls; //Holds the walls
+		std::vector<Entrance*> m_Doors; //Holds the doors
 		sf::VertexArray m_EdgeLines;
 		std::vector<sf::Vector2f> m_Edges; //Holds the wall edges
 

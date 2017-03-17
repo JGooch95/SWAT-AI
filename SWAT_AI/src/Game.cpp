@@ -13,22 +13,10 @@ Game::Game(sf::Vector2u windowSize)
 	//Loads the main textures into the software
 	m_Textures.loadTextures(std::vector<std::string>{
 		"Assets/Sprites/Unit.png",
-		"Assets/Sprites/Wood.jpg",
-		"Assets/Sprites/Sniper.png",
-		"Assets/Sprites/Enemy.png"
+			"Assets/Sprites/Wood.jpg",
+			"Assets/Sprites/Sniper.png",
+			"Assets/Sprites/Enemy.png"
 	});
-
-	/*
-	//Creates new units
-	for (int i = 0; i < 1; i++)
-	{
-		m_Units.push_back(new Character);
-		m_Units.at(i)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
-		m_Units.at(i)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
-		m_Units.at(i)->linkMap(&m_CurrentMap); //Sets up the grid values for units
-		m_Units.at(i)->setVision(true);
-		m_Characters.push_back(m_Units.at(i));
-	}*/
 
 	std::vector<sf::Vector2f> m_EdgesX; //Holds the wall edges
 	std::vector<sf::Vector2f> m_EdgesY; //Holds the wall edges
@@ -80,7 +68,7 @@ Game::Game(sf::Vector2u windowSize)
 					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top));
 					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
 				}
-				if (m_CurrentMap.getMapData().at(i).at(j + 1) != 'W' && j < m_CurrentMap.getMapData().size())
+				if (m_CurrentMap.getMapData().at(i).at(j + 1) != 'W' && j < m_CurrentMap.getMapData().at(i).size())
 				{
 					//Right Edge
 					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top));
@@ -90,7 +78,7 @@ Game::Game(sf::Vector2u windowSize)
 			if (m_CurrentMap.getMapData().at(i).at(j) == 'E')
 			{
 				m_Enemies.push_back(new Character);
-				m_Enemies.at(m_Enemies.size()-1)->setPosition(sf::Vector2f(j * m_CurrentMap.getTileSize().x, i * m_CurrentMap.getTileSize().y));
+				m_Enemies.at(m_Enemies.size()-1)->setPosition(sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x /2), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
 				m_Enemies.at(m_Enemies.size()-1)->setTexture(m_Textures.getTexture(3)); //Sets the unit texture
 				m_Enemies.at(m_Enemies.size()-1)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
 				m_Enemies.at(m_Enemies.size()-1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
@@ -99,12 +87,56 @@ Game::Game(sf::Vector2u windowSize)
 			if (m_CurrentMap.getMapData().at(i).at(j) == 'P')
 			{
 				m_Units.push_back(new Character);
-				m_Units.at(m_Units.size() - 1)->setPosition(sf::Vector2f(j * m_CurrentMap.getTileSize().x, i * m_CurrentMap.getTileSize().y));
+				m_Units.at(m_Units.size() - 1)->setPosition(sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
 				m_Units.at(m_Units.size() - 1)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
 				m_Units.at(m_Units.size() - 1)->setGunTexture(m_Textures.getTexture(2)); //Sets the unit texture
 				m_Units.at(m_Units.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
 				m_Units.at(m_Units.size() - 1)->setVision(true);
 				m_Characters.push_back(m_Units.at(m_Units.size() - 1));
+			}
+			
+			if (m_CurrentMap.getMapData().at(i).at(j) == 'D')
+			{
+				m_Doors.push_back(new Entrance); 
+				m_Doors.at(m_Doors.size() - 1)->setTexture(m_Textures.getTexture(1));
+				m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y/4));
+
+				if ((m_CurrentMap.getMapData().at(i).at(j - 1) == 'W') && j > 0)
+				{
+					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y / 4));
+					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f(0, (m_Doors.at(m_Doors.size() - 1)->getRect().height / 2)));
+					m_Doors.at(m_Doors.size() - 1)->setPosition(sf::Vector2f((j * m_CurrentMap.getTileSize().x), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
+				}
+				else if ((m_CurrentMap.getMapData().at(i).at(j + 1) == 'W') && j < m_CurrentMap.getMapData().at(i).size())
+				{
+					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y / 4));
+					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f(0, (m_Doors.at(m_Doors.size() - 1)->getRect().height / 2)));
+					m_Doors.at(m_Doors.size() - 1)->setPosition(sf::Vector2f(((j+1) * m_CurrentMap.getTileSize().x), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
+					m_Doors.at(m_Doors.size() - 1)->setOrientation(180);
+					m_Doors.at(m_Doors.size() - 1)->setDirection(-1);
+				}
+				else if ((m_CurrentMap.getMapData().at(i - 1).at(j) == 'W') && i > 0)
+				{
+					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
+					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f(m_Doors.at(m_Doors.size() - 1)->getRect().width / 2, 0));
+					m_Doors.at(m_Doors.size() - 1)->setPosition(sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), (i * m_CurrentMap.getTileSize().y)));
+				}
+				else if ((m_CurrentMap.getMapData().at(i + 1).at(j) == 'W') && i < m_CurrentMap.getMapData().size())
+				{
+					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
+					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f(m_Doors.at(m_Doors.size() - 1)->getRect().width / 2, 0));
+					m_Doors.at(m_Doors.size() - 1)->setPosition(sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), ((i +1) * m_CurrentMap.getTileSize().y)));
+					m_Doors.at(m_Doors.size() - 1)->setOrientation(180);
+					m_Doors.at(m_Doors.size() - 1)->setDirection(-1);
+				}
+				else
+				{
+					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
+					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f(m_Doors.at(m_Doors.size() - 1)->getRect().width / 2, 0));
+					m_Doors.at(m_Doors.size() - 1)->setPosition(sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), ((i + 1) * m_CurrentMap.getTileSize().y)));
+				}
+				m_Doors.at(m_Doors.size() - 1)->setTile(sf::Vector2f(j, i));
+				m_Doors.at(m_Doors.size() - 1)->setOpen(false);
 			}
 		}
 	}
@@ -346,18 +378,42 @@ void Game::update(sf::Vector2i mousePos)
 
 		}
 	}
+	for (int i = 0; i < m_Doors.size(); i++)
+	{
+		bool OpenDoor = false;
+		for (int j = 0; j < m_Characters.size(); j++)
+		{
+			sf::Vector2f CharacterTile((int)m_Characters.at(j)->getPosition().x / (int)m_CurrentMap.getTileSize().x, (int)m_Characters.at(j)->getPosition().y / (int)m_CurrentMap.getTileSize().y);
+
+			if (CharacterTile == sf::Vector2f(m_Doors.at(i)->getTile().x + 1, m_Doors.at(i)->getTile().y) || 
+				CharacterTile == sf::Vector2f(m_Doors.at(i)->getTile().x - 1, m_Doors.at(i)->getTile().y) ||
+				CharacterTile == sf::Vector2f(m_Doors.at(i)->getTile().x, m_Doors.at(i)->getTile().y + 1) || 
+				CharacterTile == sf::Vector2f(m_Doors.at(i)->getTile().x, m_Doors.at(i)->getTile().y - 1) ||
+				CharacterTile == m_Doors.at(i)->getTile())
+			{
+				OpenDoor = true;
+			}
+		}
+		m_Doors.at(i)->setOpen(OpenDoor);
+	}
 }
 
 void Game::clickRight(sf::Vector2i mousePos)
 {
 	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
-	m_Units.at(0)->setPath(m_Pathfinder.findPath(m_Units.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
+	if (m_Units.size() > 0)
+	{
+		m_Units.at(0)->setPath(m_Pathfinder.findPath(m_Units.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
+	}
 }
 
 void Game::clickLeft(sf::Vector2i mousePos)
 {
 	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
-	m_Enemies.at(0)->setPath(m_Pathfinder.findPath(m_Enemies.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
+	if (m_Enemies.size() > 0)
+	{
+		m_Enemies.at(0)->setPath(m_Pathfinder.findPath(m_Enemies.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
+	}
 }
 
 void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -367,6 +423,10 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	for (int i = 0; i < m_Walls.size(); i++)
 	{
 		target.draw(*m_Walls.at(i)); //Draws the units
+	}
+	for (int i = 0; i < m_Doors.size(); i++)
+	{
+		target.draw(*m_Doors.at(i)); //Draws the units
 	}
 	for (int i = 0; i < m_Characters.size(); i++)
 	{
@@ -386,5 +446,10 @@ Game::~Game()
 	{
 		delete(m_Walls.at(i));
 		m_Walls.at(i) = NULL;
+	}
+	for (int i = 0; i < m_Doors.size(); i++)
+	{
+		delete(m_Doors.at(i));
+		m_Doors.at(i) = NULL;
 	}
 }

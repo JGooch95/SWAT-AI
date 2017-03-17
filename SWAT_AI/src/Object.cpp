@@ -21,14 +21,24 @@ void Object::setPosition(sf::Vector2f pos)
 {
 	m_MainSprite.setPosition(pos);
 }
+void Object::setOrigin(sf::Vector2f pos)
+{
+	m_MainSprite.setOrigin(pos);
+}
 
 void Object::setSize(sf::Vector2f dims)
 {
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, dims.x, dims.y));
 }
+
 sf::FloatRect Object::getRect()
 {
 	return m_MainSprite.getGlobalBounds();
+}
+
+sf::Vector2f Object::getPosition()
+{
+	return m_MainSprite.getPosition();
 }
 
 void Object::draw(sf::RenderTarget &target, sf::RenderStates states) const

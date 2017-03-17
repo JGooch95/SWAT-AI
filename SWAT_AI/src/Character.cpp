@@ -113,42 +113,45 @@ void Character::move()
 
 		//Finds the unit normal
 		float fMagnitude = sqrtf(pow(Velocity.x, 2) + pow(Velocity.y, 2));
-		Velocity /= fMagnitude; 
 
-		m_MovementLine[0].position = m_MainSprite.getPosition();
-		m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height / 2));
-
-		m_fMovementAngle = (atan2f(Velocity.y, Velocity.x) * (180.0f / 3.14f))-90;
-		m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
-		
-		Velocity *= kfMoveSpeed; //Multiplies it by the speed
-
-		m_MainSprite.setPosition(m_MainSprite.getPosition() + Velocity); //Moves the Sprite
-
-		if (m_MainSprite.getPosition().x >= Destination.x - 10 &&
-			m_MainSprite.getPosition().x <= Destination.x + 10 &&
-			m_MainSprite.getPosition().y <= Destination.y + 10 &&
-			m_MainSprite.getPosition().y >= Destination.y - 10)
+		if (fMagnitude == 0)
 		{
 			m_Path.pop_front();
 		}
-
-		//Sets up the path line ready to start drawing a new path
-		m_PathLine.clear();
-		m_PathLine.resize(m_Path.size());
-		for (int i = 0; i < m_Path.size(); i++)
+		else
 		{
-			m_PathLine[i] = sf::Vertex(sf::Vector2f(
-				(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-				(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
-				sf::Color(0, 255, 0, 255));
+			Velocity /= fMagnitude;
+
+			m_MovementLine[0].position = m_MainSprite.getPosition();
+			m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height / 2));
+
+			m_fMovementAngle = (atan2f(Velocity.y, Velocity.x) * (180.0f / 3.14f)) - 90;
+			m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
+
+			Velocity *= kfMoveSpeed; //Multiplies it by the speed
+
+			m_MainSprite.setPosition(m_MainSprite.getPosition() + Velocity); //Moves the Sprite
+
+			if (m_MainSprite.getPosition().x >= Destination.x - 10 &&
+				m_MainSprite.getPosition().x <= Destination.x + 10 &&
+				m_MainSprite.getPosition().y <= Destination.y + 10 &&
+				m_MainSprite.getPosition().y >= Destination.y - 10)
+			{
+				m_Path.pop_front();
+			}
+
+			//Sets up the path line ready to start drawing a new path
+			m_PathLine.clear();
+			m_PathLine.resize(m_Path.size());
+			for (int i = 0; i < m_Path.size(); i++)
+			{
+				m_PathLine[i] = sf::Vertex(sf::Vector2f(
+					(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+					(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
+					sf::Color(0, 255, 0, 255));
+			}
 		}
 	}
-}
-
-sf::Vector2f Character::getPosition()
-{
-	return m_MainSprite.getPosition();
 }
 
 void Character::update()

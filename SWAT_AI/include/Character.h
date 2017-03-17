@@ -47,7 +47,6 @@ class Character : public Object
 		float shoot(); //Shoots the characters gun and returns the damage dealt
 
 		//Getters
-		sf::Vector2f getPosition(); 
 		float getRotation(); 
 		float getHealth(); 
 		std::vector<sf::Vector2f> getCollisionLine(float fAngle); //Gets the line used for shooting collisions
