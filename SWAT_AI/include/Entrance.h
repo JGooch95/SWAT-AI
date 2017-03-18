@@ -7,7 +7,7 @@ class Entrance : public Object
 		bool m_bOpen;
 		float m_fOrientation;
 		int m_iOpeningDirection;
-		sf::Vector2f m_Tile;
+		sf::Vector2u m_Tile;
 
 	public:
 		Entrance();
@@ -15,6 +15,6 @@ class Entrance : public Object
 		bool isOpen();
 		void setOrientation(float fAngle);
 		void setDirection(int iDir);
-		void setTile(sf::Vector2f Tile);
-		sf::Vector2f getTile();
+		void setTile(sf::Vector2u Tile);
+		sf::Vector2u getTile();
 };

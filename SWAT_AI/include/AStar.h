@@ -37,5 +37,6 @@ class AStar
 		void checkNode(int iTile, int iCurrentTile, int iMoveCost);
 		void makeCurrent(int iTile, int iCurrentTile, int iMoveCost);
 		bool validVacinity(int iEndTile);
+		void setInvalid(sf::Vector2f Node);
 		~AStar();
 };

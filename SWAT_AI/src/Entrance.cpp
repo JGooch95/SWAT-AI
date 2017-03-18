@@ -37,12 +37,12 @@ bool Entrance::isOpen()
 	return m_bOpen;
 }
 
-void Entrance::setTile(sf::Vector2f Tile)
+void Entrance::setTile(sf::Vector2u Tile)
 {
 	m_Tile = Tile;
 }
 
-sf::Vector2f Entrance::getTile()
+sf::Vector2u Entrance::getTile()
 {
 	return m_Tile;
 }

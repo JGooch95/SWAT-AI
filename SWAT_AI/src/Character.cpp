@@ -9,6 +9,11 @@ Character::Character()
 	m_MainSprite.setPosition(100, 100);
 	m_MainSprite.setOrigin((m_MainSprite.getLocalBounds().width / 2), (m_MainSprite.getLocalBounds().height / 2));
 
+	m_Weapon1.setPosition(sf::Vector2f(m_MainSprite.getPosition().x + 10, m_MainSprite.getPosition().y));
+
+	//Sets up the Path line
+	m_PathLine.setPrimitiveType(sf::LinesStrip); 
+
 	//Sets up the orientation indication
 	m_OrientationLine = sf::VertexArray(sf::Lines, 2);
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
@@ -18,11 +23,7 @@ Character::Character()
 		m_OrientationLine[i].color = sf::Color(255, 0, 255, 255);
 	}
 
-	m_Weapon1.setPosition(sf::Vector2f(m_MainSprite.getPosition().x + 10, m_MainSprite.getPosition().y));
-
-	//Sets up the Path line
-	m_PathLine.setPrimitiveType(sf::LinesStrip); 
-
+	//Sets up the movement indication
 	m_MovementLine.setPrimitiveType(sf::LinesStrip);
 	m_MovementLine.resize(2);
 	for (int i = 0; i < m_MovementLine.getVertexCount(); i++)
@@ -30,6 +31,7 @@ Character::Character()
 		m_MovementLine[i].color = sf::Color(0, 255, 255, 255);
 	}
 
+	//Sets up the collision indication
 	m_CollisionLine.setPrimitiveType(sf::LinesStrip);
 	m_CollisionLine.resize(2);
 	for (int i = 0; i < m_CollisionLine.getVertexCount(); i++)
@@ -37,8 +39,10 @@ Character::Character()
 		m_CollisionLine[i].color = sf::Color(255, 255, 0, 255);
 	}
 
+	//Sets up the vision cone
 	m_VisionRays.setPrimitiveType(sf::TrianglesFan);
 
+	//Sets up the health bar
 	m_HealthBar.setSize(sf::Vector2f(70, 5));
 	m_HealthBar.setBarColor(sf::Color(255, 0, 0, 255));
 	m_HealthBar.setLevelColor(sf::Color(0, 255, 0, 255));
@@ -46,6 +50,7 @@ Character::Character()
 	m_HealthBar.setLimit(100);
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
 
+	//Sets up the ammo bar
 	m_AmmoBar.setSize(sf::Vector2f(70, 5));
 	m_AmmoBar.setBarColor(sf::Color(255, 0, 0, 255));
 	m_AmmoBar.setLevelColor(sf::Color(255, 255, 0, 255));
@@ -108,6 +113,7 @@ void Character::move()
 		//Sets the node to reach to be the next node in the path
 		sf::Vector2f Destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
 								 (((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+		Destination += m_CurrentMap->getPosition();
 
 		sf::Vector2f Velocity(Destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
 
@@ -145,7 +151,7 @@ void Character::move()
 			m_PathLine.resize(m_Path.size());
 			for (int i = 0; i < m_Path.size(); i++)
 			{
-				m_PathLine[i] = sf::Vertex(sf::Vector2f(
+				m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
 					(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
 					(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
 					sf::Color(0, 255, 0, 255));
@@ -200,7 +206,7 @@ void Character::update()
 				m_fAimingAngle = (atan2f(Vect.y, Vect.x) * (180.0f / 3.14f)) - m_fMovementAngle - 90;// -m_fMovementAngle; // Finding the angle of the vector for the sprite
 				m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
 
-				if (m_CurrentTarget->getHealth() <= 0)
+				if (m_CurrentTarget->getHealthData().x <= 0)
 				{
 					m_CurrentTarget = NULL;
 				}
@@ -457,9 +463,14 @@ void Character::setHealth(float fLevel)
 	m_HealthBar.setLevel(fLevel);
 }
 
-float Character::getHealth()
+sf::Vector2f Character::getHealthData()
 {
-	return m_HealthBar.getLevelLimits().x;
+	return m_HealthBar.getLevelLimits();
+}
+
+sf::Vector2f Character::getAmmoData()
+{
+	return m_AmmoBar.getLevelLimits();
 }
 
 float Character::shoot()
@@ -504,7 +515,6 @@ void Character::setVision(bool bState)
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	//Draws the character Sprite
 	if (bDrawVision)
 	{
 		target.draw(m_VisionRays);

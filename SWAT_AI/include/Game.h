@@ -12,6 +12,12 @@
 class Game : public sf::Drawable
 {
 	private:
+		sf::RectangleShape toolbar;
+		std::vector<sf::RectangleShape*> unitScreen;
+		std::vector<Bar*> UIBars;
+		std::vector<sf::Text*> UIText;
+		sf::Font currentFont;
+
 		//Tools
 		AStar m_Pathfinder;
 		Map m_CurrentMap;
@@ -36,6 +42,7 @@ class Game : public sf::Drawable
 
 		void clickRight(sf::Vector2i mousePos); //Processes right click
 		void clickLeft(sf::Vector2i mousePos); //Processes left click
+		void characterInteractions(std::vector<Character*> Chars1, std::vector<Character*>  Chars2);
 
 		~Game(); //Deconstructor
 };

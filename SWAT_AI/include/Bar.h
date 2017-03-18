@@ -21,5 +21,6 @@ class Bar : public sf::Drawable
 		void update();
 
 		sf::Vector2f getSize();
+		sf::Vector2f getPosition();
 		sf::Vector2f getLevelLimits();
 };

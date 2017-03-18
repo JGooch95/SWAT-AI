@@ -22,6 +22,7 @@ class Weapon : public Object
 		void aim(sf::Vector2f location); //Aims towards the location given
 		void aim(float fAngle);
 		void setIntersect(sf::Vector2f vect); //Sets the lines intersect
+		void update(); //Updates the states of data
 
 		sf::Vector2f getPosition();
 		float getDamage();

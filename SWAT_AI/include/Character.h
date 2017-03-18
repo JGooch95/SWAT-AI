@@ -48,7 +48,8 @@ class Character : public Object
 
 		//Getters
 		float getRotation(); 
-		float getHealth(); 
+		sf::Vector2f getHealthData();
+		sf::Vector2f getAmmoData();
 		std::vector<sf::Vector2f> getCollisionLine(float fAngle); //Gets the line used for shooting collisions
 
 		//Setters

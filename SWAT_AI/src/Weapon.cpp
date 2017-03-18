@@ -96,3 +96,8 @@ float Weapon::getFireRate()
 {
 	return m_fFireRate;
 }
+
+void Weapon::update()
+{
+	m_MainSprite.setScale(m_CurrentMap->getTileSize().x / 25, m_CurrentMap->getTileSize().y / 50);
+}

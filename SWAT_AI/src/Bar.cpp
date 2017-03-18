@@ -71,6 +71,11 @@ sf::Vector2f Bar::getLevelLimits()
 	return m_LevelLimits;
 }
 
+sf::Vector2f Bar::getPosition()
+{
+	return m_BackBox.getPosition();
+}
+
 void Bar::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_BackBox);

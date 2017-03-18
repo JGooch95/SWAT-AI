@@ -4,13 +4,13 @@ Map::Map()
 {
 }
 
-void Map::setup(sf::Vector2u windowSize, sf::Vector2f newTileSize, sf::Vector2f newGridDims)
+void Map::setup(sf::FloatRect Area, sf::Vector2f newGridDims)
 {
 	//Sets the main variables
-	m_WindowSize = windowSize;
-	m_TileSize = newTileSize;
+	m_Position = sf::Vector2f(Area.left, Area.top);
+	m_WindowSize = sf::Vector2u(Area.width, Area.height);
+	m_TileSize = sf::Vector2f(Area.width / newGridDims.x, Area.height / newGridDims.y);
 	m_GridDimensions = newGridDims;
-	
 	setupGrid();
 }
 
@@ -66,15 +66,15 @@ void Map::setupGrid()
 	//X axis.
 	for (int i = 0; i < m_GridCount.x; i += 2)
 	{
-		m_Grid[i] = sf::Vector2f(m_TileSize.x * (i / 2.0f), 0); //Places the first vertex
-		m_Grid[i + 1] = sf::Vector2f(m_TileSize.x * (i / 2.0f), m_WindowSize.y); //Places the second vertex
+		m_Grid[i] = sf::Vector2f(m_Position.x + (m_TileSize.x * (i / 2.0f)), m_Position.y + 0); //Places the first vertex
+		m_Grid[i + 1] = sf::Vector2f(m_Position.x + (m_TileSize.x * (i / 2.0f)), m_Position.y + m_WindowSize.y); //Places the second vertex
 	}
 
 	//Y axis.
 	for (int i = 0; i < m_GridCount.y; i += 2)
 	{
-		m_Grid[i + m_GridCount.x] = sf::Vector2f(0, m_TileSize.y * (i / 2.0f)); //Places the first vertex
-		m_Grid[i + 1 + m_GridCount.x] = sf::Vector2f(m_WindowSize.x, m_TileSize.y * (i / 2.0f)); //Places the second vertex
+		m_Grid[i + m_GridCount.x] = sf::Vector2f(m_Position.x + 0, m_Position.y + (m_TileSize.y * (i / 2.0f))); //Places the first vertex
+		m_Grid[i + 1 + m_GridCount.x] = sf::Vector2f(m_Position.x + m_WindowSize.x, m_Position.y + (m_TileSize.y * (i / 2.0f))); //Places the second vertex
 	}
 }
 
@@ -99,4 +99,14 @@ std::vector<std::vector<char>> Map::getMapData()
 void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_Grid);
+}
+
+void  Map::setPosition(sf::Vector2f pos)
+{
+	m_Position = pos;
+}
+
+sf::Vector2f  Map::getPosition()
+{
+	return m_Position;
 }

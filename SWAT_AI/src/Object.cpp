@@ -40,6 +40,24 @@ sf::Vector2f Object::getPosition()
 {
 	return m_MainSprite.getPosition();
 }
+std::vector<sf::Vector2f> Object::getEdges()
+{
+	std::vector<sf::Vector2f> Edges; //Holds the wall edges
+	
+	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top));
+	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
+											
+	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
+	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
+											
+	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
+	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
+											
+	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
+	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top));
+	
+	return Edges;
+}
 
 void Object::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {

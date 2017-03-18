@@ -29,13 +29,13 @@ void AStar::setup(Map* map1)
 std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 {
 	//Calculates the Position of the Start Tile in the Grid
-	int iXTile = (int)startPos.x / (int)m_CurrentMap->getTileSize().x;
-	int iYTile = (int)startPos.y / (int)m_CurrentMap->getTileSize().y;
+	int iXTile = ((int)startPos.x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x;
+	int iYTile = ((int)startPos.y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y;
 	int iStartTile = iXTile + ((int)m_CurrentMap->getGridDims().x * iYTile);
 
 	//Calculates the Position of the End Tile in the Grid
-	iXTile = (int)endPos.x / (int)m_CurrentMap->getTileSize().x;
-	iYTile = (int)endPos.y / (int)m_CurrentMap->getTileSize().y;
+	iXTile = ((int)endPos.x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x;
+	iYTile = ((int)endPos.y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y;
 	int iEndTile = iXTile +  ((int)m_CurrentMap->getGridDims().x * iYTile);
 
 	m_bEndWall = false;
@@ -141,6 +141,12 @@ void AStar::setupLists()
 		m_Grid.at(i).g = 0;
 	}
 }
+
+void AStar::setInvalid(sf::Vector2f Node)
+{
+	m_ClosedList.push_back(&m_Grid.at((Node.y *m_CurrentMap->getGridDims().x) + Node.x));
+}
+
 void AStar::calculateManhattan(int iStartTile, int iEndTile)
 {	
 	//Calculates the difference between the nodes in the y axis
