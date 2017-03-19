@@ -28,4 +28,10 @@ class Weapon : public Object
 		float getDamage();
 		float getFireRate();
 		sf::Vector2f getIntersect(); //Returns where the lazer has intersected
+
+		void setFireRate(float fVal);
+		void setDamage(sf::Vector2f Val);
+		void setRange(sf::Vector2f Val);
+		void setOrigin(sf::Vector2f Val);
+
 };

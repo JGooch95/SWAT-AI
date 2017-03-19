@@ -101,3 +101,25 @@ void Weapon::update()
 {
 	m_MainSprite.setScale(m_CurrentMap->getTileSize().x / 25, m_CurrentMap->getTileSize().y / 50);
 }
+
+void Weapon::setFireRate(float fVal)
+{
+	m_fFireRate = fVal;
+}
+
+void Weapon::setDamage(sf::Vector2f Val)
+{
+	m_fMinDamage = Val.x;
+	m_fBaseDamage = Val.y;
+}
+
+void Weapon::setRange(sf::Vector2f Val)
+{
+	m_fMinRange = Val.x;
+	m_fMaxRange = Val.y;
+}
+
+void Weapon::setOrigin(sf::Vector2f Val)
+{
+	m_MainSprite.setOrigin(Val);
+}

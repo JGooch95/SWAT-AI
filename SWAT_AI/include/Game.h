@@ -8,6 +8,7 @@
 #include "Entrance.h"
 #include "Map.h"
 #include "AStar.h"
+#include "Button.h"
 
 class Game : public sf::Drawable
 {
@@ -17,6 +18,7 @@ class Game : public sf::Drawable
 		std::vector<Bar*> UIBars;
 		std::vector<sf::Text*> UIText;
 		sf::Font currentFont;
+		std::vector<Button> Button1;
 
 		//Tools
 		AStar m_Pathfinder;

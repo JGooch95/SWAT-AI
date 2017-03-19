@@ -19,6 +19,7 @@ public:
 	void setOrigin(sf::Vector2f pos);
 	void setSize(sf::Vector2f dims);
 	sf::Vector2f getPosition();
+	sf::Vector2f getSize();
 	sf::FloatRect getRect();
 	std::vector<sf::Vector2f> getEdges();
 

@@ -1,9 +1,46 @@
-﻿  Game.cpp
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(38): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(40): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(41): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(44): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(46): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+﻿  Weapon.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\weapon.cpp(47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Object.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\object.cpp(31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Map.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(11): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(37): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(54): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(64): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(76): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\map.cpp(77): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+  main.cpp
+  Game.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(10): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(156): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(159): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(419): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  Entrance.cpp
+  Character.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(424): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(448): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Bar.cpp
+  AStar.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(16): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(32): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(33): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(38): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(82): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(131): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(147): warning C4244: 'argument': conversion from 'float' to 'unsigned __int64', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(162): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(182): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(186): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(198): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(202): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(219): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(223): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(235): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(239): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(247): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\astar.cpp(253): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.pdb (Partial PDB)

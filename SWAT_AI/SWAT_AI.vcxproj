@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="src\AStar.cpp" />
     <ClCompile Include="src\Bar.cpp" />
+    <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\Entrance.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -169,6 +170,7 @@
   <ItemGroup>
     <ClInclude Include="include\AStar.h" />
     <ClInclude Include="include\Bar.h" />
+    <ClInclude Include="include\Button.h" />
     <ClInclude Include="include\Character.h" />
     <ClInclude Include="include\Entrance.h" />
     <ClInclude Include="include\Game.h" />

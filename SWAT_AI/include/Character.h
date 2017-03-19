@@ -7,12 +7,14 @@
 #include "Bar.h"
 #include "Weapon.h"
 
+enum classType {Assault, Sniper, Support, Shotgunner};
 class Character : public Object
 {
 	private:
 		Weapon m_Weapon1;
 		Bar m_HealthBar;
 
+		classType currentClass;
 		//Weapon data
 		Bar m_AmmoBar;
 		sf::Clock m_FireRateClock; //Holds how long its been since firing the weapon
@@ -20,6 +22,7 @@ class Character : public Object
 		bool m_bReloading;
 		float m_fMovementAngle;
 		float m_fAimingAngle;
+		float m_fReloadTime;
 		int m_iAimingDirection;
 		bool bDrawVision;
 		//AI
@@ -61,6 +64,7 @@ class Character : public Object
 
 		void setTarget(Character* newTarget);
 
+		void setClass(classType classType, sf::Texture* GunTexture);
 		//MAYBE CHANGE =============================================================
 		void lookAt(sf::Vector2f position); //Looks towards the position stated.
 		void lookAt(float fAngle);

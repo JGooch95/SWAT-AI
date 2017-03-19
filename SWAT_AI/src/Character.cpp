@@ -9,8 +9,8 @@ Character::Character()
 	m_MainSprite.setPosition(100, 100);
 	m_MainSprite.setOrigin((m_MainSprite.getLocalBounds().width / 2), (m_MainSprite.getLocalBounds().height / 2));
 
-	m_Weapon1.setPosition(sf::Vector2f(m_MainSprite.getPosition().x + 10, m_MainSprite.getPosition().y));
-
+	m_Weapon1.setPosition(sf::Vector2f(m_MainSprite.getPosition().x + (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y), m_MainSprite.getPosition().y));
+	m_Weapon1.setOrigin(sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2, -(m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2));
 	//Sets up the Path line
 	m_PathLine.setPrimitiveType(sf::LinesStrip); 
 
@@ -74,7 +74,7 @@ void Character::lookAt(sf::Vector2f position)
 	float fMagnitude = sqrtf(pow(RotVect.x, 2.0f) + pow(RotVect.y, 2.0f)); 
 	RotVect /= fMagnitude; 
 
-	RotVect *= m_MainSprite.getLocalBounds().height / 2; //Multiplies it by the length
+	RotVect *= (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2; //Multiplies it by the length
 
 	float fRotAngle = -atan2f(RotVect.x, RotVect.y) * (180.0f / 3.14f); // Finding the angle of the vector for the sprite
 
@@ -88,8 +88,8 @@ void Character::lookAt(sf::Vector2f position)
 
 void Character::lookAt(float fAngle)
 {
-	sf::Vector2f RotVect((m_MainSprite.getLocalBounds().height / 2) * cos((fAngle +90) * (3.14159265359f / 180.0f)),
-						 (m_MainSprite.getLocalBounds().height / 2) * sin((fAngle +90) * (3.14159265359f / 180.0f))); //Finding the vector between the character's center and the mouse
+	sf::Vector2f RotVect(((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2) * cos((fAngle +90) * (3.14159265359f / 180.0f)),
+						 ((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2) * sin((fAngle +90) * (3.14159265359f / 180.0f))); //Finding the vector between the character's center and the mouse
 
 	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
@@ -129,7 +129,7 @@ void Character::move()
 			Velocity /= fMagnitude;
 
 			m_MovementLine[0].position = m_MainSprite.getPosition();
-			m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height / 2));
+			m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2.0f);
 
 			m_fMovementAngle = (atan2f(Velocity.y, Velocity.x) * (180.0f / 3.14f)) - 90;
 			m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
@@ -166,10 +166,12 @@ void Character::update()
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
 	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_AmmoBar.getSize().x / 2, m_MainSprite.getPosition().y - 40));
 	m_Weapon1.setPosition(m_MainSprite.getPosition());
+	m_Weapon1.setOrigin(sf::Vector2f(m_MainSprite.getLocalBounds().width / 4, -m_MainSprite.getLocalBounds().height / 2));
+	m_Weapon1.setSize(sf::Vector2f(((m_MainSprite.getLocalBounds().width/2)* m_MainSprite.getScale().x),  ((m_MainSprite.getLocalBounds().height/2)* m_MainSprite.getScale().y) * 2));
 
 	if (m_bReloading)
 	{
-		if (m_ReloadClock.getElapsedTime().asSeconds() >= 2.0f)
+		if (m_ReloadClock.getElapsedTime().asSeconds() >= m_fReloadTime)
 		{
 			m_AmmoBar.setLevel(m_AmmoBar.getLevelLimits().y);
 			m_bReloading = false;
@@ -227,6 +229,8 @@ void Character::update()
 void Character::setGunTexture(sf::Texture* tex2)
 {
 	m_Weapon1.setTexture(tex2); //Applies the texture to the sprite.
+
+	//m_Weapon1.setSize(sf::Vector2f(m_MainSprite.getPosition().x + 10, m_MainSprite.getPosition().y));
 }
 
 struct Ray
@@ -444,8 +448,8 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 
 std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 {
-	sf::Vector2f radiusLine = sf::Vector2f(m_MainSprite.getLocalBounds().width /2  * cos(fAngle * (3.14159265359 / 180)),
-										   m_MainSprite.getLocalBounds().width / 2 * sin(fAngle * (3.14159265359 / 180)));
+	sf::Vector2f radiusLine = sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) /2  * cos(fAngle * (3.14159265359 / 180)),
+										   (m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2 * sin(fAngle * (3.14159265359 / 180)));
 
 	std::vector<sf::Vector2f> newCollisionLine = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine};
 	m_CollisionLine[0].position = newCollisionLine[0];
@@ -511,6 +515,50 @@ void Character::setTarget(Character* newTarget)
 void Character::setVision(bool bState)
 {
 	bDrawVision = bState;
+}
+
+void Character::setClass(classType newClassType, sf::Texture* GunTexture)
+{
+	currentClass = newClassType;
+	setGunTexture(GunTexture);
+	switch (newClassType)
+	{
+		case Assault:
+			m_Weapon1.setDamage(sf::Vector2f(1.0f, 5.0f));
+			m_Weapon1.setFireRate(0.2f);
+			m_Weapon1.setRange(sf::Vector2f(200.0f, 500.0f));
+			m_AmmoBar.setLimit(30);
+			m_AmmoBar.setLevel(0);
+			m_fReloadTime = 2.0f;
+			break;
+		case Support:
+			m_Weapon1.setDamage(sf::Vector2f(1.0f, 3.0f));
+			m_Weapon1.setFireRate(0.05f);
+			m_Weapon1.setRange(sf::Vector2f(200.0f, 500.0f));
+			m_AmmoBar.setLimit(100);
+			m_AmmoBar.setLevel(0);
+			m_fReloadTime = 5.0f;
+			break;
+		case Sniper:
+			m_Weapon1.setDamage(sf::Vector2f(2.0f, 50.0f));
+			m_Weapon1.setFireRate(1.0f);
+			m_Weapon1.setRange(sf::Vector2f(400.0f, 1000.0f));
+			m_AmmoBar.setLimit(1);
+			m_AmmoBar.setLevel(0);
+			m_fReloadTime = 7.0f;
+			break;
+		case Shotgunner:
+			m_Weapon1.setDamage(sf::Vector2f(0.5f, 20.0f));
+			m_Weapon1.setFireRate(0.4f);
+			m_Weapon1.setRange(sf::Vector2f(0.0f, 300.0f));
+			m_AmmoBar.setLimit(8);
+			m_AmmoBar.setLevel(0);
+			m_fReloadTime = 2.0f;
+			break;
+	}
+	reload();
+	
+	
 }
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
