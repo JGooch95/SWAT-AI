@@ -25,10 +25,16 @@ class Character : public Object
 		float m_fReloadTime;
 		int m_iAimingDirection;
 		bool bDrawVision;
+		bool bShooting;
+
+		float m_fAccuracy;
+
 		//AI
 		std::deque<Node*> m_Path; //Holds the current path
 		enum States { SEARCH_SWEEP, AIM};
 		States m_CurrentState;  
+
+		Object muzzleFlash;
 
 		//Debug lines
 		sf::VertexArray m_OrientationLine; //Shows the direction the unit is facing
@@ -36,6 +42,7 @@ class Character : public Object
 		sf::VertexArray m_PathLine; //Shows the path the unit is following
 		sf::VertexArray m_CollisionLine; //Shows the line used for shooting collisions
 		sf::VertexArray m_VisionRays;
+		sf::VertexArray m_BulletRays;
 
 		Character* m_CurrentTarget;
 
@@ -47,7 +54,8 @@ class Character : public Object
 
 		void move(); //Follows the path to the next node
 		void update(); //Updates the states of data
-		float shoot(); //Shoots the characters gun and returns the damage dealt
+		float shoot(std::vector<sf::Vector2f>vEdges); //Shoots the characters gun and returns the damage dealt
+		bool reloading();
 
 		//Getters
 		float getRotation(); 
@@ -64,7 +72,9 @@ class Character : public Object
 
 		void setTarget(Character* newTarget);
 
+		void setMuzzle(sf::Texture* tex2);
 		void setClass(classType classType, sf::Texture* GunTexture);
+		classType getClass();
 		//MAYBE CHANGE =============================================================
 		void lookAt(sf::Vector2f position); //Looks towards the position stated.
 		void lookAt(float fAngle);

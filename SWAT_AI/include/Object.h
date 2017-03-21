@@ -18,9 +18,11 @@ public:
 	void setPosition(sf::Vector2f pos);
 	void setOrigin(sf::Vector2f pos);
 	void setSize(sf::Vector2f dims);
+	void setRotation(float Rot);
 	sf::Vector2f getPosition();
 	sf::Vector2f getSize();
 	sf::FloatRect getRect();
+	sf::Vector2f getScale();
 	std::vector<sf::Vector2f> getEdges();
 
 };

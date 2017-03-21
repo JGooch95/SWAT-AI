@@ -19,6 +19,7 @@ class Game : public sf::Drawable
 		std::vector<sf::Text*> UIText;
 		sf::Font currentFont;
 		std::vector<Button> Button1;
+		std::vector<Object> Icons;
 
 		//Tools
 		AStar m_Pathfinder;

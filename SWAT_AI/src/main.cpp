@@ -6,8 +6,8 @@
 int main()
 {
 	//Sets up the window
-	sf::RenderWindow mainWindow(sf::VideoMode(1920, 1080), "SWAT AI");
-	
+	sf::RenderWindow mainWindow(sf::VideoMode(1920, 1080), "SWAT AI", sf::Style::Close);
+
 	//Initialises the event value for input readings
 	sf::Event event;
 

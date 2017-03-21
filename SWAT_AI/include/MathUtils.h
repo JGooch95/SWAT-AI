@@ -28,7 +28,7 @@ namespace Util
 		}
 		else
 		{
-			return sf::Vector2f(0, 2000); //Out of range value
+			return line2B; //Out of range value
 		}
 	}
 

@@ -36,6 +36,10 @@ void Object::setSize(sf::Vector2f dims)
 	}
 }
 
+void Object::setRotation(float Rot)
+{
+	m_MainSprite.setRotation(Rot);
+}
 sf::FloatRect Object::getRect()
 {
 	return m_MainSprite.getGlobalBounds();
@@ -50,7 +54,10 @@ sf::Vector2f Object::getSize()
 {
 	return sf::Vector2f(m_MainSprite.getLocalBounds().width, m_MainSprite.getLocalBounds().height);
 }
-
+sf::Vector2f Object::getScale()
+{
+	return m_MainSprite.getScale();
+}
 std::vector<sf::Vector2f> Object::getEdges()
 {
 	std::vector<sf::Vector2f> Edges; //Holds the wall edges
