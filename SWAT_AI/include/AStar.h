@@ -17,9 +17,9 @@ struct Node
 class AStar
 {
 	private:
-		std::vector<Node> m_Grid;
-		std::vector<Node*> m_OpenList;
-		std::vector<Node*> m_ClosedList;
+		std::vector<Node> m_vGrid;
+		std::vector<Node*> m_vOpenList;
+		std::vector<Node*> m_vClosedList;
 		std::deque<Node*> m_Path;
 		Map* m_CurrentMap;
 		std::vector<int> m_viTilesToCheck;
@@ -30,8 +30,8 @@ class AStar
 		AStar();
 		AStar(Map* map1);
 		void setup(Map* map1);
-		std::deque<Node*> findPath(sf::Vector2f startPos, sf::Vector2f endPos);
 		void setupLists();
+		std::deque<Node*> findPath(sf::Vector2f startPos, sf::Vector2f endPos);
 		void calculateManhattan(int iStartTile, int iEndTile);
 		void calculateMoveCost(int iCurrentTile, int iEndTile);
 		void checkNode(int iTile, int iCurrentTile, int iMoveCost);

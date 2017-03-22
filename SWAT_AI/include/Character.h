@@ -75,6 +75,10 @@ class Character : public Object
 		void setMuzzle(sf::Texture* tex2);
 		void setClass(classType classType, sf::Texture* GunTexture);
 		classType getClass();
+		void shoot();
+		float bulletChecks(std::vector<sf::Vector2f>vEdges);
+		bool checkVisionCone(sf::Vector2f position);
+
 		//MAYBE CHANGE =============================================================
 		void lookAt(sf::Vector2f position); //Looks towards the position stated.
 		void lookAt(float fAngle);

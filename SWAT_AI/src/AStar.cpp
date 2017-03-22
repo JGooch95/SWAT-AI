@@ -13,7 +13,7 @@ AStar::AStar(Map* map1)
 void AStar::setup(Map* map1)
 {
 	m_CurrentMap = map1;
-	m_Grid.resize(m_CurrentMap->getGridDims().x * m_CurrentMap->getGridDims().y);
+	m_vGrid.resize(m_CurrentMap->getGridDims().x * m_CurrentMap->getGridDims().y);
 	setupLists();
 	m_viTilesToCheck = {
 		1,										 //Right
@@ -24,6 +24,33 @@ void AStar::setup(Map* map1)
 		(int)m_CurrentMap->getGridDims().x,      //Bottom
 		(int)m_CurrentMap->getGridDims().x + 1,  //Bottom right
 		(int)m_CurrentMap->getGridDims().x - 1}; //Bottom left
+}
+
+void AStar::setupLists()
+{
+	//Clears the open and closed lists
+	m_vClosedList.clear();
+	m_vOpenList.clear();
+	m_Path.clear();
+
+	for (int i = 0; i < m_CurrentMap->getMapData().size(); i++)
+	{
+		for (int j = 0; j < m_CurrentMap->getMapData().at(i).size(); j++)
+		{
+			if (m_CurrentMap->getMapData().at(i).at(j) == 'W')
+			{
+				m_vClosedList.push_back(&m_vGrid.at((i*m_CurrentMap->getGridDims().x) + j));
+			}
+		}
+	}
+
+	for (int i = 0; i < m_vGrid.size(); i++)
+	{
+		m_vGrid.at(i).parent = NULL;
+		m_vGrid.at(i).h = 0;
+		m_vGrid.at(i).f = 0;
+		m_vGrid.at(i).g = 0;
+	}
 }
 
 std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
@@ -42,19 +69,19 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 
 	int iCurrentTile = iStartTile; //Holds the tile being checked
 
-	if (iStartTile != iEndTile && iStartTile < m_Grid.size() && iEndTile < m_Grid.size() && validVacinity(iEndTile))
+	if (iStartTile != iEndTile && iStartTile < m_vGrid.size() && iEndTile < m_vGrid.size() && validVacinity(iEndTile))
 	{
 		//Checks that the end tile isn't on the closed list
-		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile)) != m_ClosedList.end())
+		if (std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iEndTile)) != m_vClosedList.end())
 		{
 			m_bEndWall = true;
 		}
 
 		//Calculates the Manhattan distance for every node to the end node.
-		for (int i = 0; i < m_Grid.size(); i++)
+		for (int i = 0; i < m_vGrid.size(); i++)
 		{
 			calculateManhattan(i, iEndTile);
-			m_Grid.at(i).index = i;
+			m_vGrid.at(i).index = i;
 		}
 
 		int iNextIndex = NULL;
@@ -64,7 +91,7 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 			if (iCurrentTile != iEndTile)
 			{
 				//Pushes the node to the closed list
-				m_ClosedList.push_back(&m_Grid.at(iCurrentTile));
+				m_vClosedList.push_back(&m_vGrid.at(iCurrentTile));
 			}
 
 			//Calculates the move cost for the surrounding nodes
@@ -74,16 +101,16 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 			{
 				int iLowestF = 1000;
 				//Checks for the lowest F value in the open list
-				for (int i = 0; i < m_OpenList.size(); i++)
+				for (int i = 0; i < m_vOpenList.size(); i++)
 				{
-					if (m_OpenList.at(i)->f < iLowestF)
+					if (m_vOpenList.at(i)->f < iLowestF)
 					{
-						iCurrentTile = m_OpenList.at(i)->index;
-						iLowestF = m_OpenList.at(i)->f;
+						iCurrentTile = m_vOpenList.at(i)->index;
+						iLowestF = m_vOpenList.at(i)->f;
 						iNextIndex = i;
 					}
 				}
-				m_OpenList.erase(m_OpenList.begin() + iNextIndex);
+				m_vOpenList.erase(m_vOpenList.begin() + iNextIndex);
 			}
 		}
 
@@ -91,13 +118,13 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 		//If the end is not on the closed list
 		if (!m_bEndWall)
 		{
-			CurrentNode = &m_Grid.at(iEndTile);
+			CurrentNode = &m_vGrid.at(iEndTile);
 			m_Path.push_front(CurrentNode);
 		}
 		//Else set it's parent to be the end node
 		else
 		{
-			CurrentNode = m_Grid.at(iEndTile).parent;
+			CurrentNode = m_vGrid.at(iEndTile).parent;
 			m_Path.push_front(CurrentNode);
 		}
 
@@ -115,38 +142,6 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 	return m_Path;
 }
 
-void AStar::setupLists()
-{
-	//Clears the open and closed lists
-	m_ClosedList.clear();
-	m_OpenList.clear();
-	m_Path.clear();
-
-	for (int i = 0; i < m_CurrentMap->getMapData().size(); i++)
-	{
-		for (int j = 0; j < m_CurrentMap->getMapData().at(i).size(); j++)
-		{
-			if (m_CurrentMap->getMapData().at(i).at(j) == 'W')
-			{
-				m_ClosedList.push_back(&m_Grid.at((i*m_CurrentMap->getGridDims().x) + j));
-			}
-		}
-	}
-
-	for (int i = 0; i < m_Grid.size(); i++)
-	{
-		m_Grid.at(i).parent = NULL;
-		m_Grid.at(i).h = 0;
-		m_Grid.at(i).f = 0;
-		m_Grid.at(i).g = 0;
-	}
-}
-
-void AStar::setInvalid(sf::Vector2f Node)
-{
-	m_ClosedList.push_back(&m_Grid.at((Node.y *m_CurrentMap->getGridDims().x) + Node.x));
-}
-
 void AStar::calculateManhattan(int iStartTile, int iEndTile)
 {	
 	//Calculates the difference between the nodes in the y axis
@@ -159,7 +154,7 @@ void AStar::calculateManhattan(int iStartTile, int iEndTile)
 	iEndPos = (iEndTile % (int)m_CurrentMap->getGridDims().x);
 	int iXDiff = abs(iEndPos - iStartPos);
 
-	m_Grid.at(iStartTile).h = iXDiff + iYDiff;
+	m_vGrid.at(iStartTile).h = iXDiff + iYDiff;
 }
 
 void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
@@ -176,9 +171,9 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 			{
 				//Assign top right node a cost
 				//If the tile to the right, the top or the top right of the tile is on the closed list
-				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x + 1)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + 1)) != m_ClosedList.end()) {
+				if (std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x + 1)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile + 1)) != m_vClosedList.end()) {
 					checkNode(iCurrentTile - m_CurrentMap->getGridDims().x + 1, iCurrentTile, 100);  //Make the cost so high its more probable to walk around it
 				}
 				else
@@ -188,13 +183,13 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 			}
 
 			//If also not on the bottom edge of the screen
-			if (iCurrentTile + m_CurrentMap->getGridDims().x < m_Grid.size())
+			if (iCurrentTile + m_CurrentMap->getGridDims().x < m_vGrid.size())
 			{
 				//Assign bottom right node a cost
 				//If the tile to the right, the bottom or the bottom right of the tile is on the closed list
-				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x + 1)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + 1)) != m_ClosedList.end()) {
+				if (std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x + 1)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile + 1)) != m_vClosedList.end()) {
 					checkNode(iCurrentTile + m_CurrentMap->getGridDims().x + 1, iCurrentTile, 100); //Make the cost so high its more probable to walk around it
 				}
 				else
@@ -213,9 +208,9 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 			{
 				//Assign top left node a cost
 				//If the tile to the left, the top or the top left of the tile is on the closed list
-				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x - 1)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - 1)) != m_ClosedList.end()) {
+				if (std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x - 1)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile - (int)m_CurrentMap->getGridDims().x)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile - 1)) != m_vClosedList.end()) {
 					checkNode(iCurrentTile - m_CurrentMap->getGridDims().x - 1, iCurrentTile, 100);  //Make the cost so high its more probable to walk around it
 				}
 				else
@@ -225,13 +220,13 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 			}
 
 			//If also not on the bottom edge of the screen
-			if (iCurrentTile + m_CurrentMap->getGridDims().x < m_Grid.size())
+			if (iCurrentTile + m_CurrentMap->getGridDims().x < m_vGrid.size())
 			{
 				//Assign bottom left node a cost
 				//If the tile to the left, the bottom or the bottom left of the tile is on the closed list
-				if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x - 1)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x)) != m_ClosedList.end() ||
-					std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iCurrentTile - 1)) != m_ClosedList.end()) {
+				if (std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x - 1)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile + (int)m_CurrentMap->getGridDims().x)) != m_vClosedList.end() ||
+					std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iCurrentTile - 1)) != m_vClosedList.end()) {
 					checkNode(iCurrentTile + m_CurrentMap->getGridDims().x - 1, iCurrentTile, 100); //Make the cost so high its more probable to walk around it
 				}
 				else
@@ -248,7 +243,7 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 		}
 
 		//If not on the bottom edge of the screen.
-		if (iCurrentTile + m_CurrentMap->getGridDims().x < m_Grid.size())
+		if (iCurrentTile + m_CurrentMap->getGridDims().x < m_vGrid.size())
 		{
 			checkNode(iCurrentTile + m_CurrentMap->getGridDims().x, iCurrentTile, 10); //Assign bottom node a cost
 		}
@@ -264,7 +259,7 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 				if (iCurrentTile + m_viTilesToCheck.at(i) == iEndTile)
 				{
 					m_bPathFound = true;
-					m_Grid.at(iEndTile).parent = &m_Grid.at(iCurrentTile);
+					m_vGrid.at(iEndTile).parent = &m_vGrid.at(iCurrentTile);
 				}
 			}
 		}
@@ -279,24 +274,24 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 void AStar::checkNode(int iTile, int iCurrentTile, int iMoveCost)
 {
 	//If the node isn't on the open list
-	if (std::find(m_OpenList.begin(), m_OpenList.end(), &m_Grid.at(iTile)) == m_OpenList.end()){
+	if (std::find(m_vOpenList.begin(), m_vOpenList.end(), &m_vGrid.at(iTile)) == m_vOpenList.end()){
 		//If the node isn't on the closed list
-		if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iTile)) == m_ClosedList.end()) {
-			m_OpenList.push_back(&m_Grid.at(iTile)); //Add the node to the open list
+		if (std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iTile)) == m_vClosedList.end()) {
+			m_vOpenList.push_back(&m_vGrid.at(iTile)); //Add the node to the open list
 			makeCurrent(iTile, iCurrentTile, iMoveCost);
 		}
 	}
 	//If it's faster to move to an already checked node from this node than the previous node
-	else if(m_Grid.at(iCurrentTile).g + iMoveCost < m_Grid.at(iTile).g){
+	else if(m_vGrid.at(iCurrentTile).g + iMoveCost < m_vGrid.at(iTile).g){
 		makeCurrent(iTile, iCurrentTile, iMoveCost);
 	}
 }
 
 void AStar::makeCurrent(int iTile, int iCurrentTile, int iMoveCost)
 {
-	m_Grid.at(iTile).parent = &m_Grid.at(iCurrentTile); //Make the parent the current node
-	m_Grid.at(iTile).g = m_Grid.at(iTile).parent->g + iMoveCost; //The node gets its parents movecost plus the travel cost
-	m_Grid.at(iTile).f = m_Grid.at(iTile).g + m_Grid.at(iTile).h; //Calculate the node's F value
+	m_vGrid.at(iTile).parent = &m_vGrid.at(iCurrentTile); //Make the parent the current node
+	m_vGrid.at(iTile).g = m_vGrid.at(iTile).parent->g + iMoveCost; //The node gets its parents movecost plus the travel cost
+	m_vGrid.at(iTile).f = m_vGrid.at(iTile).g + m_vGrid.at(iTile).h; //Calculate the node's F value
 }
 
 //Used to check if the end node is surrounded by impassable nodes
@@ -304,9 +299,9 @@ bool AStar::validVacinity(int iEndTile)
 {
 	for (int i = 0; i < m_viTilesToCheck.size(); i++) // For every surrounding node
 	{
-		if (iEndTile + m_viTilesToCheck.at(i) > 0 && iEndTile + m_viTilesToCheck.at(i) < m_Grid.size())// If within the grid space
+		if (iEndTile + m_viTilesToCheck.at(i) > 0 && iEndTile + m_viTilesToCheck.at(i) < m_vGrid.size())// If within the grid space
 		{
-			if (std::find(m_ClosedList.begin(), m_ClosedList.end(), &m_Grid.at(iEndTile + m_viTilesToCheck.at(i))) == m_ClosedList.end()) { //And not on the closed list
+			if (std::find(m_vClosedList.begin(), m_vClosedList.end(), &m_vGrid.at(iEndTile + m_viTilesToCheck.at(i))) == m_vClosedList.end()) { //And not on the closed list
 				return true;
 			}
 		}
@@ -315,14 +310,19 @@ bool AStar::validVacinity(int iEndTile)
 	return false; //If all of the tests are false return false
 }
 
+void AStar::setInvalid(sf::Vector2f Node)
+{
+	m_vClosedList.push_back(&m_vGrid.at((Node.y *m_CurrentMap->getGridDims().x) + Node.x));
+}
+
 AStar::~AStar()
 {
-	for (int i = 0; i < m_OpenList.size(); i++)
+	for (int i = 0; i < m_vOpenList.size(); i++)
 	{
-		m_OpenList.at(i) = NULL;
+		m_vOpenList.at(i) = NULL;
 	}
-	for (int i = 0; i < m_ClosedList.size(); i++)
+	for (int i = 0; i < m_vClosedList.size(); i++)
 	{
-		m_ClosedList.at(i) = NULL;
+		m_vClosedList.at(i) = NULL;
 	}
 }

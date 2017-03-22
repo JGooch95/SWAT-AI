@@ -5,19 +5,19 @@ TextureLoader::TextureLoader()
 
 }
 
-void TextureLoader::loadTextures(std::vector<std::string> fileDirs)
+void TextureLoader::loadTextures(std::vector<std::string> vsFileDirs)
 {
 	sf::Texture CurrentTexture;
 
 	//Loads the textures into the vector of textures
-	for (int i = 0; i < fileDirs.size(); i++)
+	for (int i = 0; i < vsFileDirs.size(); i++)
 	{
-		if (!CurrentTexture.loadFromFile(m_sBaseDirectory + fileDirs.at(i)))
+		if (!CurrentTexture.loadFromFile(m_sBaseDirectory + vsFileDirs.at(i)))
 		{
 			//If the texture fails output error
 			sf::err() << "Texture not loaded";
 		}
-		m_Textures.push_back(CurrentTexture);
+		m_vTextures.push_back(CurrentTexture);
 	}
 }
 
@@ -28,5 +28,5 @@ void TextureLoader::setBaseDirectory(std::string sDir)
 
 sf::Texture* TextureLoader::getTexture(const int &kiIndex)
 {
-	return  std::vector<sf::Texture>::iterator(m_Textures.begin() + kiIndex)._Ptr;
+	return  std::vector<sf::Texture>::iterator(m_vTextures.begin() + kiIndex)._Ptr;
 }

@@ -12,6 +12,7 @@ void Object::linkMap(Map* newMap)
 	m_CurrentMap = newMap;
 }
 
+//Setters
 void Object::setTexture(sf::Texture* tex2)
 {
 	m_MainSprite.setTexture(*tex2); //Applies the texture to the sprite.
@@ -22,6 +23,7 @@ void Object::setPosition(sf::Vector2f pos)
 {
 	m_MainSprite.setPosition(pos);
 }
+
 void Object::setOrigin(sf::Vector2f pos)
 {
 	m_MainSprite.setOrigin(pos);
@@ -29,22 +31,18 @@ void Object::setOrigin(sf::Vector2f pos)
 
 void Object::setSize(sf::Vector2f dims)
 {
-	//m_MainSprite.setTextureRect(sf::IntRect(0, 0, dims.x, dims.y));
 	if (m_MainSprite.getTexture() != NULL)
 	{
 		m_MainSprite.setScale(sf::Vector2f(dims.x / m_MainSprite.getTexture()->getSize().x, dims.y / m_MainSprite.getTexture()->getSize().y));
 	}
 }
 
-void Object::setRotation(float Rot)
+void Object::setRotation(float fRot)
 {
-	m_MainSprite.setRotation(Rot);
-}
-sf::FloatRect Object::getRect()
-{
-	return m_MainSprite.getGlobalBounds();
+	m_MainSprite.setRotation(fRot);
 }
 
+//Getters
 sf::Vector2f Object::getPosition()
 {
 	return m_MainSprite.getPosition();
@@ -54,27 +52,38 @@ sf::Vector2f Object::getSize()
 {
 	return sf::Vector2f(m_MainSprite.getLocalBounds().width, m_MainSprite.getLocalBounds().height);
 }
+
+sf::FloatRect Object::getRect()
+{
+	return m_MainSprite.getGlobalBounds();
+}
+
 sf::Vector2f Object::getScale()
 {
 	return m_MainSprite.getScale();
 }
+
 std::vector<sf::Vector2f> Object::getEdges()
 {
-	std::vector<sf::Vector2f> Edges; //Holds the wall edges
+	std::vector<sf::Vector2f> vEdges; //Holds the edges of the object
 	
-	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top));
-	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
-											
-	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
-	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
-											
-	Edges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
-	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
-											
-	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
-	Edges.push_back(sf::Vector2f(getRect().left,  getRect().top));
+	//Top edge
+	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top));
+	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
 	
-	return Edges;
+	//Right edge
+	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
+	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
+	
+	//Bottom edge
+	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
+	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
+	
+	//Left edge
+	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
+	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top));
+	
+	return vEdges;
 }
 
 void Object::draw(sf::RenderTarget &target, sf::RenderStates states) const

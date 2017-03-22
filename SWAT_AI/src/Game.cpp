@@ -2,19 +2,17 @@
 
 Game::Game(sf::Vector2u windowSize)
 {
-	//Sets up the map
-	sf::Vector2f GridDimensions = sf::Vector2f(20, 20);
+	//Sets up the toolbar 
+	m_Toolbar.setPosition(0, 0);
+	m_Toolbar.setFillColor(sf::Color(70,70, 70,255));
+	m_Toolbar.setSize(sf::Vector2f(windowSize.x, windowSize.y / 20));
 
-	toolbar.setPosition(0, 0);
-	toolbar.setFillColor(sf::Color(70,70, 70,255));
-	toolbar.setSize(sf::Vector2f(windowSize.x, windowSize.y / 20));
-
+	//Sets up the default map
 	m_CurrentMap.setup(
-		sf::FloatRect(sf::Vector2f(0, toolbar.getSize().y), sf::Vector2f(windowSize) - sf::Vector2f(windowSize.x/3, toolbar.getSize().y)),
-		GridDimensions
+		sf::FloatRect(sf::Vector2f(0, m_Toolbar.getSize().y), sf::Vector2f(windowSize) - sf::Vector2f(windowSize.x/3, m_Toolbar.getSize().y)),
+		sf::Vector2f(20, 20)
 	);
-
-	m_CurrentMap.load("./Assets/Maps/1.txt"); 
+	m_CurrentMap.load("./Assets/Maps/1.txt"); //Loads a map from a file
 
 	//Loads the main textures into the software
 	m_Textures.loadTextures(std::vector<std::string>{
@@ -34,23 +32,24 @@ Game::Game(sf::Vector2u windowSize)
 		"Assets/Sprites/Ammo.png"						//13
 	});
 
-	currentFont.loadFromFile("Assets/Fonts/arial.ttf");
+	m_CurrentFont.loadFromFile("Assets/Fonts/arial.ttf"); //Loads the main font
 
-	std::vector<sf::Vector2f> m_EdgesX; //Holds the wall edges
-	std::vector<sf::Vector2f> m_EdgesY; //Holds the wall edges
+	//Holds the edges of the walls to reduce the amount
+	std::vector<sf::Vector2f> m_vEdgesX; 
+	std::vector<sf::Vector2f> m_vEdgesY; 
 
 	//Adds borders of the window to the edge checks
-	m_EdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y));
-	m_EdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y));
+	m_vEdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y));
+	m_vEdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y));
 
-	m_EdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
-	m_EdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
+	m_vEdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
+	m_vEdgesY.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
 
-	m_EdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y));
-	m_EdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
+	m_vEdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y));
+	m_vEdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
 
-	m_EdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y));
-	m_EdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
+	m_vEdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y));
+	m_vEdgesX.push_back(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, m_CurrentMap.getPosition().y + m_CurrentMap.getWindowSize().y));
 
 	//For every bit within the map Check the object type location and create it
 	for (int i = 0; i < m_CurrentMap.getMapData().size(); i++)
@@ -60,120 +59,126 @@ Game::Game(sf::Vector2u windowSize)
 			//Walls
 			if (m_CurrentMap.getMapData().at(i).at(j) == 'W')
 			{
-				m_Walls.push_back(new Object);
-				m_Walls.at(m_Walls.size() - 1)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
-				m_Walls.at(m_Walls.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
-				m_Walls.at(m_Walls.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f(j * m_CurrentMap.getTileSize().x, i * m_CurrentMap.getTileSize().y));
-				m_Walls.at(m_Walls.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y));
-
+				m_vWalls.push_back(new Object);
+				m_vWalls.at(m_vWalls.size() - 1)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
+				m_vWalls.at(m_vWalls.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
+				m_vWalls.at(m_vWalls.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f(j * m_CurrentMap.getTileSize().x, i * m_CurrentMap.getTileSize().y));
+				m_vWalls.at(m_vWalls.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y));
 
 				if (m_CurrentMap.getMapData().at(i - 1).at(j) != 'W' && i > 0)
 				{
 					//Top Edge
-					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top));
-					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top));
+					m_vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+					m_vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
 				}
 				if (m_CurrentMap.getMapData().at(i + 1).at(j) != 'W' && i < m_CurrentMap.getMapData().at(i).size())
 				{
 					//Bottom Edge
-					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
-					m_EdgesY.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
+					m_vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+					m_vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
 				}
 				
 				if (m_CurrentMap.getMapData().at(i).at(j-1) != 'W' && j > 0)
 				{
 					//Left Edge
-					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top));
-					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
+					m_vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+					m_vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
 				}
 				if (m_CurrentMap.getMapData().at(i).at(j + 1) != 'W' && j < m_CurrentMap.getMapData().at(i).size())
 				{
 					//Right Edge
-					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top));
-					m_EdgesX.push_back(sf::Vector2f(m_Walls.at(m_Walls.size() - 1)->getRect().left + m_Walls.at(m_Walls.size() - 1)->getRect().width, m_Walls.at(m_Walls.size() - 1)->getRect().top + m_Walls.at(m_Walls.size() - 1)->getRect().height));
+					m_vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+					m_vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
 				}
 			}
-			if (m_CurrentMap.getMapData().at(i).at(j) == 'E')
-			{
-				m_Enemies.push_back(new Character);
-				m_Enemies.at(m_Enemies.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x /2), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
-				m_Enemies.at(m_Enemies.size() - 1)->setTexture(m_Textures.getTexture(2)); //Sets the unit texture
-				m_Enemies.at(m_Enemies.size() - 1)->setClass(Assault, m_Textures.getTexture(7));
-				//m_Enemies.at(m_Enemies.size()-1)->setGunTexture(m_Textures.getTexture(7)); //Sets the unit texture
-				m_Enemies.at(m_Enemies.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
-				m_Enemies.at(m_Enemies.size() - 1)->setSize(sf::Vector2f(std::min(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y), std::min(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y)));
-				m_Characters.push_back(m_Enemies.at(m_Enemies.size() - 1));
-			}
-			if (m_CurrentMap.getMapData().at(i).at(j) == 'P')
-			{
-				m_Units.push_back(new Character);
-				m_Units.at(m_Units.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
-				m_Units.at(m_Units.size() - 1)->setTexture(m_Textures.getTexture(1)); //Sets the unit texture
 
-				m_Units.at(m_Units.size() - 1)->setClass(Shotgunner, m_Textures.getTexture(6));
-				//m_Units.at(m_Units.size() - 1)->setGunTexture(m_Textures.getTexture(6)); //Sets the unit texture
-				m_Units.at(m_Units.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
-				m_Units.at(m_Units.size() - 1)->setVision(true);
-				m_Units.at(m_Units.size() - 1)->setSize(sf::Vector2f(std::min(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y), std::min(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y)));
-				m_Characters.push_back(m_Units.at(m_Units.size() - 1));
+			//Characters
+			if (m_CurrentMap.getMapData().at(i).at(j) == 'E' || m_CurrentMap.getMapData().at(i).at(j) == 'P')
+			{
+				//Enemies specifics
+				if (m_CurrentMap.getMapData().at(i).at(j) == 'E')
+				{
+					m_vEnemies.push_back(new Character);
+					m_vEnemies.at(m_vEnemies.size() - 1)->setTexture(m_Textures.getTexture(2)); //Sets the unit texture
+					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault, m_Textures.getTexture(7));
+					m_vCharacters.push_back(m_vEnemies.at(m_vEnemies.size() - 1));
+				}
+
+				//Friendly units specifics
+				else if (m_CurrentMap.getMapData().at(i).at(j) == 'P')
+				{
+					m_vUnits.push_back(new Character);
+					m_vUnits.at(m_vUnits.size() - 1)->setTexture(m_Textures.getTexture(1)); //Sets the unit texture
+					m_vUnits.at(m_vUnits.size() - 1)->setClass(Shotgunner, m_Textures.getTexture(6));
+					m_vUnits.at(m_vUnits.size() - 1)->setVision(true);
+					m_vCharacters.push_back(m_vUnits.at(m_vUnits.size() - 1));
+				}
+
+				//Sets generic character data
+				m_vCharacters.at(m_vCharacters.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
+				m_vCharacters.at(m_vCharacters.size() - 1)->linkMap(&m_CurrentMap); //Sets up the grid values for units
+				m_vCharacters.at(m_vCharacters.size() - 1)->setSize(sf::Vector2f(std::min(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y), std::min(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y)));
+				m_vCharacters.at(m_vCharacters.size() - 1)->setMuzzle(m_Textures.getTexture(11));
 			}
 			
+			//Doors
 			if (m_CurrentMap.getMapData().at(i).at(j) == 'D')
 			{
-				m_Doors.push_back(new Entrance); 
-				m_Doors.at(m_Doors.size() - 1)->setTexture(m_Textures.getTexture(0));
+				m_vDoors.push_back(new Entrance); 
+				m_vDoors.at(m_vDoors.size() - 1)->setTexture(m_Textures.getTexture(0));
 
 				if ((m_CurrentMap.getMapData().at(i).at(j - 1) == 'W') && j > 0)
 				{
-					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y / 4));
-					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f(0, ((m_Doors.at(m_Doors.size() - 1)->getSize().y * m_Doors.at(m_Doors.size() - 1)->getScale().y) / 2.0f)));
-					m_Doors.at(m_Doors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
+					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y / 4));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(0, ((m_vDoors.at(m_vDoors.size() - 1)->getSize().y * m_vDoors.at(m_vDoors.size() - 1)->getScale().y) / 2.0f)));
+					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
 				}
 				else if ((m_CurrentMap.getMapData().at(i).at(j + 1) == 'W') && j < m_CurrentMap.getMapData().at(i).size())
 				{
-					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y / 4));
-					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f(0, ((m_Doors.at(m_Doors.size() - 1)->getSize().y * m_Doors.at(m_Doors.size() - 1)->getScale().y) / 2.0f)));
-					m_Doors.at(m_Doors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f(((j+1) * m_CurrentMap.getTileSize().x), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
-					m_Doors.at(m_Doors.size() - 1)->setOrientation(180);
-					m_Doors.at(m_Doors.size() - 1)->setDirection(-1);
+					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x, m_CurrentMap.getTileSize().y / 4));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(0, ((m_vDoors.at(m_vDoors.size() - 1)->getSize().y * m_vDoors.at(m_vDoors.size() - 1)->getScale().y) / 2.0f)));
+					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f(((j+1) * m_CurrentMap.getTileSize().x), (i * m_CurrentMap.getTileSize().y) + (m_CurrentMap.getTileSize().y / 2)));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrientation(180);
+					m_vDoors.at(m_vDoors.size() - 1)->setDirection(-1);
 				}
 				else if ((m_CurrentMap.getMapData().at(i - 1).at(j) == 'W') && i > 0)
 				{
-					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
-					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f((m_Doors.at(m_Doors.size() - 1)->getSize().x * m_Doors.at(m_Doors.size() - 1)->getScale().x) / 2.0f, 0));
-					m_Doors.at(m_Doors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), (i * m_CurrentMap.getTileSize().y)));
+					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f((m_vDoors.at(m_vDoors.size() - 1)->getSize().x * m_vDoors.at(m_vDoors.size() - 1)->getScale().x) / 2.0f, 0));
+					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), (i * m_CurrentMap.getTileSize().y)));
 				}
 				else if ((m_CurrentMap.getMapData().at(i + 1).at(j) == 'W') && i < m_CurrentMap.getMapData().size())
 				{
-					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
-					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f((m_Doors.at(m_Doors.size() - 1)->getSize().x * m_Doors.at(m_Doors.size() - 1)->getScale().x) / 2.0f, 0));
-					m_Doors.at(m_Doors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), ((i + 1) * m_CurrentMap.getTileSize().y)));
-					m_Doors.at(m_Doors.size() - 1)->setOrientation(180);
-					m_Doors.at(m_Doors.size() - 1)->setDirection(-1);
+					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f((m_vDoors.at(m_vDoors.size() - 1)->getSize().x * m_vDoors.at(m_vDoors.size() - 1)->getScale().x) / 2.0f, 0));
+					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), ((i + 1) * m_CurrentMap.getTileSize().y)));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrientation(180);
+					m_vDoors.at(m_vDoors.size() - 1)->setDirection(-1);
 				}
 				else
 				{
-					m_Doors.at(m_Doors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
-					m_Doors.at(m_Doors.size() - 1)->setOrigin(sf::Vector2f((m_Doors.at(m_Doors.size() - 1)->getSize().x * m_Doors.at(m_Doors.size() - 1)->getScale().x) / 2.0f, 0));
-					m_Doors.at(m_Doors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), ((i + 1) * m_CurrentMap.getTileSize().y)));
+					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap.getTileSize().x / 4, m_CurrentMap.getTileSize().y));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f((m_vDoors.at(m_vDoors.size() - 1)->getSize().x * m_vDoors.at(m_vDoors.size() - 1)->getScale().x) / 2.0f, 0));
+					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap.getPosition() + sf::Vector2f((j * m_CurrentMap.getTileSize().x) + (m_CurrentMap.getTileSize().x / 2), ((i + 1) * m_CurrentMap.getTileSize().y)));
 				}
-				m_Doors.at(m_Doors.size() - 1)->setTile(sf::Vector2u(j, i));
-				m_Doors.at(m_Doors.size() - 1)->setOpen(false);
-				m_Doors.at(m_Doors.size() - 1)->linkMap(&m_CurrentMap);
+				m_vDoors.at(m_vDoors.size() - 1)->setTile(sf::Vector2u(j, i));
+				m_vDoors.at(m_vDoors.size() - 1)->setOpen(false);
+				m_vDoors.at(m_vDoors.size() - 1)->linkMap(&m_CurrentMap);
 			}
 		}
 	}
 
-	for (int i = 0; i < m_Units.size(); i++)
+	//Creating the UI for each unit
+	for (int i = 0; i < m_vUnits.size(); i++)
 	{
 		unitScreen.push_back(new sf::RectangleShape);
-		sf::Vector2f newSize(windowSize.x - m_CurrentMap.getWindowSize().x, ((windowSize.y - toolbar.getSize().y - (5* (m_Units.size()-1))) / m_Units.size()));
+		sf::Vector2f newSize(windowSize.x - m_CurrentMap.getWindowSize().x, ((windowSize.y - m_Toolbar.getSize().y - (5* (m_vUnits.size()-1))) / m_vUnits.size()));
 		if (newSize.y > windowSize.y / 4)
 		{
 			newSize.y = windowSize.y / 4;
 		}
 		unitScreen.at(unitScreen.size() - 1)->setSize(newSize);
-		unitScreen.at(unitScreen.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, (toolbar.getSize().y + (i * unitScreen.at(unitScreen.size() - 1)->getSize().y)) + (i*5)));
+		unitScreen.at(unitScreen.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap.getPosition().x + m_CurrentMap.getWindowSize().x, (m_Toolbar.getSize().y + (i * unitScreen.at(unitScreen.size() - 1)->getSize().y)) + (i*5)));
 		unitScreen.at(unitScreen.size() - 1)->setFillColor(sf::Color(120,120, 120,255));
 		
 		UIBars.push_back(new Bar);
@@ -189,7 +194,7 @@ Game::Game(sf::Vector2u windowSize)
 		Icons.at(Icons.size() - 1).setSize(sf::Vector2f(UIBars.at(UIBars.size() - 1)->getSize().y, UIBars.at(UIBars.size() - 1)->getSize().y));
 		Icons.at(Icons.size() - 1).setPosition(sf::Vector2f(UIBars.at(UIBars.size() - 1)->getPosition().x - (Icons.at(Icons.size() - 1).getSize().x* Icons.at(Icons.size() - 1).getScale().x), UIBars.at(UIBars.size() - 1)->getPosition().y));
 
-		UIText.push_back(new sf::Text(std::to_string((int)m_Units.at(i)->getHealthData().x) + "/" + std::to_string((int)m_Units.at(i)->getHealthData().y), currentFont, 20));
+		UIText.push_back(new sf::Text(std::to_string((int)m_vUnits.at(i)->getHealthData().x) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().y), m_CurrentFont, 20));
 		while (UIText.at(UIText.size() - 1)->getGlobalBounds().height > UIBars.at(UIBars.size() - 1)->getSize().y *(2.0f / 3.0f))
 		{
 			UIText.at(UIText.size() - 1)->setCharacterSize(UIText.at(UIText.size() - 1)->getCharacterSize() - 1);
@@ -204,14 +209,14 @@ Game::Game(sf::Vector2u windowSize)
 															   unitScreen.at(unitScreen.size() - 1)->getPosition().y + (3*(unitScreen.at(unitScreen.size() - 1)->getSize().y / 5.0f))));
 		UIBars.at(UIBars.size() - 1)->setLevelColor(sf::Color(255, 255, 0, 255));
 		UIBars.at(UIBars.size() - 1)->setBarColor(sf::Color(255, 0, 0, 255));
-		UIBars.at(UIBars.size() - 1)->setLimit(m_Units.at(i)->getAmmoData().y);
+		UIBars.at(UIBars.size() - 1)->setLimit(m_vUnits.at(i)->getAmmoData().y);
 
 		Icons.push_back(Object());
 		Icons.at(Icons.size() - 1).setTexture(m_Textures.getTexture(13));
 		Icons.at(Icons.size() - 1).setSize(sf::Vector2f(UIBars.at(UIBars.size() - 1)->getSize().y, UIBars.at(UIBars.size() - 1)->getSize().y));
 		Icons.at(Icons.size() - 1).setPosition(sf::Vector2f(UIBars.at(UIBars.size() - 1)->getPosition().x - (Icons.at(Icons.size() - 1).getSize().x * Icons.at(Icons.size() - 1).getScale().x), UIBars.at(UIBars.size() - 1)->getPosition().y));
 
-		UIText.push_back(new sf::Text(std::to_string((int)m_Units.at(i)->getAmmoData().x) + "/" + std::to_string((int)m_Units.at(i)->getAmmoData().y), currentFont, 20));
+		UIText.push_back(new sf::Text(std::to_string((int)m_vUnits.at(i)->getAmmoData().x) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().y), m_CurrentFont, 20));
 		while (UIText.at(UIText.size() - 1)->getGlobalBounds().height > UIBars.at(UIBars.size() - 1)->getSize().y *(2.0f/3.0f))
 		{
 			UIText.at(UIText.size() - 1)->setCharacterSize(UIText.at(UIText.size() - 1)->getCharacterSize()-1);
@@ -225,7 +230,7 @@ Game::Game(sf::Vector2u windowSize)
 		Button1.at(Button1.size() - 1).setSize(sf::Vector2f(unitScreen.at(unitScreen.size() - 1)->getSize().y/4, unitScreen.at(unitScreen.size() - 1)->getSize().y / 4));
 	}
 
-
+	//Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
 	std::vector<float> XValues;
 	std::vector<float> YValues;
 	std::vector<std::vector<sf::Vector2f>> ComparissonVectsX;
@@ -233,18 +238,18 @@ Game::Game(sf::Vector2u windowSize)
 	bool bFoundMatch = false;
 
 	//For every edge
-	for (int i = 0; i < m_EdgesX.size(); i++)
+	for (int i = 0; i < m_vEdgesX.size(); i++)
 	{
 		bFoundMatch = false;
 		if (XValues.size() == 0) //If there are no current x values add one
 		{
-			XValues.push_back(m_EdgesX.at(i).x);
+			XValues.push_back(m_vEdgesX.at(i).x);
 		}
 		else
 		{
 			for (int j = 0; j < XValues.size(); j++) //For every current x value found
 			{
-				if (m_EdgesX.at(i).x == XValues.at(j)) //If the x matches to the current Xs
+				if (m_vEdgesX.at(i).x == XValues.at(j)) //If the x matches to the current Xs
 				{
 					//A match has been found
 					bFoundMatch = true;
@@ -252,23 +257,23 @@ Game::Game(sf::Vector2u windowSize)
 			}
 			if (!bFoundMatch) //If none of the xs match add the x to the list of xs
 			{
-				XValues.push_back(m_EdgesX.at(i).x);
+				XValues.push_back(m_vEdgesX.at(i).x);
 			}
 		}
 	}
 
-	for (int i = 0; i < m_EdgesY.size(); i++)
+	for (int i = 0; i < m_vEdgesY.size(); i++)
 	{
 		bFoundMatch = false;
 		if (YValues.size() == 0) //If there are no current x values add one
 		{
-			YValues.push_back(m_EdgesY.at(i).y);
+			YValues.push_back(m_vEdgesY.at(i).y);
 		}
 		else
 		{
 			for (int j = 0; j < YValues.size(); j++) //For every current x value found
 			{
-				if (m_EdgesY.at(i).y == YValues.at(j)) //If the x matches to the current Xs
+				if (m_vEdgesY.at(i).y == YValues.at(j)) //If the x matches to the current Xs
 				{
 					//A match has been found
 					bFoundMatch = true;
@@ -276,18 +281,18 @@ Game::Game(sf::Vector2u windowSize)
 			}
 			if (!bFoundMatch) //If none of the xs match add the x to the list of xs
 			{
-				YValues.push_back(m_EdgesY.at(i).y);
+				YValues.push_back(m_vEdgesY.at(i).y);
 			}
 		}
 	}
 	ComparissonVectsX.resize(XValues.size());
 	for (int i = 0; i < XValues.size(); i++)
 	{
-		for (int j = 0; j < m_EdgesX.size(); j++)
+		for (int j = 0; j < m_vEdgesX.size(); j++)
 		{
-			if (m_EdgesX.at(j).x == XValues.at(i)) //If the x matches to the current Xs
+			if (m_vEdgesX.at(j).x == XValues.at(i)) //If the x matches to the current Xs
 			{
-				ComparissonVectsX.at(i).push_back(m_EdgesX.at(j));
+				ComparissonVectsX.at(i).push_back(m_vEdgesX.at(j));
 			}
 		}
 	}
@@ -295,11 +300,11 @@ Game::Game(sf::Vector2u windowSize)
 	ComparissonVectsY.resize(YValues.size());
 	for (int i = 0; i < YValues.size(); i++)
 	{
-		for (int j = 0; j < m_EdgesY.size(); j++)
+		for (int j = 0; j < m_vEdgesY.size(); j++)
 		{
-			if (m_EdgesY.at(j).y == YValues.at(i)) //If the x matches to the current Xs
+			if (m_vEdgesY.at(j).y == YValues.at(i)) //If the x matches to the current Xs
 			{
-				ComparissonVectsY.at(i).push_back(m_EdgesY.at(j));
+				ComparissonVectsY.at(i).push_back(m_vEdgesY.at(j));
 			}
 		}
 	}
@@ -395,191 +400,205 @@ Game::Game(sf::Vector2u windowSize)
 		}
 	}
 
-	m_Edges = Edges;
-	m_EdgeLines.resize(m_Edges.size());
+	m_vEdges = Edges;
+	m_EdgeLines.resize(m_vEdges.size());
 	m_EdgeLines.setPrimitiveType(sf::Lines);
 
-	for (int i = 0; i < m_Edges.size(); i++)
+	for (int i = 0; i < m_vEdges.size(); i++)
 	{
-		m_EdgeLines[i] = sf::Vertex(m_Edges.at(i), sf::Color(255,0,0,255));
+		m_EdgeLines[i] = sf::Vertex(m_vEdges.at(i), sf::Color(255,0,0,255));
 	}
 
 	//Sets up the pathfinder
 	m_Pathfinder.setup(&m_CurrentMap);
-
-	for (int i = 0; i < m_Characters.size(); i++)
-	{
-		m_Characters.at(i)->setMuzzle(m_Textures.getTexture(11));
-	}
 }
 
 void Game::update(sf::Vector2i mousePos)
 {
-	//Calculating Door edges for lazers
-	std::vector<sf::Vector2f> Edges; 
-	for (int j = 0; j < m_Doors.size(); j++)
+	std::vector<sf::Vector2f> vEdgesToCheck; //Holds all of the edges to be checked this frame
+
+	//Adds all of the door edges to the checked edges.
+	for (int j = 0; j < m_vDoors.size(); j++)
 	{
-		std::vector<sf::Vector2f> tempEdges = m_Doors.at(j)->getEdges();
-		Edges.insert(std::end(Edges), std::begin(tempEdges), std::end(tempEdges));
+		std::vector<sf::Vector2f> tempEdges = m_vDoors.at(j)->getEdges();
+		vEdgesToCheck.insert(std::end(vEdgesToCheck), std::begin(tempEdges), std::end(tempEdges));
 	}
-	Edges.insert(std::end(Edges), std::begin(m_Edges), std::end(m_Edges));
+	vEdgesToCheck.insert(std::end(vEdgesToCheck), std::begin(m_vEdges), std::end(m_vEdges)); //Adds all of the wall edges to the end of the checked edges
 
 	//Perform character checks
-	for (int i = 0; i < m_Characters.size(); i++)
+	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
-		m_Characters.at(i)->update();
-		m_Characters.at(i)->lazerChecks(Edges);
-		m_Characters.at(i)->visionCalculation(Edges);
+		m_vCharacters.at(i)->update(); //Update data and states
+		m_vCharacters.at(i)->lazerChecks(vEdgesToCheck); //Perform checks for the aiming
+		m_vCharacters.at(i)->visionCalculation(vEdgesToCheck); //Perform checks for the vision cone
+		m_vCharacters.at(i)->bulletChecks(vEdgesToCheck); //Perform checks for any of the shot bullets
 	}
 
 	//Perform checks between characters
-	characterInteractions(m_Units, m_Enemies);
-	characterInteractions(m_Enemies, m_Units);
+	characterInteractions(m_vUnits, m_vEnemies);
+	characterInteractions(m_vEnemies, m_vUnits);
+
+	//Door checks
+	for (int i = 0; i < m_vDoors.size(); i++)
+	{
+		//For every door check if a character is standing near it. If they are then open the door.
+		bool bOpenDoor = false;
+		for (int j = 0; j < m_vCharacters.size(); j++)
+		{
+			sf::Vector2u CharacterTile(((int)m_vCharacters.at(j)->getPosition().x - m_CurrentMap.getPosition().x) / (int)m_CurrentMap.getTileSize().x,
+									   ((int)m_vCharacters.at(j)->getPosition().y - m_CurrentMap.getPosition().y) / (int)m_CurrentMap.getTileSize().y);
+
+			if (CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x + 1, m_vDoors.at(i)->getTile().y) ||
+				CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x - 1, m_vDoors.at(i)->getTile().y) ||
+				CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x, m_vDoors.at(i)->getTile().y + 1) ||
+				CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x, m_vDoors.at(i)->getTile().y - 1) ||
+				CharacterTile == m_vDoors.at(i)->getTile())
+			{
+				bOpenDoor = true;
+			}
+		}
+		m_vDoors.at(i)->setOpen(bOpenDoor);
+	}
 
 	//UI
-	for (int i = 0; i < m_Units.size(); i++)
+	for (int i = 0; i < m_vUnits.size(); i++)
 	{
-		UIBars.at(i*2)->setLevel(m_Units.at(i)->getHealthData().x);
-		UIBars.at((i*2)+1)->setLevel(m_Units.at(i)->getAmmoData().x);
+		//Updates the UI bars
+		//Health
+		UIBars.at(i * 2)->setLevel(m_vUnits.at(i)->getHealthData().x);
+		UIBars.at(i * 2)->setLimit(m_vUnits.at(i)->getHealthData().y);
 
-		UIBars.at(i * 2)->setLimit(m_Units.at(i)->getHealthData().y);
-		UIBars.at((i * 2) + 1)->setLimit(m_Units.at(i)->getAmmoData().y);
+		//Ammo
+		UIBars.at((i * 2) + 1)->setLevel(m_vUnits.at(i)->getAmmoData().x);
+		UIBars.at((i * 2) + 1)->setLimit(m_vUnits.at(i)->getAmmoData().y);
 
-		UIText.at(i * 2)->setString(std::to_string((int)m_Units.at(i)->getHealthData().x) + "/" + std::to_string((int)m_Units.at(i)->getHealthData().y));
+		//Updates the UI Text
+		//Health
+		UIText.at(i * 2)->setString(std::to_string((int)m_vUnits.at(i)->getHealthData().x) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().y));
 
-		if (m_Units.at(i)->reloading())
+		//Ammo
+		if (m_vUnits.at(i)->reloading())
 		{
 			UIText.at((i * 2) + 1)->setString("Reloading");
 		}
 		else
 		{
-			UIText.at((i * 2) + 1)->setString(std::to_string((int)m_Units.at(i)->getAmmoData().x) + "/" + std::to_string((int)m_Units.at(i)->getAmmoData().y));
+			UIText.at((i * 2) + 1)->setString(std::to_string((int)m_vUnits.at(i)->getAmmoData().x) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().y));
 		}
 
+		//Centers the text onto the bar its displaying data for
 		UIText.at(i * 2)->setPosition(UIBars.at(i * 2)->getPosition() + sf::Vector2f((UIBars.at(i * 2)->getSize().x / 2) - (UIText.at(i * 2)->getLocalBounds().width / 2), 0));
-		UIText.at((i * 2)+1)->setPosition(UIBars.at((i * 2) + 1)->getPosition() + sf::Vector2f((UIBars.at((i * 2) + 1)->getSize().x / 2) - (UIText.at((i * 2) + 1)->getLocalBounds().width / 2), 0));
-	}
-
-	//Door checks
-	for (int i = 0; i < m_Doors.size(); i++)
-	{
-		bool OpenDoor = false;
-		for (int j = 0; j < m_Characters.size(); j++)
-		{
-			sf::Vector2u CharacterTile(((int)m_Characters.at(j)->getPosition().x - m_CurrentMap.getPosition().x) / (int)m_CurrentMap.getTileSize().x,
-									   ((int)m_Characters.at(j)->getPosition().y - m_CurrentMap.getPosition().y) / (int)m_CurrentMap.getTileSize().y);
-
-			if (CharacterTile == sf::Vector2u(m_Doors.at(i)->getTile().x + 1, m_Doors.at(i)->getTile().y) ||
-				CharacterTile == sf::Vector2u(m_Doors.at(i)->getTile().x - 1, m_Doors.at(i)->getTile().y) ||
-				CharacterTile == sf::Vector2u(m_Doors.at(i)->getTile().x, m_Doors.at(i)->getTile().y + 1) ||
-				CharacterTile == sf::Vector2u(m_Doors.at(i)->getTile().x, m_Doors.at(i)->getTile().y - 1) ||
-				CharacterTile == m_Doors.at(i)->getTile())
-			{
-				OpenDoor = true;
-			}
-		}
-		m_Doors.at(i)->setOpen(OpenDoor);
+		UIText.at((i * 2) + 1)->setPosition(UIBars.at((i * 2) + 1)->getPosition() + sf::Vector2f((UIBars.at((i * 2) + 1)->getSize().x / 2) - (UIText.at((i * 2) + 1)->getLocalBounds().width / 2), 0));
 	}
 }
 
-void Game::characterInteractions(std::vector<Character*> Chars1, std::vector<Character*>  Chars2)
+void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<Character*>  vCharSet2)
 {
-	bool bSameCharacters = (Chars1 == Chars2); //Holds whether the character containers are the same
 	bool bSeenCharacter = false; //Holds whether a characters been seen by the current characters
 
 	//For every character in the first container
-	for (int i = 0; i < Chars1.size(); i++)
+	for (int i = 0; i < vCharSet1.size(); i++)
 	{
 		bSeenCharacter = false;
 		//Check against every character in the second container
-		for (int j = 0; j < Chars2.size(); j++)
+		for (int j = 0; j < vCharSet2.size(); j++)
 		{
 			//Dont allow checks on itself
-			if (i != j || !bSameCharacters)
+			if (!(vCharSet1 == vCharSet2 && i == j))
 			{
 				//Check lazer collision
-				if (Chars1.at(i)->lazerChecks({ Chars2.at(j)->getCollisionLine(Chars1.at(i)->getRotation()).at(0),
-												Chars2.at(j)->getCollisionLine(Chars1.at(i)->getRotation()).at(1)}))
+				if (vCharSet1.at(i)->lazerChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
+					vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1)}))
 				{
+					//If a character is seem then set it to be a target
 					bSeenCharacter = true;
-					if (Chars2.at(j)->getHealthData().x > 0)
+					if (vCharSet2.at(j)->getHealthData().x > 0)
 					{
-						Chars1.at(i)->setTarget(Chars2.at(j));
-
-						//Shoot if the character has health
-						Chars2.at(j)->setHealth(Chars2.at(j)->getHealthData().x - Chars1.at(i)->shoot({ Chars2.at(j)->getCollisionLine(Chars1.at(i)->getRotation()).at(0),
-																										Chars2.at(j)->getCollisionLine(Chars1.at(i)->getRotation()).at(1) }));
+						vCharSet1.at(i)->setTarget(vCharSet2.at(j));
 					}
 				}
+
+				//Take health off if a bullet has been shot
+				vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().x - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
+																												vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
 			}
 		}
-		//If no characters have been seen then remove targets
+
+		//If no characters have been seen then set a Null target
 		if (bSeenCharacter == false)
 		{
-			Chars1.at(i)->setTarget(NULL);
+			vCharSet1.at(i)->setTarget(NULL);
 		}
-	}
-}
-void Game::clickRight(sf::Vector2i mousePos)
-{
-	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
-	if (m_Units.size() > 0)
-	{
-		m_Units.at(0)->setPath(m_Pathfinder.findPath(m_Units.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
 	}
 }
 
 void Game::clickLeft(sf::Vector2i mousePos)
 {
+	//Checks all of the UI Buttons
 	for (int i = 0; i < Button1.size(); i++)
 	{
+		//If a Class button is pressed
 		if (Button1.at(i).clicked(mousePos))
 		{
-			switch (m_Units.at(i)->getClass())
+			//Switches the class of the unit
+			switch (m_vUnits.at(i)->getClass())
 			{
 			case Sniper:
-				m_Units.at(i)->setClass(Support, m_Textures.getTexture(5));
+				m_vUnits.at(i)->setClass(Support, m_Textures.getTexture(5));
 				Button1.at(i).setTexture(m_Textures.getTexture(8));
 				break;
 			case Support:
-				m_Units.at(i)->setClass(Shotgunner, m_Textures.getTexture(6));
+				m_vUnits.at(i)->setClass(Shotgunner, m_Textures.getTexture(6));
 				Button1.at(i).setTexture(m_Textures.getTexture(9));
 				break;
 			case Shotgunner:
-				m_Units.at(i)->setClass(Assault, m_Textures.getTexture(7));
+				m_vUnits.at(i)->setClass(Assault, m_Textures.getTexture(7));
 				Button1.at(i).setTexture(m_Textures.getTexture(10));
 				break;
 			case Assault:
-				m_Units.at(i)->setClass(Sniper, m_Textures.getTexture(4));
+				m_vUnits.at(i)->setClass(Sniper, m_Textures.getTexture(4));
 				Button1.at(i).setTexture(m_Textures.getTexture(3));
 				break;
 			}
 		}
 	}
-	//m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
-	//if (m_Enemies.size() > 0)
-	//{
-	//	m_Enemies.at(0)->setPath(m_Pathfinder.findPath(m_Enemies.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
-	//}
+}
+
+void Game::clickRight(sf::Vector2i mousePos)
+{
+	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
+	if (m_vUnits.size() > 0)
+	{
+		m_vUnits.at(0)->setPath(m_Pathfinder.findPath(m_vUnits.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
+	}
 }
 
 void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_CurrentMap); //Draws the Grid
 
-	for (int i = 0; i < m_Walls.size(); i++)
+	//Draws the walls
+	for (int i = 0; i < m_vWalls.size(); i++)
 	{
-		target.draw(*m_Walls.at(i)); //Draws the units
+		target.draw(*m_vWalls.at(i)); 
 	}
-	for (int i = 0; i < m_Doors.size(); i++)
+
+	//Draws the doors
+	for (int i = 0; i < m_vDoors.size(); i++)
 	{
-		target.draw(*m_Doors.at(i)); //Draws the units
+		target.draw(*m_vDoors.at(i));
 	}
-	for (int i = 0; i < m_Characters.size(); i++)
+
+	//Draws the characters
+	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
-		target.draw(*m_Characters.at(i)); //Draws the characters
+		target.draw(*m_vCharacters.at(i));
 	}
+
+	//Draws the edges of the walls
 	target.draw(m_EdgeLines);
+
+	//Draws the Unit UI
 	for (int i = 0; i < unitScreen.size(); i++)
 	{
 		target.draw(*unitScreen.at(i));
@@ -600,24 +619,27 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(Button1.at(i));
 	}
-	target.draw(toolbar);
+
+	//Draws the UI
+	target.draw(m_Toolbar);
 }
 
 Game::~Game()
 {
-	for (int i = 0; i < m_Characters.size(); i++)
+	//Cleans all pointers.
+	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
-		delete(m_Characters.at(i));
-		m_Characters.at(i) = NULL;
+		delete(m_vCharacters.at(i));
+		m_vCharacters.at(i) = NULL;
 	}
-	for (int i = 0; i < m_Walls.size(); i++)
+	for (int i = 0; i < m_vWalls.size(); i++)
 	{
-		delete(m_Walls.at(i));
-		m_Walls.at(i) = NULL;
+		delete(m_vWalls.at(i));
+		m_vWalls.at(i) = NULL;
 	}
-	for (int i = 0; i < m_Doors.size(); i++)
+	for (int i = 0; i < m_vDoors.size(); i++)
 	{
-		delete(m_Doors.at(i));
-		m_Doors.at(i) = NULL;
+		delete(m_vDoors.at(i));
+		m_vDoors.at(i) = NULL;
 	}
 }

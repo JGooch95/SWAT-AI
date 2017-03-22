@@ -229,6 +229,12 @@ void Character::update()
 				m_fAimingAngle = (atan2f(Vect.y, Vect.x) * (180.0f / 3.14f)) - m_fMovementAngle - 90;// -m_fMovementAngle; // Finding the angle of the vector for the sprite
 				m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
 
+				//if (lazerChecks({ m_CurrentTarget->getCollisionLine(getRotation()).at(0),
+				//				  m_CurrentTarget->getCollisionLine(getRotation()).at(1) }))
+				//{
+					shoot();
+				//}
+
 				if (m_CurrentTarget->getHealthData().x <= 0)
 				{
 					m_CurrentTarget = NULL;
@@ -553,6 +559,71 @@ float Character::shoot(std::vector<sf::Vector2f>vEdges)
 	return 0.0f; //Deal no damage
 }
 
+float Character::bulletChecks(std::vector<sf::Vector2f>vEdges)
+{
+	if (bShooting)
+	{
+		std::pair<bool, sf::Vector2f> lowestIntersect = findLowestIntersect(vEdges, std::vector<sf::Vector2f>{ m_BulletRays[0].position, m_BulletRays[1].position});
+		
+		m_BulletRays[1].position = lowestIntersect.second;
+		if (lowestIntersect.first)
+		{
+			return m_Weapon1.getDamage();
+		}
+	}
+	return 0;
+}
+
+void Character::shoot()
+{
+	if (!m_bReloading)
+	{
+		//Otherwise if the gun can shoot then shoot
+		if (m_FireRateClock.getElapsedTime().asSeconds() >= m_Weapon1.getFireRate())
+		{
+			bShooting = true;
+
+			sf::Vector2f RotVect(m_Weapon1.getIntersect() - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
+			float fMagnitude = sqrtf(pow(RotVect.x, 2.0f) + pow(RotVect.y, 2.0f));
+			RotVect /= fMagnitude;
+
+			sf::Vector2f WeaponDist = (m_Weapon1.getSize().y * m_Weapon1.getScale().y) * RotVect; // Finds the end of the weapon
+			RotVect *= (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2; //Gets the edge of the character from the center
+
+			m_BulletRays[0].position = m_Weapon1.getPosition() + RotVect + WeaponDist; //Sets the point of shooting
+
+			float fRotAngle = atan2f(RotVect.y, RotVect.x) * (180.0f / 3.14f); // Finding the angle of the weapon
+
+																			   //Sets the muzzle flash to point towards out of the gun
+			muzzleFlash.setPosition(m_Weapon1.getPosition() + RotVect + WeaponDist);
+			muzzleFlash.setRotation(fRotAngle + 90);
+
+			//Gets the vector from the weapon to the lazer point
+			RotVect = m_Weapon1.getIntersect() - m_BulletRays[0].position;
+			fRotAngle = atan2f(RotVect.y, RotVect.x) * (180.0f / 3.14f); // Finding the angle of the vector
+
+			//Offsetting the vector dependant on the accuracy
+			float AccuracyAngle = 0;
+			if (m_fAccuracy != 1)
+			{
+				//Ranges between -10 degrees and 10 degrees
+				int b = m_fAccuracy * 100;
+				AccuracyAngle = 10.0f * (((rand() % ((100 - b) * 2)) - (100 - b)) / 100.0f);
+			}
+
+			//Finds the collision point
+			RotVect = m_BulletRays[0].position + sf::Vector2f(2000.0f*cos((fRotAngle + AccuracyAngle) * (3.14159265359f / 180.0f)),
+				2000.0f* sin((fRotAngle + AccuracyAngle) * (3.14159265359f / 180.0f)));
+			m_BulletRays[1].position = RotVect;
+
+			m_FireRateClock.restart();
+
+			m_AmmoBar.setLevel(m_AmmoBar.getLevelLimits().x - 1);
+		}
+	}
+}
+
+
 void Character::reload()
 {
 	m_bReloading = true;
@@ -622,6 +693,11 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 	reload();
 	
 	
+}
+
+bool Character::checkVisionCone(sf::Vector2f position)
+{
+
 }
 
 bool Character::reloading()

@@ -4,6 +4,12 @@
 
 namespace Util
 {
+	struct Limits
+	{
+		float upper;
+		float lower;
+	};
+
 	//Calculates the 2D cross product
 	static float cross(sf::Vector2f pointA, sf::Vector2f pointB)
 	{
@@ -17,14 +23,14 @@ namespace Util
 		sf::Vector2f line1Vect(line1B - line1A); //Axis 1 
 		sf::Vector2f line2Vect(line2B - line2A); //Axis 2 
 
-		float crossed = Util::cross(line1Vect, line2Vect);
-		float line1Scalar = Util::cross(line2A - line1A, line2Vect) / crossed; //Finds the scalar value of how far up the first line the points cross
-		float line2Scalar = Util::cross(line2A - line1A, line1Vect) / crossed; //Finds the scalar value of how far up the second line the points cross
+		float fCrossed = Util::cross(line1Vect, line2Vect);
+		float fLine1Scalar = Util::cross(line2A - line1A, line2Vect) / fCrossed; //Finds the scalar value of how far up the first line the points cross
+		float fLine2Scalar = Util::cross(line2A - line1A, line1Vect) / fCrossed; //Finds the scalar value of how far up the second line the points cross
 
 		//If both scalars are within 0 and 1 then the lines intersect within the range
-		if (line1Scalar >= 0 && line1Scalar <= 1 && line2Scalar >= 0 && line2Scalar <= 1)
+		if (fLine1Scalar >= 0 && fLine1Scalar <= 1 && fLine2Scalar >= 0 && fLine2Scalar <= 1)
 		{
-			return line1A + (line1Scalar * line1Vect); // a + tr
+			return line1A + (fLine1Scalar * line1Vect); // a + tr
 		}
 		else
 		{
@@ -32,11 +38,13 @@ namespace Util
 		}
 	}
 
-	
+	//Finds the magnitude of a vector
 	static float magnitude(sf::Vector2f vect)
 	{
 		return sqrtf(pow(vect.x, 2.0f) + pow(vect.y, 2.0f));
 	}
+
+	//Keeps an angle between a range of values
 	static float setWithinRange(float fAngle, float fLowerBound, float fUpperBound)
 	{
 		while (fAngle < fLowerBound)

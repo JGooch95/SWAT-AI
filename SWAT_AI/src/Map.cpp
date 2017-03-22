@@ -2,14 +2,15 @@
 
 Map::Map()
 {
+	m_Grid.setPrimitiveType(sf::Lines);
 }
 
-void Map::setup(sf::FloatRect Area, sf::Vector2f newGridDims)
+void Map::setup(sf::FloatRect area, sf::Vector2f newGridDims)
 {
 	//Sets the main variables
-	m_Position = sf::Vector2f(Area.left, Area.top);
-	m_WindowSize = sf::Vector2u(Area.width, Area.height);
-	m_TileSize = sf::Vector2f(Area.width / newGridDims.x, Area.height / newGridDims.y);
+	m_Position = sf::Vector2f(area.left, area.top);
+	m_WindowSize = sf::Vector2u(area.width, area.height);
+	m_TileSize = sf::Vector2f(area.width / newGridDims.x, area.height / newGridDims.y);
 	m_GridDimensions = newGridDims;
 	setupGrid();
 }
@@ -17,52 +18,51 @@ void Map::setup(sf::FloatRect Area, sf::Vector2f newGridDims)
 void Map::load(std::string sDir)
 {
 	std::ifstream mapFile;
-	std::string sLine;
-	int iLongestLineLength = 0;
-
 	mapFile.open(sDir); //Open the map file
 
-	if (mapFile.is_open()) //If the map is open
+	if (mapFile.is_open()) //If the file opened correctly
 	{
-		while (sLine!="EOF") //Repeat until end of file reached
-		{  
+		//Initialise reading variables
+		int iLongestLineLength = 0;
+		std::string sLine;
+
+		while (!mapFile.eof()) //while the end of file hasnt been reached
+		{
 			getline(mapFile, sLine); //Get the next line
 
-			if (sLine != "EOF") //If this is not the end of the file
+			m_vcLevelBits.resize(m_vcLevelBits.size() + 1); //Adds another row of bits
+
+			if (sLine.length() > iLongestLineLength) //If the length of the line is longer than the longest current line
 			{
-				m_vcLevelBits.resize(m_vcLevelBits.size() + 1); //Adds another row
+				iLongestLineLength = sLine.length(); //It becomes the new longest
+			}
 
-				if (sLine.length() > iLongestLineLength) //If the length of the line is longer than the longest current line
-				{
-					iLongestLineLength = sLine.length(); //It becomes the new longest
-				}
-
-				//For every bit read it into the data vector
-				for (int i = 0; i < sLine.length(); i++)
-				{
-					m_vcLevelBits.at(m_vcLevelBits.size() - 1).push_back(sLine.at(i));
-				}
+			//For every bit read it into the data vector
+			for (int i = 0; i < sLine.length(); i++)
+			{
+				m_vcLevelBits.at(m_vcLevelBits.size() - 1).push_back(sLine.at(i));
 			}
 		}
+		m_GridDimensions = sf::Vector2f(iLongestLineLength, m_vcLevelBits.size());
+		m_TileSize = sf::Vector2f(m_WindowSize.x / m_GridDimensions.x, m_WindowSize.y / m_GridDimensions.y);
+		setupGrid();
 	}
 	else
 	{
+		//Ouptut an error
 		std::cout << "Map File: " << sDir << " could not be opened." << "\n";
 	}
 
-	m_GridDimensions.x = iLongestLineLength;
-	m_GridDimensions.y = m_vcLevelBits.size();
-	m_TileSize = sf::Vector2f(m_WindowSize.x / m_GridDimensions.x, m_WindowSize.y / m_GridDimensions.y);
-	setupGrid();
+	mapFile.close();
 }
 
 void Map::setupGrid()
 {
-	//Sets up the grid
-	m_Grid.setPrimitiveType(sf::Lines);
+	//Sets up the grid size
 	sf::Vector2f m_GridCount(m_GridDimensions.x * 2, m_GridDimensions.y * 2);
 	m_Grid.resize(m_GridCount.x + m_GridCount.y);
 
+	//Adds the lines incrementally on each axis
 	//X axis.
 	for (int i = 0; i < m_GridCount.x; i += 2)
 	{
@@ -78,35 +78,39 @@ void Map::setupGrid()
 	}
 }
 
-sf::Vector2f Map::getTileSize()
-{
-	return m_TileSize;
-}
-sf::Vector2f Map::getGridDims()
-{
-	return m_GridDimensions;
-}
-sf::Vector2u Map::getWindowSize()
-{
-	return m_WindowSize;
-}
-
-std::vector<std::vector<char>> Map::getMapData()
-{
-	return m_vcLevelBits;
-}
-
-void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const
-{
-	target.draw(m_Grid);
-}
-
+//Setters
 void  Map::setPosition(sf::Vector2f pos)
 {
 	m_Position = pos;
 }
 
-sf::Vector2f  Map::getPosition()
+//Getters
+std::vector<std::vector<char>> Map::getMapData()
+{
+	return m_vcLevelBits;
+}
+
+sf::Vector2f Map::getTileSize()
+{
+	return m_TileSize;
+}
+
+sf::Vector2f Map::getGridDims()
+{
+	return m_GridDimensions;
+}
+
+sf::Vector2u Map::getWindowSize()
+{
+	return m_WindowSize;
+}
+
+sf::Vector2f Map::getPosition()
 {
 	return m_Position;
+}
+
+void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	target.draw(m_Grid);
 }

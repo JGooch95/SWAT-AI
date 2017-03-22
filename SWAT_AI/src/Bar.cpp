@@ -2,10 +2,16 @@
 
 Bar::Bar()
 {
-	m_LevelLimits.x = 100.0f;
-	m_LevelLimits.y = 100.0f;
+	m_LevelLimits.lower = 100.0f;
+	m_LevelLimits.upper = 100.0f;
 }
 
+void Bar::update()
+{
+	m_FrontBox.setSize(sf::Vector2f(m_BackBox.getSize().x * (m_LevelLimits.lower / m_LevelLimits.upper), m_FrontBox.getSize().y));
+}
+
+//Setters
 void Bar::setSize(sf::Vector2f newDimensions)
 {
 	m_BackBox.setSize(newDimensions);
@@ -31,14 +37,14 @@ void Bar::setBarColor(sf::Color newColor)
 
 void Bar::setLevel(float fLevel)
 {
-	m_LevelLimits.x = fLevel;
-	if (m_LevelLimits.x < 0.0f)
+	m_LevelLimits.lower = fLevel;
+	if (m_LevelLimits.lower < 0.0f)
 	{
-		m_LevelLimits.x = 0.0f;
+		m_LevelLimits.lower = 0.0f;
 	}
-	else if (m_LevelLimits.x > m_LevelLimits.y)
+	else if (m_LevelLimits.lower > m_LevelLimits.upper)
 	{
-		m_LevelLimits.x = m_LevelLimits.y;
+		m_LevelLimits.lower = m_LevelLimits.upper;
 	}
 	update();
 }
@@ -47,7 +53,7 @@ void Bar::setLimit(float fLimit)
 {
 	if (fLimit > 0)
 	{
-		m_LevelLimits.y = fLimit;
+		m_LevelLimits.upper = fLimit;
 		update();
 	}
 	else
@@ -56,11 +62,7 @@ void Bar::setLimit(float fLimit)
 	}
 }
 
-void Bar::update()
-{
-		m_FrontBox.setSize(sf::Vector2f(m_BackBox.getSize().x * (m_LevelLimits.x / m_LevelLimits.y), m_FrontBox.getSize().y));
-}
-
+//Getters
 sf::Vector2f Bar::getSize()
 {
 	return m_BackBox.getSize();
@@ -68,7 +70,7 @@ sf::Vector2f Bar::getSize()
 
 sf::Vector2f Bar::getLevelLimits()
 {
-	return m_LevelLimits;
+	return sf::Vector2f(m_LevelLimits.lower, m_LevelLimits.upper);
 }
 
 sf::Vector2f Bar::getPosition()

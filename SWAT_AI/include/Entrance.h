@@ -10,11 +10,15 @@ class Entrance : public Object
 		sf::Vector2u m_Tile;
 
 	public:
-		Entrance();
+		Entrance(); //Constructor
+
+		//Setters
 		void setOpen(bool bState);
-		bool isOpen();
 		void setOrientation(float fAngle);
 		void setDirection(int iDir);
 		void setTile(sf::Vector2u Tile);
+
+		//Getters
+		bool isOpen();
 		sf::Vector2u getTile();
 };
