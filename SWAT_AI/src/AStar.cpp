@@ -2,17 +2,12 @@
 
 AStar::AStar()
 {
-
+	m_CurrentMap = Map::getInstance();
+	setup();
 }
 
-AStar::AStar(Map* map1)
+void AStar::setup()
 {
-	setup(map1);
-}
-
-void AStar::setup(Map* map1)
-{
-	m_CurrentMap = map1;
 	m_vGrid.resize(m_CurrentMap->getGridDims().x * m_CurrentMap->getGridDims().y);
 	setupLists();
 	m_viTilesToCheck = {

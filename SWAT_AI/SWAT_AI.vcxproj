@@ -164,6 +164,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\TextureLoader.cpp" />
     <ClCompile Include="src\Weapon.cpp" />
   </ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="include\Map.h" />
     <ClInclude Include="include\MathUtils.h" />
     <ClInclude Include="include\Object.h" />
+    <ClInclude Include="include\Settings.h" />
     <ClInclude Include="include\TextureLoader.h" />
     <ClInclude Include="include\Weapon.h" />
   </ItemGroup>

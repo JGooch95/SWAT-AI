@@ -5,16 +5,14 @@ Object::Object()
 	//Sets up the sprite
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 50, 50));
 	m_MainSprite.setPosition(100, 100);
-}
-
-void Object::linkMap(Map* newMap)
-{
-	m_CurrentMap = newMap;
+	m_CurrentMap = Map::getInstance();
+	m_CurrentSettings = Settings::getInstance();
 }
 
 //Setters
 void Object::setTexture(sf::Texture* tex2)
 {
+	m_CurrentTexture = tex2;
 	m_MainSprite.setTexture(*tex2); //Applies the texture to the sprite.
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, tex2->getSize().x, tex2->getSize().y));
 }
@@ -35,6 +33,13 @@ void Object::setSize(sf::Vector2f dims)
 	{
 		m_MainSprite.setScale(sf::Vector2f(dims.x / m_MainSprite.getTexture()->getSize().x, dims.y / m_MainSprite.getTexture()->getSize().y));
 	}
+}
+
+void Object::setArea(sf::Vector2f dims)
+{
+	m_MainSprite.setTextureRect(sf::IntRect(0, 0, dims.x, dims.y));
+	m_CurrentTexture->setRepeated(true);
+	m_MainSprite.setTexture(*m_CurrentTexture);
 }
 
 void Object::setRotation(float fRot)

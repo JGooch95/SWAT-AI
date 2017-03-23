@@ -4,8 +4,6 @@
 
 Character::Character()
 {
-	m_Weapon1.linkMap(m_CurrentMap);
-
 	//Sets up the sprite
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 50, 50));
 	m_MainSprite.setPosition(100, 100);
@@ -70,36 +68,35 @@ Character::Character()
 	m_CurrentState = SEARCH_SWEEP;
 	m_iAimingDirection = 1;
 	m_CurrentTarget = NULL;
-	bDrawVision = false;
+	m_bDrawVision = false;
 	srand(time(NULL));
 }
 
 void Character::lookAt(sf::Vector2f position)
 {
-	sf::Vector2f RotVect (position - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
+	sf::Vector2f rotVect (position - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
 
-	//Finding the unit normal
-	float fMagnitude = sqrtf(pow(RotVect.x, 2.0f) + pow(RotVect.y, 2.0f)); 
-	RotVect /= fMagnitude; 
+	m_Weapon1.aim(position);
 
-	float fRotAngle = -atan2f(RotVect.x, RotVect.y) * (180.0f / 3.14f); // Finding the angle of the vector for the sprite
+	rotVect /= Util::magnitude(rotVect); 
+
+	m_MainSprite.setRotation(Util::getAngle(rotVect) + 90);
+
+	rotVect *= ((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2.0f);
 
 	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
-	m_OrientationLine[1].position = m_MainSprite.getPosition() + RotVect;
-
-	m_MainSprite.setRotation(fRotAngle);
-	m_Weapon1.aim(RotVect);
+	m_OrientationLine[1].position = m_MainSprite.getPosition() + rotVect;
 }
 
 void Character::lookAt(float fAngle)
 {
-	sf::Vector2f RotVect(((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2) * cos((fAngle +90) * (3.14159265359f / 180.0f)),
-						 ((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2) * sin((fAngle +90) * (3.14159265359f / 180.0f))); //Finding the vector between the character's center and the mouse
+	//Finding the vector between the character's center and the mouse
+	sf::Vector2f rotVect(Util::rotateVect(sf::Vector2f((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2, (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2), fAngle));
 
 	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
-	m_OrientationLine[1].position = m_MainSprite.getPosition() + RotVect;
+	m_OrientationLine[1].position = m_MainSprite.getPosition() + rotVect;
 
 	m_MainSprite.setRotation(fAngle);
 	m_Weapon1.aim(fAngle);
@@ -114,17 +111,17 @@ void Character::move()
 {
 	if (!m_Path.empty())
 	{
-		const float kfMoveSpeed = 2.0f; //The amount of pixels the character moves per frame
+		const float kfMoveSpeed = 2.0f * m_MainSprite.getScale().x; //The amount of pixels the character moves per frame
 
 		//Sets the node to reach to be the next node in the path
-		sf::Vector2f Destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+		sf::Vector2f destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
 								 (((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
-		Destination += m_CurrentMap->getPosition();
+		destination += m_CurrentMap->getPosition();
 
-		sf::Vector2f Velocity(Destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
+		sf::Vector2f velocity(destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
 
 		//Finds the unit normal
-		float fMagnitude = sqrtf(pow(Velocity.x, 2) + pow(Velocity.y, 2));
+		float fMagnitude = Util::magnitude(velocity);
 
 		if (fMagnitude == 0)
 		{
@@ -132,22 +129,22 @@ void Character::move()
 		}
 		else
 		{
-			Velocity /= fMagnitude;
+			velocity /= fMagnitude;
 
 			m_MovementLine[0].position = m_MainSprite.getPosition();
-			m_MovementLine[1].position = m_MainSprite.getPosition() + (Velocity * (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2.0f);
+			m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2.0f);
 
-			m_fMovementAngle = (atan2f(Velocity.y, Velocity.x) * (180.0f / 3.14f)) - 90;
+			m_fMovementAngle = Util::getAngle(velocity) - 90;
 			m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
 
-			Velocity *= kfMoveSpeed; //Multiplies it by the speed
+			velocity *= kfMoveSpeed; //Multiplies it by the speed
 
-			m_MainSprite.setPosition(m_MainSprite.getPosition() + Velocity); //Moves the Sprite
+			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
-			if (m_MainSprite.getPosition().x >= Destination.x - 10 &&
-				m_MainSprite.getPosition().x <= Destination.x + 10 &&
-				m_MainSprite.getPosition().y <= Destination.y + 10 &&
-				m_MainSprite.getPosition().y >= Destination.y - 10)
+			if (m_MainSprite.getPosition().x >= destination.x - 10 &&
+				m_MainSprite.getPosition().x <= destination.x + 10 &&
+				m_MainSprite.getPosition().y <= destination.y + 10 &&
+				m_MainSprite.getPosition().y >= destination.y - 10)
 			{
 				m_Path.pop_front();
 			}
@@ -169,7 +166,6 @@ void Character::move()
 void Character::update()
 {
 	move();
-	m_Weapon1.linkMap(m_CurrentMap);
 	m_Weapon1.update();
 	m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getScale().x * 70, m_MainSprite.getScale().y * 5));
 	m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getScale().x * 70, m_MainSprite.getScale().y * 5));
@@ -214,7 +210,7 @@ void Character::update()
 			{
 				lookAt(m_CurrentTarget->getPosition());
 				sf::Vector2f Vect = m_CurrentTarget->getPosition() - m_MainSprite.getPosition();
-				m_fAimingAngle = (atan2f(Vect.y, Vect.x) * (180.0f / 3.14f)) - m_fMovementAngle - 90;// -m_fMovementAngle; // Finding the angle of the vector for the sprite
+				m_fAimingAngle = Util::getAngle(Vect) - m_fMovementAngle - 90;// -m_fMovementAngle; // Finding the angle of the vector for the sprite
 				m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
 
 				//if (lazerChecks({ m_CurrentTarget->getCollisionLine(getRotation()).at(0),
@@ -310,8 +306,7 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		float fRotAngle = m_fMovementAngle + m_fAimingAngle + (i*fVisionCone) + 90;
 		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
 
-		sf::Vector2f rayVect = sf::Vector2f(fViewDistance * cos((fRotAngle) * (3.14159265359f / 180.0f)),
-			fViewDistance * sin((fRotAngle) * (3.14159265359f / 180.0f)));
+		sf::Vector2f rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle-90);
 
 		//Adds the data to a temp Ray to be added to the ray vector.
 		tempRay.Vect = m_MainSprite.getPosition() + rayVect;
@@ -327,11 +322,10 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		sf::Vector2f rayVect = vEdges.at(i) - m_MainSprite.getPosition();
 
 		//Gets the angle of the vector
-		float fRotAngle = atan2f(rayVect.y, rayVect.x) * (180.0f / 3.14f);
+		float fRotAngle = Util::getAngle(rayVect);
 		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
 		
-		rayVect = sf::Vector2f(fViewDistance * cos((fRotAngle) * (3.14159265359f / 180.0f)),
-			fViewDistance * sin((fRotAngle) * (3.14159265359f / 180.0f)));
+		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
 
 		//Adds the data to a temp Ray to be added to the ray vector.
 		tempRay.Vect = m_MainSprite.getPosition() + rayVect;
@@ -361,9 +355,8 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		if (Util::magnitude(vRays.at(i).OriginalVect - m_MainSprite.getPosition()) < Util::magnitude(vRays.at(i).Vect - m_MainSprite.getPosition()))
 		{
 			tempRay.Vect = vRays.at(i).OriginalVect;
-			tempRay.angle = vRays.at(i).angle;
+			tempRay.angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
 			tempRay.OriginalVect = sf::Vector2f(fViewDistance, fViewDistance);
-			tempRay.angle = Util::setWithinRange(tempRay.angle, 0.0f, 360.0f);
 			vRays.push_back(tempRay);
 		}
 
@@ -439,8 +432,8 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 
 std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 {
-	sf::Vector2f radiusLine = sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) /2  * cos(fAngle * (3.14159265359 / 180)),
-										   (m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2 * sin(fAngle * (3.14159265359 / 180)));
+	sf::Vector2f radiusLine = Util::rotateVect(sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2, 
+															(m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2), fAngle - 90);
 
 	std::vector<sf::Vector2f> newCollisionLine = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine};
 	m_CollisionLine[0].position = newCollisionLine[0];
@@ -481,7 +474,6 @@ sf::Vector2f Character::getAmmoData()
 
 float Character::bulletChecks(std::vector<sf::Vector2f>vEdges)
 {
-
 	return m_Weapon1.bulletChecks(vEdges);
 }
 
@@ -496,7 +488,7 @@ void Character::setTarget(Character* newTarget)
 
 void Character::setVision(bool bState)
 {
-	bDrawVision = bState;
+	m_bDrawVision = bState;
 }
 
 void Character::setClass(classType newClassType, sf::Texture* GunTexture)
@@ -546,8 +538,6 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			break;
 	}
 	m_Weapon1.reload();
-	
-	
 }
 
 bool Character::checkVisionCone(sf::Vector2f position)
@@ -567,16 +557,19 @@ void Character::setMuzzle(sf::Texture* tex2)
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	if (bDrawVision)
+	if (m_bDrawVision)
 	{
 		target.draw(m_VisionRays);
 	}
 	target.draw(m_Weapon1);
 	target.draw(m_MainSprite);
-	target.draw(m_OrientationLine);
-	target.draw(m_PathLine);
-	target.draw(m_MovementLine);
-	target.draw(m_CollisionLine);
+	if (m_CurrentSettings->debugActive())
+	{
+		target.draw(m_OrientationLine);
+		target.draw(m_PathLine);
+		target.draw(m_MovementLine);
+		target.draw(m_CollisionLine);
+	}
 	target.draw(m_AmmoBar);
 	target.draw(m_HealthBar);
 }

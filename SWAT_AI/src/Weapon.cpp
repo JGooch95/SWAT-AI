@@ -35,50 +35,46 @@ Weapon::Weapon()
 		m_BulletRays[i].color = sf::Color(255, 255, 0, 255);
 	}
 
+	m_bShooting = false;
+
 	m_ReloadClock.restart();
 	m_FireRateClock.restart();
-	bShooting = false;
 }
 
 void Weapon::aim(sf::Vector2f location)
 {
+	sf::Vector2f vect = location - m_MainSprite.getPosition();
+
 	//Finds the unit vector
-	float fMagnitude = sqrtf(pow(location.x, 2.0f) + pow(location.y, 2.0f));
-	location /= fMagnitude;
-
-	float fRotAngle = -atan2f(location.x, location.y) * (180.0f / 3.14f); // Finding the angle of the vector given
-
-	location *= 2000.0f; //Multiplies the vector by the desired length
+	vect /= Util::magnitude(vect);
 
 	//Sets the rotation of the sprite and adjusts the aimline according to the rotation
-	m_MainSprite.setRotation(fRotAngle);
+	m_MainSprite.setRotation(Util::getAngle(vect) - 90);
+
+	vect *= 2000.0f; //Multiplies the vector by the desired length
 
 	m_AimLine[0].position = m_MainSprite.getPosition();
-	m_AimLine[1].position = m_MainSprite.getPosition() + location;
+	m_AimLine[1].position = m_MainSprite.getPosition() + vect;
 }
 
 void Weapon::aim(float fAngle)
 {
-	//Points a vector towards the angle given
-	sf::Vector2f RotVect(2000.0f * cos((fAngle + 90.0f) * (3.14159265359 / 180)),
-						 2000.0f * sin((fAngle + 90.0f) * (3.14159265359 / 180))); 
-
-
 	//Sets the rotation of the sprite and adjusts the aimline according to the rotation
 	m_MainSprite.setRotation(fAngle);
 
 	m_AimLine[0].position = m_MainSprite.getPosition();
-	m_AimLine[1].position = m_MainSprite.getPosition() + RotVect;
+	m_AimLine[1].position = m_MainSprite.getPosition() + Util::rotateVect(sf::Vector2f(2000, 2000), fAngle);
 }
 
 void Weapon::update()
 {
-	bShooting = false;
+	m_bShooting = false;
 	m_MainSprite.setScale(m_CurrentMap->getTileSize().x / 25, m_CurrentMap->getTileSize().y / 50);
 
 	muzzleFlash.setOrigin(sf::Vector2f(muzzleFlash.getSize().x / 2, muzzleFlash.getSize().y));
 	muzzleFlash.setSize(sf::Vector2f(m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x, m_MainSprite.getLocalBounds().height* m_MainSprite.getScale().y) * (1.0f / 3.0f));
 
+	//Reloading
 	if (m_bReloading)
 	{
 		if (m_ReloadClock.getElapsedTime().asSeconds() >= m_fReloadTime)
@@ -87,13 +83,9 @@ void Weapon::update()
 			m_bReloading = false;
 		}
 	}
-	else
+	else if (getAmmoLevels().lower <= 0) //If there is no ammo then reload
 	{
-		//If there is no ammo then reload
-		if (getAmmoLevels().lower <= 0)
-		{
-			reload();
-		}
+		reload();
 	}
 }
 
@@ -104,44 +96,37 @@ void Weapon::shoot()
 		//Otherwise if the gun can shoot then shoot
 		if (m_FireRateClock.getElapsedTime().asSeconds() >= m_fFireRate)
 		{
-			bShooting = true;
+			m_bShooting = true;
 
 			sf::Vector2f RotVect(getIntersect() - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
-			float fMagnitude = sqrtf(pow(RotVect.x, 2.0f) + pow(RotVect.y, 2.0f));
-			RotVect /= fMagnitude;
+			RotVect /= Util::magnitude(RotVect);
 
 			sf::Vector2f WeaponDist = (getSize().y * getScale().y) * RotVect; // Finds the end of the weapon
 			RotVect *= (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2; //Gets the edge of the character from the center
 
-			m_BulletRays[0].position = getPosition() + RotVect + WeaponDist; //Sets the point of shooting
-
-			float fRotAngle = atan2f(RotVect.y, RotVect.x) * (180.0f / 3.14f); // Finding the angle of the weapon
-
-																			   //Sets the muzzle flash to point towards out of the gun
+			m_BulletRays[0].position = getPosition() + RotVect + WeaponDist; //Sets the point to shoot from
+			
+			//Sets the muzzle flash to point towards out of the gun
 			muzzleFlash.setPosition(getPosition() + RotVect + WeaponDist);
-			muzzleFlash.setRotation(fRotAngle + 90);
+			muzzleFlash.setRotation(Util::getAngle(RotVect) + 90);
 
-			//Gets the vector from the weapon to the lazer point
-			RotVect = getIntersect() - m_BulletRays[0].position;
-			fRotAngle = atan2f(RotVect.y, RotVect.x) * (180.0f / 3.14f); // Finding the angle of the vector
+			//Finds the direction the bullet will head towards
+			float fRotAngle = Util::getAngle(getIntersect() - m_BulletRays[0].position);
 
-																		 //Offsetting the vector dependant on the accuracy
-			float AccuracyAngle = 0;
+			//Offsetting the bullet dependant on the accuracy
+			float fAccuracyAngle = 0;
 			if (m_fAccuracy != 1)
 			{
 				//Ranges between -10 degrees and 10 degrees
-				int b = m_fAccuracy * 100;
-				AccuracyAngle = 10.0f * (((rand() % ((100 - b) * 2)) - (100 - b)) / 100.0f);
+				int iAccuracyPercent = m_fAccuracy * 100;
+				fAccuracyAngle = 10.0f * (((rand() % ((100 - iAccuracyPercent) * 2)) - (100 - iAccuracyPercent)) / 100.0f);
 			}
 
-			//Finds the collision point
-			RotVect = m_BulletRays[0].position + sf::Vector2f(2000.0f*cos((fRotAngle + AccuracyAngle) * (3.14159265359f / 180.0f)),
-				2000.0f* sin((fRotAngle + AccuracyAngle) * (3.14159265359f / 180.0f)));
-			m_BulletRays[1].position = RotVect;
+			RotVect = Util::rotateVect(sf::Vector2f(2000.0f, 2000.0f), fRotAngle + fAccuracyAngle - 90.0f);
+			m_BulletRays[1].position = m_BulletRays[0].position + RotVect;
 
+			setAmmo(m_AmmoLevels.lower - 1); //Increment the ammo
 			m_FireRateClock.restart();
-
-			setAmmo(m_AmmoLevels.lower - 1);
 		}
 	}
 }
@@ -154,7 +139,7 @@ void Weapon::reload()
 
 float Weapon::bulletChecks(std::vector<sf::Vector2f>vEdges)
 {
-	if (bShooting)
+	if (m_bShooting)
 	{
 		std::pair<bool, sf::Vector2f> lowestIntersect = Util::findLowestIntersect(vEdges, std::vector<sf::Vector2f>{ m_BulletRays[0].position, m_BulletRays[1].position});
 
@@ -228,28 +213,28 @@ void Weapon::setMuzzle(sf::Texture* tex2)
 float Weapon::getDamage()
 {
 	//Finds the distance between the target and the character
-	float dist = Util::magnitude(m_AimLine[1].position - m_MainSprite.getPosition());
-	float damage = m_DamageLimits.upper;
+	float fDist = Util::magnitude(m_AimLine[1].position - m_MainSprite.getPosition());
+	float fDamage = m_DamageLimits.upper;
 
 	//If the distance is further than the range then lower the damage
-	if (dist > m_RangeLimits.upper)
+	if (fDist > m_RangeLimits.upper)
 	{
-		dist = dist - m_RangeLimits.upper;
-		damage = m_DamageLimits.upper * (1-(dist / m_RangeLimits.upper));
+		fDist = fDist - m_RangeLimits.upper;
+		fDamage = m_DamageLimits.upper * (1-(fDist / m_RangeLimits.upper));
 	}
 	//If the distance is lower than the range then lower the damge
-	else if (dist < m_RangeLimits.lower)
+	else if (fDist < m_RangeLimits.lower)
 	{
-		damage = m_DamageLimits.upper * (dist / m_RangeLimits.lower);
+		fDamage = m_DamageLimits.upper * (fDist / m_RangeLimits.lower);
 	}
 
 	//limit the damage to the lowest damage if surpassed
-	if (damage < m_DamageLimits.lower)
+	if (fDamage < m_DamageLimits.lower)
 	{
-		damage = m_DamageLimits.lower;
+		fDamage = m_DamageLimits.lower;
 	}
 
-	return damage;
+	return fDamage;
 }
 
 float Weapon::getFireRate()
@@ -281,7 +266,7 @@ void Weapon::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_AimLine);
 	target.draw(m_MainSprite);
-	if (bShooting)
+	if (m_bShooting)
 	{
 		target.draw(m_BulletRays);
 		target.draw(muzzleFlash);

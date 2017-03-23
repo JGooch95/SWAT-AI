@@ -5,6 +5,19 @@ Map::Map()
 	m_Grid.setPrimitiveType(sf::Lines);
 }
 
+bool Map::m_bInstanceFlag = false;
+Map* Map::mapLocation = nullptr;
+
+Map* Map::getInstance()
+{
+	if (!m_bInstanceFlag)
+	{
+		mapLocation = new Map();
+		m_bInstanceFlag = true;
+	}
+	return mapLocation;
+}
+
 void Map::setup(sf::FloatRect area, sf::Vector2f newGridDims)
 {
 	//Sets the main variables

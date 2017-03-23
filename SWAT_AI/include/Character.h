@@ -24,7 +24,7 @@ class Character : public Object
 		float m_fAimingAngle;
 		int m_iAimingDirection;
 
-		bool bDrawVision;
+		bool m_bDrawVision;
 
 		//AI
 		std::deque<Node*> m_Path; //Holds the current path

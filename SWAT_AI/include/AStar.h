@@ -28,8 +28,7 @@ class AStar
 
 	public:
 		AStar();
-		AStar(Map* map1);
-		void setup(Map* map1);
+		void setup();
 		void setupLists();
 		std::deque<Node*> findPath(sf::Vector2f startPos, sf::Vector2f endPos);
 		void calculateManhattan(int iStartTile, int iEndTile);

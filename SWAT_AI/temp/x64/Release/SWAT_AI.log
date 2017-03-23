@@ -1,8 +1,23 @@
-﻿  main.cpp
+﻿  Character.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+src\Character.cpp(72): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+src\Character.cpp(413): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Game.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+src\Game.cpp(8): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(15): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(183): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(186): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(457): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  Weapon.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+src\Weapon.cpp(121): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  main.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generating code
-  27 of 1988 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
+  32 of 1996 functions ( 1.6%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+    7 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.pdb (Full PDB)

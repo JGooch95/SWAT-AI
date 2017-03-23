@@ -6,6 +6,7 @@
 class Map : public sf::Drawable
 {
 	private:
+		static bool m_bInstanceFlag;
 		sf::Vector2f m_Position; //Holds the position where the map starts
 		sf::Vector2f m_TileSize; //Holds the size of each tile on the grid
 		sf::Vector2f m_GridDimensions; //Holds how many tiles there are in each axis
@@ -18,6 +19,9 @@ class Map : public sf::Drawable
 
 	public:
 		Map(); //Constructor
+
+		static Map* mapLocation;
+		static Map* getInstance();
 
 		void setup(sf::FloatRect area, sf::Vector2f newGridDims);
 		void load(std::string sDir);

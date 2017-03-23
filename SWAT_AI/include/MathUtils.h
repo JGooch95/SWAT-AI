@@ -79,4 +79,16 @@ namespace Util
 		}
 		return std::pair<bool, sf::Vector2f>{ intersected, lowestIntersect };
 	}
+
+	static float getAngle(sf::Vector2f vect)
+	{
+		return atan2f(vect.y, vect.x) * (180.0f / 3.14f);
+		//return -atan2f(vect.x, vect.y) * (180.0f / 3.14f);
+	}
+
+	static sf::Vector2f rotateVect(sf::Vector2f vect, float fAngle)
+	{
+		return sf::Vector2f(vect.x * cos((fAngle + 90.0f) * (3.14159265359 / 180)),
+							vect.y * sin((fAngle + 90.0f) * (3.14159265359 / 180)));
+	}
 }

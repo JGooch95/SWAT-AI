@@ -31,6 +31,13 @@ int main()
 				mainWindow.close();
 				return 0;
 			}
+			if (event.type == sf::Event::KeyPressed)
+			{
+				if (event.key.code == sf::Keyboard::D)
+				{
+					Game1.enableDebug();
+				}
+			}
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
 				if (event.key.code == sf::Mouse::Right)

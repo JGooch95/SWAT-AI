@@ -18,7 +18,7 @@ class Weapon : public Object
 		bool m_bReloading;
 		float m_fReloadTime;
 		float m_fAccuracy;
-		bool bShooting;
+		bool m_bShooting;
 		Object muzzleFlash;
 
 		sf::VertexArray m_BulletRays;

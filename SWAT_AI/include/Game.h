@@ -9,12 +9,15 @@
 #include "Map.h"
 #include "AStar.h"
 #include "Button.h"
+#include "Settings.h"
 
 class Game : public sf::Drawable
 {
 	private:
 		//UI
 		sf::RectangleShape m_Toolbar;
+
+		Object m_Background;
 
 		//UI BOX--------------------------------------------------
 		std::vector<sf::RectangleShape*> unitScreen;
@@ -23,10 +26,11 @@ class Game : public sf::Drawable
 		std::vector<Button> Button1;
 		std::vector<Object> Icons;
 		//--------------------------------------------------------
-
+		
 		//Tools
 		AStar m_Pathfinder;
-		Map m_CurrentMap;
+		Map* m_CurrentMap;
+		Settings* m_CurrentSettings;
 
 		//RESOURCES
 		TextureLoader m_Textures; //Contains all textures used in the game
@@ -51,5 +55,6 @@ class Game : public sf::Drawable
 		void characterInteractions(std::vector<Character*> charSet1, std::vector<Character*>  charSet2); //Processes interactions between 2 sets of characters
 		void clickLeft(sf::Vector2i mousePos); //Processes left click
 		void clickRight(sf::Vector2i mousePos); //Processes right click
+		void enableDebug();
 		~Game(); //Deconstructor
 };
