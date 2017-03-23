@@ -219,7 +219,7 @@ void Character::update()
 					m_Weapon1.shoot();
 				//}
 
-				if (m_CurrentTarget->getHealthData().x <= 0)
+				if (m_CurrentTarget->getHealthData().lower <= 0)
 				{
 					m_CurrentTarget = NULL;
 				}
@@ -462,14 +462,14 @@ void Character::setHealth(float fLevel)
 
 }
 
-sf::Vector2f Character::getHealthData()
+Util::Limits Character::getHealthData()
 {
-	return sf::Vector2f(m_HealthLevels.lower, m_HealthLevels.upper);
+	return m_HealthLevels;
 }
 
-sf::Vector2f Character::getAmmoData()
+Util::Limits Character::getAmmoData()
 {
-	return sf::Vector2f(m_Weapon1.getAmmoLevels().lower, m_Weapon1.getAmmoLevels().upper);
+	return m_Weapon1.getAmmoLevels();
 }
 
 float Character::bulletChecks(std::vector<sf::Vector2f>vEdges)

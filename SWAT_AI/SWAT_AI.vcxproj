@@ -161,6 +161,7 @@
     <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\Entrance.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\HUDWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\Object.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="include\Character.h" />
     <ClInclude Include="include\Entrance.h" />
     <ClInclude Include="include\Game.h" />
+    <ClInclude Include="include\HUDWindow.h" />
     <ClInclude Include="include\Map.h" />
     <ClInclude Include="include\MathUtils.h" />
     <ClInclude Include="include\Object.h" />

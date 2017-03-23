@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Bar.h"
 #include "Weapon.h"
+#include "MathUtils.h"
 
 enum classType {Assault, Sniper, Support, Shotgunner};
 class Character : public Object
@@ -66,8 +67,8 @@ class Character : public Object
 		//Getters
 		float getRotation();
 		bool reloading();
-		sf::Vector2f getHealthData();
-		sf::Vector2f getAmmoData();
+		Util::Limits getHealthData();
+		Util::Limits getAmmoData();
 		std::vector<sf::Vector2f> getCollisionLine(float fAngle); //Gets the line used for shooting collisions
 		classType getClass();
 };

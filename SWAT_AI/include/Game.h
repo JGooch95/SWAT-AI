@@ -10,22 +10,14 @@
 #include "AStar.h"
 #include "Button.h"
 #include "Settings.h"
+#include "HUDWindow.h"
 
 class Game : public sf::Drawable
 {
 	private:
 		//UI
 		sf::RectangleShape m_Toolbar;
-
-		Object m_Background;
-
-		//UI BOX--------------------------------------------------
-		std::vector<sf::RectangleShape*> unitScreen;
-		std::vector<Bar*> UIBars;
-		std::vector<sf::Text*> UIText;
-		std::vector<Button> Button1;
-		std::vector<Object> Icons;
-		//--------------------------------------------------------
+		std::vector<HUDWindow*> m_UnitUI;
 		
 		//Tools
 		AStar m_Pathfinder;
@@ -42,6 +34,7 @@ class Game : public sf::Drawable
 		std::vector<Character*> m_vEnemies; //Holds the enemy units
 		std::vector<Object*> m_vWalls; //Holds the walls
 		std::vector<Entrance*> m_vDoors; //Holds the doors
+		Object m_Background;
 		std::vector<sf::Vector2f> m_vEdges; //Holds the wall edges
 		
 		//DEBUGGING LINES
@@ -56,5 +49,6 @@ class Game : public sf::Drawable
 		void clickLeft(sf::Vector2i mousePos); //Processes left click
 		void clickRight(sf::Vector2i mousePos); //Processes right click
 		void enableDebug();
+		std::vector<sf::Vector2f> edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges);
 		~Game(); //Deconstructor
 };
