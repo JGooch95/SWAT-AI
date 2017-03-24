@@ -5,6 +5,19 @@ TextureLoader::TextureLoader()
 
 }
 
+bool TextureLoader::m_bInstanceFlag = false;
+TextureLoader* TextureLoader::loaderLocation = nullptr;
+
+TextureLoader* TextureLoader::getInstance()
+{
+	if (!m_bInstanceFlag)
+	{
+		loaderLocation = new TextureLoader();
+		m_bInstanceFlag = true;
+	}
+	return loaderLocation;
+}
+
 void TextureLoader::loadTextures(std::vector<std::string> vsFileDirs)
 {
 	sf::Texture CurrentTexture;

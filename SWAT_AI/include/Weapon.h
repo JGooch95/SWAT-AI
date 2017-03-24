@@ -3,6 +3,8 @@
 #include <SFML\Graphics.hpp>
 #include "Object.h"
 #include "MathUtils.h"
+#include "TextureLoader.h"
+
 
 class Weapon : public Object
 {
@@ -20,9 +22,14 @@ class Weapon : public Object
 		float m_fAccuracy;
 		bool m_bShooting;
 		Object muzzleFlash;
-
+		Object silencer;
+		Object scope;
+		TextureLoader* m_Textures;
 		sf::VertexArray m_BulletRays;
-
+		
+		bool m_bLazer;
+		bool m_bSilencer;
+		bool m_bScope;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:
@@ -32,6 +39,7 @@ class Weapon : public Object
 		void update(); //Updates the states of data
 		void shoot();
 		void reload();
+		void setupTextures();
 		float bulletChecks(std::vector<sf::Vector2f>vEdges);
 
 		//Setters
@@ -45,6 +53,9 @@ class Weapon : public Object
 		void setReloadTime(float fTime);
 		void setAccuracy(float fLevel);
 		void setMuzzle(sf::Texture* tex2);
+		void setLazer(bool bValue);
+		void setSilencer(bool bValue);
+		void setScope(bool bValue);
 
 		//Getters
 		float getDamage();
@@ -53,5 +64,6 @@ class Weapon : public Object
 		Util::Limits getAmmoLevels();
 		sf::Vector2f getPosition();
 		sf::Vector2f getIntersect(); //Returns where the lazer has intersected
+		bool usingScope();
 
 };

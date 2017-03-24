@@ -9,6 +9,8 @@
 #include "MathUtils.h"
 
 enum classType {Assault, Sniper, Support, Shotgunner};
+enum loadoutItem {Lazer, Silencer, Scope, None};
+
 class Character : public Object
 {
 	private:
@@ -18,7 +20,7 @@ class Character : public Object
 
 		Weapon m_Weapon1;
 		classType currentClass;
-
+		std::vector<loadoutItem> loadout;
 		Util::Limits m_HealthLevels;
 
 		float m_fMovementAngle;
@@ -46,14 +48,15 @@ class Character : public Object
 	public:
 		Character(); //Default constructor
 
-		void move(); //Follows the path to the next node
 		void update(); //Updates the states of data
+		void move(); //Follows the path to the next node
 		void lookAt(sf::Vector2f position); //Looks towards the position stated.
 		void lookAt(float fAngle);
 		void visionCalculation(std::vector<sf::Vector2f>vEdges);
 		float bulletChecks(std::vector<sf::Vector2f>vEdges);
 		bool checkVisionCone(sf::Vector2f position);
 		bool lazerChecks(std::vector<sf::Vector2f> vEdges); //Checks if the weapons lazer has collided
+		void setupTextures();
 
 		//Setters
 		void setHealth(float fLevel);
@@ -63,6 +66,7 @@ class Character : public Object
 		void setTarget(Character* newTarget);
 		void setMuzzle(sf::Texture* tex2);
 		void setClass(classType classType, sf::Texture* gunTexture);
+		void setLoadoutItem(int iIndex, loadoutItem itemType);
 
 		//Getters
 		float getRotation();
@@ -71,4 +75,7 @@ class Character : public Object
 		Util::Limits getAmmoData();
 		std::vector<sf::Vector2f> getCollisionLine(float fAngle); //Gets the line used for shooting collisions
 		classType getClass();
+		loadoutItem getLoadoutItem(int iIndex);
+		int getLoadoutSize();
+		loadoutItem getNextLoadoutItem(loadoutItem itemType);
 };

@@ -25,7 +25,7 @@ class Game : public sf::Drawable
 		Settings* m_CurrentSettings;
 
 		//RESOURCES
-		TextureLoader m_Textures; //Contains all textures used in the game
+		TextureLoader* m_Textures; //Contains all textures used in the game
 		sf::Font m_CurrentFont;
 
 		//Objects

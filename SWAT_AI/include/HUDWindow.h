@@ -14,6 +14,7 @@ class HUDWindow : public sf::Drawable
 		std::vector<Bar*> m_UIBars;
 		std::vector<sf::Text*> m_UIText;
 		Button m_ClassButton;
+		std::vector<Button> m_LoadoutButton;
 		std::vector<Object> m_Icons;
 		Map* m_CurrentMap;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
@@ -30,10 +31,12 @@ class HUDWindow : public sf::Drawable
 		void setBarText(BarType currentBarType, std::string barText);
 		void setFont(sf::Font* newFont);
 		void scaleUI();
+		void setLoadoutTexture(int iIndex, sf::Texture* newTex);
 
 		//Getters
 		sf::Vector2f getSize();
 		Button* getClassButton();
+		Button* getLoadoutButton(int iIndex);
 
 		~HUDWindow();
 };

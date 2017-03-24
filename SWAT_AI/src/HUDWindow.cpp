@@ -27,6 +27,9 @@ HUDWindow::HUDWindow()
 	m_UIText.at(m_UIText.size() - 1)->setCharacterSize(20);
 	m_UIText.at(m_UIText.size() - 1)->setFillColor(sf::Color(0, 0, 0, 255));
 
+	m_LoadoutButton.push_back(Button());
+	m_LoadoutButton.push_back(Button());
+
 	scaleUI();
 }
 
@@ -133,7 +136,7 @@ void HUDWindow::scaleUI()
 	m_UIText.at(1)->setPosition(m_UIBars.at(1)->getPosition() + sf::Vector2f((m_UIBars.at(1)->getSize().x / 2) - (m_UIText.at(1)->getLocalBounds().width / 2), (m_UIBars.at(1)->getSize().y / 3)));
 	m_UIText.at(1)->setFillColor(sf::Color(0, 0, 0, 255));
 
-	m_ClassButton.setPosition(m_BackDrop.getPosition() + sf::Vector2f((m_BackDrop.getSize().x / 20), m_BackDrop.getSize().x / 20));
+	m_ClassButton.setPosition(m_BackDrop.getPosition() + sf::Vector2f((m_BackDrop.getSize().y / 20), m_BackDrop.getSize().y / 20));
 	m_ClassButton.setSize(sf::Vector2f(m_BackDrop.getSize().y / 4, m_BackDrop.getSize().y / 4));
 
 	for (int i = 0; i < m_UIText.size(); i++)
@@ -143,6 +146,16 @@ void HUDWindow::scaleUI()
 			m_UIText.at(i)->setCharacterSize(m_UIText.at(i)->getCharacterSize() - 1);
 		}
 	}
+	m_LoadoutButton.at(0).setPosition(sf::Vector2f(m_ClassButton.getPosition().x + (m_ClassButton.getSize().x * m_ClassButton.getScale().x)+ ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4)));
+	m_LoadoutButton.at(0).setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) /2, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) /2));
+
+	m_LoadoutButton.at(1).setPosition(sf::Vector2f(m_ClassButton.getPosition().x + (2*(m_ClassButton.getSize().x*m_ClassButton.getScale().x)) + ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4)));
+	m_LoadoutButton.at(1).setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2));
+}
+
+void HUDWindow::setLoadoutTexture(int iIndex, sf::Texture* newTex)
+{
+	m_LoadoutButton.at(iIndex).setTexture(newTex);
 }
 
 sf::Vector2f HUDWindow::getSize()
@@ -155,6 +168,11 @@ Button* HUDWindow::getClassButton()
 	return &m_ClassButton;
 }
 
+Button* HUDWindow::getLoadoutButton(int iIndex)
+{
+	return &m_LoadoutButton.at(iIndex);
+}
+
 void HUDWindow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	//Draws the Unit UI
@@ -165,11 +183,17 @@ void HUDWindow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(*m_UIBars.at(i));
 	}
+
 	for (int i = 0; i < m_Icons.size(); i++)
 	{
 		target.draw(m_Icons.at(i));
 	}
 	target.draw(m_ClassButton);
+
+	for (int i = 0; i < m_LoadoutButton.size(); i++)
+	{
+		target.draw(m_LoadoutButton.at(i));
+	}
 
 	for (int i = 0; i < m_UIText.size(); i++)
 	{

@@ -10,6 +10,7 @@ Game::Game(sf::Vector2u windowSize)
 	//Sets up the default map
 	m_CurrentMap = Map::getInstance();
 	m_CurrentSettings = Settings::getInstance();
+	m_Textures = TextureLoader::getInstance();
 
 	m_CurrentMap->setup(
 		sf::FloatRect(sf::Vector2f(0, m_Toolbar.getSize().y), sf::Vector2f(windowSize) - sf::Vector2f(windowSize.x/3, m_Toolbar.getSize().y)),
@@ -18,7 +19,7 @@ Game::Game(sf::Vector2u windowSize)
 	m_CurrentMap->load("./Assets/Maps/1.txt"); //Loads a map from a file
 
 	//Loads the main textures into the software
-	m_Textures.loadTextures(std::vector<std::string>{
+	m_Textures->loadTextures(std::vector<std::string>{
 		"Assets/Sprites/Wood.jpg",						//0
 		"Assets/Sprites/Unit.png",						//1
 		"Assets/Sprites/Enemy.png",						//2
@@ -33,12 +34,17 @@ Game::Game(sf::Vector2u windowSize)
 		"Assets/Sprites/Muzzle.png",					//11
 		"Assets/Sprites/Health.png",					//12
 		"Assets/Sprites/Ammo.png",						//13
-		"Assets/Sprites/Grass.jpg"						//14
+		"Assets/Sprites/Grass.jpg",						//14
+		"Assets/Sprites/Empty.png",						//15
+		"Assets/Sprites/Lazer.png",						//16
+		"Assets/Sprites/Silencer.png",					//17
+		"Assets/Sprites/Scope.png",						//18
+		"Assets/Sprites/ScopeSprite.png"				//19
 	});
 
 	m_CurrentFont.loadFromFile("Assets/Fonts/arial.ttf"); //Loads the main font
 
-	m_Background.setTexture(m_Textures.getTexture(14));
+	m_Background.setTexture(m_Textures->getTexture(14));
 	m_Background.setArea(sf::Vector2f(m_CurrentMap->getWindowSize()));
 	m_Background.setPosition(sf::Vector2f(m_CurrentMap->getPosition()));
 
@@ -68,7 +74,7 @@ Game::Game(sf::Vector2u windowSize)
 			if (m_CurrentMap->getMapData().at(i).at(j) == 'W')
 			{
 				m_vWalls.push_back(new Object);
-				m_vWalls.at(m_vWalls.size() - 1)->setTexture(m_Textures.getTexture(0)); //Sets the unit texture
+				m_vWalls.at(m_vWalls.size() - 1)->setTexture(m_Textures->getTexture(0)); //Sets the unit texture
 				m_vWalls.at(m_vWalls.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y));
 				m_vWalls.at(m_vWalls.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
 
@@ -78,11 +84,14 @@ Game::Game(sf::Vector2u windowSize)
 					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
 					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
 				}
-				if (m_CurrentMap->getMapData().at(i + 1).at(j) != 'W' && i < m_CurrentMap->getMapData().at(i).size())
+				if (i < m_CurrentMap->getMapData().size() - 1)
 				{
+					if (m_CurrentMap->getMapData().at(i + 1).at(j) != 'W')
+					{
 					//Bottom Edge
 					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
 					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+					}
 				}
 				
 				if (m_CurrentMap->getMapData().at(i).at(j-1) != 'W' && j > 0)
@@ -91,11 +100,14 @@ Game::Game(sf::Vector2u windowSize)
 					vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
 					vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
 				}
-				if (m_CurrentMap->getMapData().at(i).at(j + 1) != 'W' && j < m_CurrentMap->getMapData().at(i).size())
+				if (j < m_CurrentMap->getMapData().at(i).size() - 1)
 				{
-					//Right Edge
-					vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
-					vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+					if (m_CurrentMap->getMapData().at(i).at(j + 1) != 'W')
+					{
+						//Right Edge
+						vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+						vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+					}
 				}
 			}
 
@@ -106,8 +118,8 @@ Game::Game(sf::Vector2u windowSize)
 				if (m_CurrentMap->getMapData().at(i).at(j) == 'E')
 				{
 					m_vEnemies.push_back(new Character);
-					m_vEnemies.at(m_vEnemies.size() - 1)->setTexture(m_Textures.getTexture(2)); //Sets the unit texture
-					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault, m_Textures.getTexture(7));
+					m_vEnemies.at(m_vEnemies.size() - 1)->setTexture(m_Textures->getTexture(2)); //Sets the unit texture
+					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault, m_Textures->getTexture(7));
 					m_vCharacters.push_back(m_vEnemies.at(m_vEnemies.size() - 1));
 				}
 
@@ -115,8 +127,8 @@ Game::Game(sf::Vector2u windowSize)
 				else if (m_CurrentMap->getMapData().at(i).at(j) == 'P')
 				{
 					m_vUnits.push_back(new Character);
-					m_vUnits.at(m_vUnits.size() - 1)->setTexture(m_Textures.getTexture(1)); //Sets the unit texture
-					m_vUnits.at(m_vUnits.size() - 1)->setClass(Sniper, m_Textures.getTexture(4));
+					m_vUnits.at(m_vUnits.size() - 1)->setTexture(m_Textures->getTexture(1)); //Sets the unit texture
+					m_vUnits.at(m_vUnits.size() - 1)->setClass(Sniper, m_Textures->getTexture(4));
 					m_vUnits.at(m_vUnits.size() - 1)->setVision(true);
 					m_vCharacters.push_back(m_vUnits.at(m_vUnits.size() - 1));
 				}
@@ -124,14 +136,15 @@ Game::Game(sf::Vector2u windowSize)
 				//Sets generic character data
 				m_vCharacters.at(m_vCharacters.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f((j * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2), (i * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 				m_vCharacters.at(m_vCharacters.size() - 1)->setSize(sf::Vector2f(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y), std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y)));
-				m_vCharacters.at(m_vCharacters.size() - 1)->setMuzzle(m_Textures.getTexture(11));
+				m_vCharacters.at(m_vCharacters.size() - 1)->setMuzzle(m_Textures->getTexture(11));
+				m_vCharacters.at(m_vCharacters.size() - 1)->setupTextures();
 			}
 			
 			//Doors
 			if (m_CurrentMap->getMapData().at(i).at(j) == 'D')
 			{
 				m_vDoors.push_back(new Entrance); 
-				m_vDoors.at(m_vDoors.size() - 1)->setTexture(m_Textures.getTexture(0));
+				m_vDoors.at(m_vDoors.size() - 1)->setTexture(m_Textures->getTexture(0));
 
 				if ((m_CurrentMap->getMapData().at(i).at(j - 1) == 'W') && j > 0)
 				{
@@ -184,17 +197,21 @@ Game::Game(sf::Vector2u windowSize)
 		m_UnitUI.push_back(new HUDWindow);
 		m_UnitUI.at(m_UnitUI.size() - 1)->setSize(newSize);
 		m_UnitUI.at(m_UnitUI.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x, (m_Toolbar.getSize().y + (i * m_UnitUI.at(m_UnitUI.size() - 1)->getSize().y)) + (i * 5)));
-		m_UnitUI.at(m_UnitUI.size() - 1)->setClassTexture(m_Textures.getTexture(3));
+		m_UnitUI.at(m_UnitUI.size() - 1)->setClassTexture(m_Textures->getTexture(3));
 					
 		m_UnitUI.at(m_UnitUI.size() - 1)->setBarLevels(HealthBar, m_vUnits.at(i)->getHealthData());
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarIcon(HealthBar, m_Textures.getTexture(12));		
+		m_UnitUI.at(m_UnitUI.size() - 1)->setBarIcon(HealthBar, m_Textures->getTexture(12));		
 		m_UnitUI.at(m_UnitUI.size() - 1)->setBarText(HealthBar, std::to_string((int)m_vUnits.at(i)->getHealthData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().upper));
 					
 		m_UnitUI.at(m_UnitUI.size() - 1)->setBarLevels(AmmoBar, m_vUnits.at(i)->getAmmoData());
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarIcon(AmmoBar, m_Textures.getTexture(13));
+		m_UnitUI.at(m_UnitUI.size() - 1)->setBarIcon(AmmoBar, m_Textures->getTexture(13));
 		m_UnitUI.at(m_UnitUI.size() - 1)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
 					
 		m_UnitUI.at(m_UnitUI.size() - 1)->setFont(&m_CurrentFont);
+
+		m_UnitUI.at(m_UnitUI.size() - 1)->setLoadoutTexture(0, m_Textures->getTexture(15));
+		m_UnitUI.at(m_UnitUI.size() - 1)->setLoadoutTexture(1, m_Textures->getTexture(15));
+
 		m_UnitUI.at(m_UnitUI.size() - 1)->scaleUI();
 	}
 
@@ -341,21 +358,52 @@ void Game::clickLeft(sf::Vector2i mousePos)
 			switch (m_vUnits.at(i)->getClass())
 			{
 			case Sniper:
-				m_vUnits.at(i)->setClass(Support, m_Textures.getTexture(5));
-				m_UnitUI.at(i)->setClassTexture(m_Textures.getTexture(8));
+				m_vUnits.at(i)->setClass(Support, m_Textures->getTexture(5));
+				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
 				break;
 			case Support:
-				m_vUnits.at(i)->setClass(Shotgunner, m_Textures.getTexture(6));
-				m_UnitUI.at(i)->setClassTexture(m_Textures.getTexture(9));
+				m_vUnits.at(i)->setClass(Shotgunner, m_Textures->getTexture(6));
+				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
 				break;
 			case Shotgunner:
-				m_vUnits.at(i)->setClass(Assault, m_Textures.getTexture(7));
-				m_UnitUI.at(i)->setClassTexture(m_Textures.getTexture(10));
+				m_vUnits.at(i)->setClass(Assault, m_Textures->getTexture(7));
+				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
 				break;
 			case Assault:
-				m_vUnits.at(i)->setClass(Sniper, m_Textures.getTexture(4));
-				m_UnitUI.at(i)->setClassTexture(m_Textures.getTexture(3));
+				m_vUnits.at(i)->setClass(Sniper, m_Textures->getTexture(4));
+				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
 				break;
+			}
+		}
+
+		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
+		{
+			//If a loadout button
+			if (m_UnitUI.at(i)->getLoadoutButton(j)->clicked(mousePos))
+			{
+				//Switches the class of the unit
+				m_vUnits.at(i)->setLoadoutItem(j, m_vUnits.at(i)->getNextLoadoutItem(m_vUnits.at(i)->getLoadoutItem(j)));
+					
+				//Switches the class image once changed
+				switch (m_vUnits.at(i)->getLoadoutItem(j))
+				{
+					case Lazer:
+						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(16));
+						break;
+
+					case Silencer:
+						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(17));
+						break;
+
+					case Scope:
+						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(18));
+						break;
+
+					case None:
+						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(15));
+						break;
+				}
+				m_UnitUI.at(m_UnitUI.size() - 1)->scaleUI();
 			}
 		}
 	}
@@ -613,4 +661,7 @@ Game::~Game()
 
 	delete(m_CurrentSettings);
 	m_CurrentSettings = NULL;
+
+	delete m_Textures;
+	m_Textures = NULL;
 }

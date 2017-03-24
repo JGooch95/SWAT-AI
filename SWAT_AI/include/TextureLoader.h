@@ -5,11 +5,15 @@
 class TextureLoader
 {
 	private:
+		static bool m_bInstanceFlag;
 		std::vector<sf::Texture> m_vTextures; //Container of textures
 		std::string m_sBaseDirectory; //Directory where the textures are kept
 
 	public:
 		TextureLoader(); //Constructor
+		static TextureLoader* loaderLocation;
+		static TextureLoader* getInstance();
+
 		void loadTextures(std::vector<std::string> fileDirs); //Loads the textures from the direcotries given
 
 		//Setters
