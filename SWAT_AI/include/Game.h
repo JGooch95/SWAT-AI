@@ -11,10 +11,12 @@
 #include "Button.h"
 #include "Settings.h"
 #include "HUDWindow.h"
+#include "SoundWave.h"
 
 class Game : public sf::Drawable
 {
 	private:
+		std::vector<soundWave*> waves;
 		//UI
 		sf::RectangleShape m_Toolbar;
 		std::vector<HUDWindow*> m_UnitUI;

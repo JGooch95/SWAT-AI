@@ -20,6 +20,7 @@ class Weapon : public Object
 		bool m_bReloading;
 		float m_fReloadTime;
 		float m_fAccuracy;
+		float m_fWeaponVolume;
 		bool m_bShooting;
 		Object muzzleFlash;
 		Object silencer;
@@ -56,14 +57,19 @@ class Weapon : public Object
 		void setLazer(bool bValue);
 		void setSilencer(bool bValue);
 		void setScope(bool bValue);
+		void setWeaponVolume(float fValue);
 
 		//Getters
 		float getDamage();
 		float getFireRate();
+		float getWeaponVolume();
 		bool reloading();
 		Util::Limits getAmmoLevels();
 		sf::Vector2f getPosition();
 		sf::Vector2f getIntersect(); //Returns where the lazer has intersected
+		sf::Vector2f getWeaponEnd();
 		bool usingScope();
+		bool isShooting();
+		bool isSilenced();
 
 };

@@ -216,6 +216,7 @@ void Character::move()
 
 			velocity *= kfMoveSpeed; //Multiplies it by the speed
 
+			fDistanceSinceStep += Util::magnitude(velocity);
 			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
 			if (m_MainSprite.getPosition().x >= destination.x - 10 &&
@@ -498,6 +499,7 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			m_Weapon1.setAmmo(0);
 			m_Weapon1.setReloadTime(2.0f);
 			m_Weapon1.setAccuracy(0.7f);
+			m_Weapon1.setWeaponVolume(100);
 			break;
 
 		case Support:
@@ -508,6 +510,7 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			m_Weapon1.setAmmo(0);
 			m_Weapon1.setReloadTime(5.0f);
 			m_Weapon1.setAccuracy(0.3f);
+			m_Weapon1.setWeaponVolume(150);
 			break;
 
 		case Sniper:
@@ -518,6 +521,7 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			m_Weapon1.setAmmo(0);
 			m_Weapon1.setReloadTime(4.0f);
 			m_Weapon1.setAccuracy(0.8f);
+			m_Weapon1.setWeaponVolume(200);
 			break;
 
 		case Shotgunner:
@@ -528,6 +532,7 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			m_Weapon1.setAmmo(0);
 			m_Weapon1.setReloadTime(2.0f);
 			m_Weapon1.setAccuracy(0.5f);
+			m_Weapon1.setWeaponVolume(100);
 			break;
 	}
 	m_Weapon1.reload();
@@ -649,6 +654,29 @@ loadoutItem Character::getNextLoadoutItem(loadoutItem itemType)
 	}
 }
 
+bool Character::isShooting()
+{
+	return m_Weapon1.isShooting();
+}
+
+Weapon* Character::getWeapon()
+{
+	return &m_Weapon1;
+}
+
+bool Character::stepTaken()
+{
+	float stepDist = (getSize().x * getScale().x) / 2.0f;
+	if (fDistanceSinceStep > stepDist)
+	{
+		fDistanceSinceStep = 0;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	if (m_bDrawVision)

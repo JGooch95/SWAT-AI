@@ -29,6 +29,8 @@ class Character : public Object
 
 		bool m_bDrawVision;
 
+		float fDistanceSinceStep;
+
 		//AI
 		std::deque<Node*> m_Path; //Holds the current path
 		enum States { SEARCH_SWEEP, AIM};
@@ -78,4 +80,7 @@ class Character : public Object
 		loadoutItem getLoadoutItem(int iIndex);
 		int getLoadoutSize();
 		loadoutItem getNextLoadoutItem(loadoutItem itemType);
+		bool isShooting();
+		Weapon* getWeapon();
+		bool stepTaken();
 };

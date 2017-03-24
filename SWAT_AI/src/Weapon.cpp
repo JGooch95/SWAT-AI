@@ -287,6 +287,11 @@ void  Weapon::setScope(bool bValue)
 	m_bScope = bValue;
 }
 
+void Weapon::setWeaponVolume(float fValue)
+{
+	m_fWeaponVolume = fValue;
+}
+
 //Getters
 float Weapon::getDamage()
 {
@@ -335,6 +340,18 @@ float Weapon::getFireRate()
 	return m_fFireRate;
 }
 
+float Weapon::getWeaponVolume()
+{
+	if (m_bSilencer)
+	{
+		return m_fWeaponVolume * 0.6f;
+	}
+	else
+	{
+		return m_fWeaponVolume;
+	}
+}
+
 bool Weapon::reloading()
 {
 	return (m_ReloadClock.getElapsedTime().asSeconds() < m_fReloadTime);
@@ -355,9 +372,37 @@ sf::Vector2f Weapon::getIntersect()
 	return m_AimLine[1].position;
 }
 
+sf::Vector2f  Weapon::getWeaponEnd()
+{
+	sf::Vector2f RotVect(getIntersect() - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
+	RotVect /= Util::magnitude(RotVect);
+
+	float extraLength(0);
+
+	if (m_bSilencer)
+	{
+		extraLength = silencer.getSize().y *silencer.getScale().y;
+	}
+
+	sf::Vector2f WeaponDist = ((getSize().y * getScale().y) + extraLength) * RotVect; // Finds the end of the weapon
+	RotVect *= (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2; //Gets the edge of the character from the center
+
+	return getPosition() + RotVect + WeaponDist; //Sets the point to shoot from
+}
+
 bool Weapon::usingScope()
 {
 	return m_bScope;
+}
+
+bool Weapon::isShooting()
+{
+	return m_bShooting;
+}
+
+bool Weapon::isSilenced()
+{
+	return m_bSilencer;
 }
 
 void Weapon::draw(sf::RenderTarget &target, sf::RenderStates states) const

@@ -229,6 +229,18 @@ Game::Game(sf::Vector2u windowSize)
 
 void Game::update(sf::Vector2i mousePos)
 {
+	for (int i = 0; i < waves.size(); i++)
+	{
+		if (waves.at(i) != NULL)
+		{
+			waves.at(i)->update();
+			if (waves.at(i)->isDone())
+			{
+				delete waves.at(i);
+				waves.at(i) = NULL;
+			}
+		}
+	}
 	std::vector<sf::Vector2f> vEdgesToCheck; //Holds all of the edges to be checked this frame
 
 	//Adds all of the door edges to the checked edges.
@@ -246,6 +258,11 @@ void Game::update(sf::Vector2i mousePos)
 		m_vCharacters.at(i)->lazerChecks(vEdgesToCheck); //Perform checks for the aiming
 		m_vCharacters.at(i)->visionCalculation(vEdgesToCheck); //Perform checks for the vision cone
 		m_vCharacters.at(i)->bulletChecks(vEdgesToCheck); //Perform checks for any of the shot bullets
+
+		if (m_vCharacters.at(i)->stepTaken())
+		{
+			waves.push_back(new soundWave(20, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+		}
 	}
 
 	//Perform checks between characters
@@ -319,10 +336,16 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 						vCharSet1.at(i)->setTarget(vCharSet2.at(j));
 					}
 				}
+				
+				if (vCharSet1.at(i)->isShooting())
+				{
+					//Take health off if a bullet has been shot
+					vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
+						vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
 
-				//Take health off if a bullet has been shot
-				vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
-																												vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
+					waves.push_back(new soundWave(vCharSet1.at(i)->getWeapon()->getWeaponVolume(), 10.0f, 1.0f, vCharSet1.at(i)->getWeapon()->getWeaponEnd()));
+					
+				}
 			}
 		}
 
@@ -421,9 +444,18 @@ void Game::clickRight(sf::Vector2i mousePos)
 void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_Background);
+
 	if (m_CurrentSettings->debugActive())
 	{
 		target.draw(*m_CurrentMap); //Draws the Grid
+	}
+
+	for (int i = 0; i < waves.size(); i++)
+	{
+		if (waves.at(i) != NULL)
+		{
+			target.draw(*waves.at(i));
+		}
 	}
 
 	//Draws the walls
@@ -664,4 +696,13 @@ Game::~Game()
 
 	delete m_Textures;
 	m_Textures = NULL;
+
+	for (int i = 0; i < waves.size(); i++)
+	{
+		if (waves.at(i) != NULL)
+		{
+			delete waves.at(i);
+			waves.at(i) = NULL;
+		}
+	}
 }
