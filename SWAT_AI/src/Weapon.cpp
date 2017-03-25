@@ -15,7 +15,7 @@ Weapon::Weapon()
 
 	//Sets up the default texture data
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 25, 50));
-	m_MainSprite.setOrigin(m_MainSprite.getLocalBounds().width / 2, -m_MainSprite.getLocalBounds().height / 2 + 10);
+	//m_MainSprite.setOrigin(m_MainSprite.getLocalBounds().width / 2, -m_MainSprite.getLocalBounds().height / 2 + 10);
 
 	//Sets the default fire rate
 	m_fFireRate = 0.2f;
@@ -90,23 +90,26 @@ void Weapon::aim(float fAngle)
 void Weapon::update()
 {
 	m_bShooting = false;
-	//m_MainSprite.setScale(m_CurrentMap->getTileSize().x / 25, m_CurrentMap->getTileSize().y / 50);
 
 	muzzleFlash.setOrigin(sf::Vector2f(muzzleFlash.getSize().x / 2, muzzleFlash.getSize().y));
-	muzzleFlash.setSize(sf::Vector2f(m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x, m_MainSprite.getLocalBounds().height* m_MainSprite.getScale().y) * (1.0f / 3.0f));
+	muzzleFlash.setSize(getSize() * (1.0f / 3.0f));
 
 	if (m_bSilencer)
 	{
+		//Sets the position of the silencer to the position of the gun(Center of the character)
 		silencer.setPosition(sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y));
-		silencer.setSize(sf::Vector2f((getSize().x * getScale().x)* (1.0f / 3.0f), (getSize().y)* getScale().y) );
-		silencer.setOrigin(sf::Vector2f(silencer.getSize().x / 2.0f, -getSize().y + m_MainSprite.getOrigin().y));
+		//Sets the size to be the guns silencer to be the size of the gun ( reduced size in x)
+		silencer.setSize(sf::Vector2f(getSize().x * (1.0f / 4.0f), getSize().y / 3.0f));
+
+		//Sets the origin to the guns (half the silencer size, origin + the size of the gun)
+		silencer.setOrigin(sf::Vector2f((silencer.getSize().x / 2.0f), (getOrigin().y - getSize().y)));
 	}
 
 	if (m_bScope)
 	{
 		scope.setPosition(sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y));
-		scope.setSize(sf::Vector2f((getSize().x * getScale().x) /4.0f,(getSize().x * getScale().x) / 4.0f));
-		scope.setOrigin(sf::Vector2f(scope.getSize().x / 2.0f, ((-getSize().y / 2.0f) + m_MainSprite.getOrigin().y)));
+		scope.setSize(sf::Vector2f(getSize().x  /3.0f,getSize().x  / 4.0f));
+		scope.setOrigin(sf::Vector2f(scope.getSize().x / 2.0f, ((-getSize().y) + getOrigin().y)/2));
 	}
 
 	//Reloading
@@ -140,11 +143,11 @@ void Weapon::shoot()
 
 			if (m_bSilencer)
 			{
-				extraLength = silencer.getSize().y *silencer.getScale().y;
+				extraLength = silencer.getSize().y;
 			}
 
-			sf::Vector2f WeaponDist = ((getSize().y * getScale().y) + extraLength) * RotVect; // Finds the end of the weapon
-			RotVect *= (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2; //Gets the edge of the character from the center
+			sf::Vector2f WeaponDist = (getSize().y  + extraLength) * RotVect; // Finds the end of the weapon
+			RotVect *= getSize().y  / 2; //Gets the edge of the character from the center
 
 			m_BulletRays[0].position = getPosition() + RotVect + WeaponDist; //Sets the point to shoot from
 			

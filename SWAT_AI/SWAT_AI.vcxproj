@@ -159,11 +159,13 @@
     <ClCompile Include="src\Bar.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Character.cpp" />
+    <ClCompile Include="src\Editor.cpp" />
     <ClCompile Include="src\Entrance.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\HUDWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\soundWave.cpp" />
@@ -175,11 +177,13 @@
     <ClInclude Include="include\Bar.h" />
     <ClInclude Include="include\Button.h" />
     <ClInclude Include="include\Character.h" />
+    <ClInclude Include="include\Editor.h" />
     <ClInclude Include="include\Entrance.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\HUDWindow.h" />
     <ClInclude Include="include\Map.h" />
     <ClInclude Include="include\MathUtils.h" />
+    <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Object.h" />
     <ClInclude Include="include\Settings.h" />
     <ClInclude Include="include\SoundWave.h" />

@@ -27,8 +27,8 @@ HUDWindow::HUDWindow()
 	m_UIText.at(m_UIText.size() - 1)->setCharacterSize(20);
 	m_UIText.at(m_UIText.size() - 1)->setFillColor(sf::Color(0, 0, 0, 255));
 
-	m_LoadoutButton.push_back(Button());
-	m_LoadoutButton.push_back(Button());
+	m_LoadoutButton.push_back(new Button());
+	m_LoadoutButton.push_back(new Button());
 
 	scaleUI();
 }
@@ -146,16 +146,16 @@ void HUDWindow::scaleUI()
 			m_UIText.at(i)->setCharacterSize(m_UIText.at(i)->getCharacterSize() - 1);
 		}
 	}
-	m_LoadoutButton.at(0).setPosition(sf::Vector2f(m_ClassButton.getPosition().x + (m_ClassButton.getSize().x * m_ClassButton.getScale().x)+ ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4)));
-	m_LoadoutButton.at(0).setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) /2, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) /2));
+	m_LoadoutButton.at(0)->setPosition(sf::Vector2f(m_ClassButton.getPosition().x + (m_ClassButton.getSize().x * m_ClassButton.getScale().x)+ ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4)));
+	m_LoadoutButton.at(0)->setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) /2, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) /2));
 
-	m_LoadoutButton.at(1).setPosition(sf::Vector2f(m_ClassButton.getPosition().x + (2*(m_ClassButton.getSize().x*m_ClassButton.getScale().x)) + ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4)));
-	m_LoadoutButton.at(1).setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2));
+	m_LoadoutButton.at(1)->setPosition(sf::Vector2f(m_ClassButton.getPosition().x + (2*(m_ClassButton.getSize().x*m_ClassButton.getScale().x)) + ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4)));
+	m_LoadoutButton.at(1)->setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2));
 }
 
 void HUDWindow::setLoadoutTexture(int iIndex, sf::Texture* newTex)
 {
-	m_LoadoutButton.at(iIndex).setTexture(newTex);
+	m_LoadoutButton.at(iIndex)->setTexture(newTex);
 }
 
 sf::Vector2f HUDWindow::getSize()
@@ -170,7 +170,7 @@ Button* HUDWindow::getClassButton()
 
 Button* HUDWindow::getLoadoutButton(int iIndex)
 {
-	return &m_LoadoutButton.at(iIndex);
+	return m_LoadoutButton.at(iIndex);
 }
 
 void HUDWindow::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -192,7 +192,7 @@ void HUDWindow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 	for (int i = 0; i < m_LoadoutButton.size(); i++)
 	{
-		target.draw(m_LoadoutButton.at(i));
+		target.draw(*m_LoadoutButton.at(i));
 	}
 
 	for (int i = 0; i < m_UIText.size(); i++)
@@ -204,5 +204,9 @@ void HUDWindow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 HUDWindow::~HUDWindow()
 {
-
+	for (int i = 0; i < m_LoadoutButton.size(); i++)
+	{
+		delete m_LoadoutButton.at(i);
+		m_LoadoutButton.at(i) = NULL;
+	}
 }

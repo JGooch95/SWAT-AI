@@ -39,6 +39,8 @@ class Game : public sf::Drawable
 		Object m_Background;
 		std::vector<sf::Vector2f> m_vEdges; //Holds the wall edges
 		
+		Button* exitButton;
+
 		//DEBUGGING LINES
 		sf::VertexArray m_EdgeLines;
 
@@ -48,7 +50,7 @@ class Game : public sf::Drawable
 		Game(sf::Vector2u windowSize); //Constructor
 		void update(sf::Vector2i mousePos); //Updates all objects in game
 		void characterInteractions(std::vector<Character*> charSet1, std::vector<Character*>  charSet2); //Processes interactions between 2 sets of characters
-		void clickLeft(sf::Vector2i mousePos); //Processes left click
+		int clickLeft(sf::Vector2i mousePos); //Processes left click
 		void clickRight(sf::Vector2i mousePos); //Processes right click
 		void enableDebug();
 		std::vector<sf::Vector2f> edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges);

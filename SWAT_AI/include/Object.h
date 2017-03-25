@@ -7,8 +7,8 @@
 class Object : public sf::Drawable
 {
 	protected:
-		sf::Sprite m_MainSprite; //Holds the sprite
-		sf::Texture* m_CurrentTexture; // Holds a pointer to the texture
+		sf::RectangleShape m_MainSprite; //Holds the sprite
+		const sf::Texture* m_CurrentTexture; // Holds a pointer to the texture
 		Map* m_CurrentMap; //Holds the data for the map
 		Settings* m_CurrentSettings;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
@@ -26,6 +26,7 @@ class Object : public sf::Drawable
 
 		//Getters
 		sf::Vector2f getPosition();
+		sf::Vector2f getOrigin();
 		sf::Vector2f getSize();
 		sf::FloatRect getRect();
 		sf::Vector2f getScale();

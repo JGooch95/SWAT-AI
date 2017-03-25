@@ -16,37 +16,14 @@ Game::Game(sf::Vector2u windowSize)
 		sf::FloatRect(sf::Vector2f(0, m_Toolbar.getSize().y), sf::Vector2f(windowSize) - sf::Vector2f(windowSize.x/3, m_Toolbar.getSize().y)),
 		sf::Vector2f(20, 20)
 	);
-	m_CurrentMap->load("./Assets/Maps/1.txt"); //Loads a map from a file
-
-	//Loads the main textures into the software
-	m_Textures->loadTextures(std::vector<std::string>{
-		"Assets/Sprites/Wood.jpg",						//0
-		"Assets/Sprites/Unit.png",						//1
-		"Assets/Sprites/Enemy.png",						//2
-		"Assets/Sprites/SniperIcon.png",				//3
-		"Assets/Sprites/Sniper.png",					//4
-		"Assets/Sprites/LMG.png",						//5
-		"Assets/Sprites/Shotgun.png",					//6
-		"Assets/Sprites/Assault.png",					//7
-		"Assets/Sprites/SupportIcon.png",				//8
-		"Assets/Sprites/ShotgunnerIcon.png",			//9
-		"Assets/Sprites/AssaultIcon.png",				//10
-		"Assets/Sprites/Muzzle.png",					//11
-		"Assets/Sprites/Health.png",					//12
-		"Assets/Sprites/Ammo.png",						//13
-		"Assets/Sprites/Grass.jpg",						//14
-		"Assets/Sprites/Empty.png",						//15
-		"Assets/Sprites/Lazer.png",						//16
-		"Assets/Sprites/Silencer.png",					//17
-		"Assets/Sprites/Scope.png",						//18
-		"Assets/Sprites/ScopeSprite.png"				//19
-	});
+	m_CurrentMap->load("./Assets/Maps/CustomMap.txt"); //Loads a map from a file
 
 	m_CurrentFont.loadFromFile("Assets/Fonts/arial.ttf"); //Loads the main font
 
 	m_Background.setTexture(m_Textures->getTexture(14));
 	m_Background.setArea(sf::Vector2f(m_CurrentMap->getWindowSize()));
 	m_Background.setPosition(sf::Vector2f(m_CurrentMap->getPosition()));
+	m_Background.setSize(sf::Vector2f(m_CurrentMap->getWindowSize().x, m_CurrentMap->getWindowSize().y));
 
 	//Holds the edges of the walls to reduce the amount
 	std::vector<sf::Vector2f> vEdgesX; 
@@ -78,27 +55,33 @@ Game::Game(sf::Vector2u windowSize)
 				m_vWalls.at(m_vWalls.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y));
 				m_vWalls.at(m_vWalls.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
 
-				if (m_CurrentMap->getMapData().at(i - 1).at(j) != 'W' && i > 0)
+				if (i > 0)
 				{
-					//Top Edge
-					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
-					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+					if (m_CurrentMap->getMapData().at(i - 1).at(j) != 'W')
+					{
+						//Top Edge
+						vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+						vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+					}
 				}
 				if (i < m_CurrentMap->getMapData().size() - 1)
 				{
 					if (m_CurrentMap->getMapData().at(i + 1).at(j) != 'W')
 					{
-					//Bottom Edge
-					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
-					vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+						//Bottom Edge
+						vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+						vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
 					}
 				}
 				
-				if (m_CurrentMap->getMapData().at(i).at(j-1) != 'W' && j > 0)
+				if (j > 0)
 				{
-					//Left Edge
-					vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
-					vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+					if (m_CurrentMap->getMapData().at(i).at(j - 1) != 'W')
+					{
+						//Left Edge
+						vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
+						vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
+					}
 				}
 				if (j < m_CurrentMap->getMapData().at(i).size() - 1)
 				{
@@ -136,6 +119,7 @@ Game::Game(sf::Vector2u windowSize)
 				//Sets generic character data
 				m_vCharacters.at(m_vCharacters.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f((j * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2), (i * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 				m_vCharacters.at(m_vCharacters.size() - 1)->setSize(sf::Vector2f(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y), std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y)));
+				m_vCharacters.at(m_vCharacters.size() - 1)->setOrigin(sf::Vector2f(m_vCharacters.at(m_vCharacters.size() - 1)->getRect().width/2.0f, (m_vCharacters.at(m_vCharacters.size() - 1)->getRect().height / 2)));
 				m_vCharacters.at(m_vCharacters.size() - 1)->setMuzzle(m_Textures->getTexture(11));
 				m_vCharacters.at(m_vCharacters.size() - 1)->setupTextures();
 			}
@@ -149,13 +133,13 @@ Game::Game(sf::Vector2u windowSize)
 				if ((m_CurrentMap->getMapData().at(i).at(j - 1) == 'W') && j > 0)
 				{
 					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y / 4));
-					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(0, ((m_vDoors.at(m_vDoors.size() - 1)->getSize().y * m_vDoors.at(m_vDoors.size() - 1)->getScale().y) / 2.0f)));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(0, (m_vDoors.at(m_vDoors.size() - 1)->getSize().y / 2.0f)));
 					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f((j * m_CurrentMap->getTileSize().x), (i * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 				}
 				else if ((m_CurrentMap->getMapData().at(i).at(j + 1) == 'W') && j < m_CurrentMap->getMapData().at(i).size())
 				{
 					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y / 4));
-					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(0, ((m_vDoors.at(m_vDoors.size() - 1)->getSize().y * m_vDoors.at(m_vDoors.size() - 1)->getScale().y) / 2.0f)));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(0, (m_vDoors.at(m_vDoors.size() - 1)->getSize().y  / 2.0f)));
 					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f(((j+1) * m_CurrentMap->getTileSize().x), (i * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 					m_vDoors.at(m_vDoors.size() - 1)->setOrientation(180);
 					m_vDoors.at(m_vDoors.size() - 1)->setDirection(-1);
@@ -163,13 +147,13 @@ Game::Game(sf::Vector2u windowSize)
 				else if ((m_CurrentMap->getMapData().at(i - 1).at(j) == 'W') && i > 0)
 				{
 					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x / 4, m_CurrentMap->getTileSize().y));
-					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f((m_vDoors.at(m_vDoors.size() - 1)->getSize().x * m_vDoors.at(m_vDoors.size() - 1)->getScale().x) / 2.0f, 0));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(m_vDoors.at(m_vDoors.size() - 1)->getSize().x  / 2.0f, 0));
 					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f((j * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2), (i * m_CurrentMap->getTileSize().y)));
 				}
 				else if ((m_CurrentMap->getMapData().at(i + 1).at(j) == 'W') && i < m_CurrentMap->getMapData().size())
 				{
 					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x / 4, m_CurrentMap->getTileSize().y));
-					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f((m_vDoors.at(m_vDoors.size() - 1)->getSize().x * m_vDoors.at(m_vDoors.size() - 1)->getScale().x) / 2.0f, 0));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(m_vDoors.at(m_vDoors.size() - 1)->getSize().x / 2.0f, 0));
 					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f((j * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2), ((i + 1) * m_CurrentMap->getTileSize().y)));
 					m_vDoors.at(m_vDoors.size() - 1)->setOrientation(180);
 					m_vDoors.at(m_vDoors.size() - 1)->setDirection(-1);
@@ -177,7 +161,7 @@ Game::Game(sf::Vector2u windowSize)
 				else
 				{
 					m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x / 4, m_CurrentMap->getTileSize().y));
-					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f((m_vDoors.at(m_vDoors.size() - 1)->getSize().x * m_vDoors.at(m_vDoors.size() - 1)->getScale().x) / 2.0f, 0));
+					m_vDoors.at(m_vDoors.size() - 1)->setOrigin(sf::Vector2f(m_vDoors.at(m_vDoors.size() - 1)->getSize().x / 2.0f, 0));
 					m_vDoors.at(m_vDoors.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f((j * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2), ((i + 1) * m_CurrentMap->getTileSize().y)));
 				}
 				m_vDoors.at(m_vDoors.size() - 1)->setTile(sf::Vector2u(j, i));
@@ -223,7 +207,10 @@ Game::Game(sf::Vector2u windowSize)
 	{
 		m_EdgeLines[i] = sf::Vertex(m_vEdges.at(i), sf::Color(255,0,0,255));
 	}
-
+	exitButton = new Button();
+	exitButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
+	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
+	exitButton->setTexture(m_Textures->getTexture(20));
 	m_Pathfinder.setup();
 }
 
@@ -308,7 +295,15 @@ void Game::update(sf::Vector2i mousePos)
 		{
 			m_UnitUI.at(i)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
 		}
+
+		m_UnitUI.at(i)->getClassButton()->hovering(mousePos);
+		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
+		{
+			m_UnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos);
+		}
 	}
+
+	exitButton->hovering(mousePos);
 }
 
 void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<Character*>  vCharSet2)
@@ -369,40 +364,40 @@ void Game::enableDebug()
 	}
 }
 
-void Game::clickLeft(sf::Vector2i mousePos)
+int Game::clickLeft(sf::Vector2i mousePos)
 {
 	//Checks all of the UI Buttons
 	for (int i = 0; i < m_UnitUI.size(); i++)
 	{
 		//If a Class button is pressed
-		if (m_UnitUI.at(i)->getClassButton()->clicked(mousePos))
+		if (m_UnitUI.at(i)->getClassButton()->hovering(mousePos))
 		{
 			//Switches the class of the unit
 			switch (m_vUnits.at(i)->getClass())
 			{
-			case Sniper:
-				m_vUnits.at(i)->setClass(Support, m_Textures->getTexture(5));
-				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
-				break;
-			case Support:
-				m_vUnits.at(i)->setClass(Shotgunner, m_Textures->getTexture(6));
-				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
-				break;
-			case Shotgunner:
-				m_vUnits.at(i)->setClass(Assault, m_Textures->getTexture(7));
-				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
-				break;
-			case Assault:
-				m_vUnits.at(i)->setClass(Sniper, m_Textures->getTexture(4));
-				m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
-				break;
+				case Sniper:
+					m_vUnits.at(i)->setClass(Support, m_Textures->getTexture(5));
+					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
+					break;
+				case Support:
+					m_vUnits.at(i)->setClass(Shotgunner, m_Textures->getTexture(6));
+					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
+					break;
+				case Shotgunner:
+					m_vUnits.at(i)->setClass(Assault, m_Textures->getTexture(7));
+					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
+					break;
+				case Assault:
+					m_vUnits.at(i)->setClass(Sniper, m_Textures->getTexture(4));
+					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
+					break;
 			}
 		}
 
 		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
 		{
 			//If a loadout button
-			if (m_UnitUI.at(i)->getLoadoutButton(j)->clicked(mousePos))
+			if (m_UnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos))
 			{
 				//Switches the class of the unit
 				m_vUnits.at(i)->setLoadoutItem(j, m_vUnits.at(i)->getNextLoadoutItem(m_vUnits.at(i)->getLoadoutItem(j)));
@@ -430,6 +425,12 @@ void Game::clickLeft(sf::Vector2i mousePos)
 			}
 		}
 	}
+
+	if (exitButton->hovering(mousePos))
+	{
+		return 1;
+	}
+	return 0;
 }
 
 void Game::clickRight(sf::Vector2i mousePos)
@@ -489,6 +490,7 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 	//Draws the UI
 	target.draw(m_Toolbar);
+	target.draw(*exitButton);
 }
 
 std::vector<sf::Vector2f> Game::edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges)
@@ -688,14 +690,11 @@ Game::~Game()
 		m_vDoors.at(i) = NULL;
 	}
 
-	delete(m_CurrentMap);
-	m_CurrentMap = NULL;
-
-	delete(m_CurrentSettings);
-	m_CurrentSettings = NULL;
-
-	delete m_Textures;
-	m_Textures = NULL;
+	for (int i = 0; i < m_UnitUI.size(); i++)
+	{
+		delete(m_UnitUI.at(i));
+		m_UnitUI.at(i) = NULL;
+	}
 
 	for (int i = 0; i < waves.size(); i++)
 	{
@@ -705,4 +704,7 @@ Game::~Game()
 			waves.at(i) = NULL;
 		}
 	}
+
+	delete(exitButton);
+	exitButton = NULL;
 }

@@ -14,7 +14,7 @@ class HUDWindow : public sf::Drawable
 		std::vector<Bar*> m_UIBars;
 		std::vector<sf::Text*> m_UIText;
 		Button m_ClassButton;
-		std::vector<Button> m_LoadoutButton;
+		std::vector<Button*> m_LoadoutButton;
 		std::vector<Object> m_Icons;
 		Map* m_CurrentMap;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;

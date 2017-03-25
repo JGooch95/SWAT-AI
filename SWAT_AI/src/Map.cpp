@@ -23,13 +23,12 @@ void Map::setup(sf::FloatRect area, sf::Vector2f newGridDims)
 	//Sets the main variables
 	m_Position = sf::Vector2f(area.left, area.top);
 	m_WindowSize = sf::Vector2u(area.width, area.height);
-	m_TileSize = sf::Vector2f(area.width / newGridDims.x, area.height / newGridDims.y);
-	m_GridDimensions = newGridDims;
-	setupGrid();
+	setDimensions(newGridDims);
 }
 
 void Map::load(std::string sDir)
 {
+	m_vcLevelBits.clear();
 	std::ifstream mapFile;
 	mapFile.open(sDir); //Open the map file
 
@@ -91,10 +90,24 @@ void Map::setupGrid()
 	}
 }
 
+void Map::setDimensions(sf::Vector2f newGridDims)
+{
+	newGridDims.x = std::max(1.0f, newGridDims.x);
+	newGridDims.y = std::max(1.0f, newGridDims.y);
+	m_TileSize = sf::Vector2f(m_WindowSize.x / newGridDims.x, m_WindowSize.y / newGridDims.y);
+	m_GridDimensions = newGridDims;
+	setupGrid();
+}
+
 //Setters
 void  Map::setPosition(sf::Vector2f pos)
 {
 	m_Position = pos;
+}
+
+void Map::setLevelBits(std::vector<std::vector<char>> vcNewBits)
+{
+	m_vcLevelBits = vcNewBits;
 }
 
 //Getters

@@ -15,6 +15,8 @@ soundWave::soundWave(float fRadius, float fIncreaseRate, float fDecreaseRate, sf
 	m_Wave.setFillColor(sf::Color(255,255,255,10));
 	m_Wave.setPosition(position);
 	m_bDone = false;
+	m_Wave.setOutlineThickness(1);
+	m_Wave.setOutlineColor(sf::Color(255, 255, 255, 50));
 }
 
 void soundWave::update()

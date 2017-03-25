@@ -41,10 +41,10 @@ Character::Character()
 	//Sets up the sprite
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 50, 50));
 	m_MainSprite.setPosition(100, 100);
-	m_MainSprite.setOrigin((m_MainSprite.getLocalBounds().width / 2), (m_MainSprite.getLocalBounds().height / 2));
+	//m_MainSprite.setOrigin((m_MainSprite.getLocalBounds().width / 2), (m_MainSprite.getLocalBounds().height / 2));
 
-	m_Weapon1.setPosition(sf::Vector2f(m_MainSprite.getPosition().x + (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y), m_MainSprite.getPosition().y));
-	m_Weapon1.setOrigin(sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2, -(m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2));
+	//m_Weapon1.setPosition(sf::Vector2f(m_MainSprite.getPosition().x + (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y), m_MainSprite.getPosition().y));
+	//m_Weapon1.setOrigin(sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2, -(m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2));
 
 	//Sets up the Path line
 	m_PathLine.setPrimitiveType(sf::LinesStrip); 
@@ -112,11 +112,11 @@ Character::Character()
 void Character::update()
 {
 	move();
-	m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getScale().x * 70, m_MainSprite.getScale().y * 5));
-	m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getScale().x * 70, m_MainSprite.getScale().y * 5));
+	m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
+	m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
 
-	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - (m_MainSprite.getScale().y * 50)));
-	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_AmmoBar.getSize().x / 2, m_MainSprite.getPosition().y - (m_MainSprite.getScale().y * 40)));
+	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - m_MainSprite.getSize().y - m_AmmoBar.getSize().y - (m_AmmoBar.getSize().y/2)));
+	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_AmmoBar.getSize().x / 2, m_MainSprite.getPosition().y - m_MainSprite.getSize().y));
 
 	m_HealthBar.setLevel(m_HealthLevels.lower);
 	m_HealthBar.setLimit(m_HealthLevels.upper);
@@ -124,9 +124,9 @@ void Character::update()
 	m_AmmoBar.setLevel(m_Weapon1.getAmmoLevels().lower);
 	m_AmmoBar.setLimit(m_Weapon1.getAmmoLevels().upper);
 
-	m_Weapon1.setPosition(m_MainSprite.getPosition());
-	m_Weapon1.setOrigin(sf::Vector2f(m_MainSprite.getLocalBounds().width / 4, -m_MainSprite.getLocalBounds().height / 2));
-	m_Weapon1.setSize(sf::Vector2f(((m_MainSprite.getLocalBounds().width / 2)* m_MainSprite.getScale().x), ((m_MainSprite.getLocalBounds().height / 2)* m_MainSprite.getScale().y) * 2));
+	m_Weapon1.setPosition(getPosition());
+	m_Weapon1.setSize(sf::Vector2f(getSize().x*(2.0f / 3.0f), getSize().y *(4.0f / 3.0f)));
+	m_Weapon1.setOrigin(sf::Vector2f(m_Weapon1.getSize().x / 2.0f, -getSize().y / 2.0f));
 
 	m_Weapon1.update();
 
@@ -209,7 +209,7 @@ void Character::move()
 			velocity /= fMagnitude;
 
 			m_MovementLine[0].position = m_MainSprite.getPosition();
-			m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2.0f);
+			m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * getSize().y / 2.0f);
 
 			m_fMovementAngle = Util::getAngle(velocity) - 90;
 			m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
@@ -251,7 +251,7 @@ void Character::lookAt(sf::Vector2f position)
 
 	m_MainSprite.setRotation(Util::getAngle(rotVect) + 90);
 
-	rotVect *= ((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2.0f);
+	rotVect *= (getSize().y / 2.0f);
 
 	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
@@ -261,7 +261,7 @@ void Character::lookAt(sf::Vector2f position)
 void Character::lookAt(float fAngle)
 {
 	//Finding the vector between the character's center and the mouse
-	sf::Vector2f rotVect(Util::rotateVect(sf::Vector2f((m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2, (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2), fAngle));
+	sf::Vector2f rotVect(Util::rotateVect(sf::Vector2f(getSize().y / 2, getSize().y / 2), fAngle));
 
 	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
@@ -441,7 +441,7 @@ bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 
 void Character::setupTextures()
 {
-	m_Weapon1.setSize(sf::Vector2f(((m_MainSprite.getLocalBounds().width / 2)* m_MainSprite.getScale().x), ((m_MainSprite.getLocalBounds().height / 2)* m_MainSprite.getScale().y) * 2));
+	m_Weapon1.setSize(sf::Vector2f((getSize().x / 2), getSize().y / 2));
 	m_Weapon1.setupTextures();
 }
 //Setters
@@ -608,8 +608,7 @@ Util::Limits Character::getAmmoData()
 
 std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 {
-	sf::Vector2f radiusLine = Util::rotateVect(sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2, 
-															(m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2), fAngle - 90);
+	sf::Vector2f radiusLine = Util::rotateVect(sf::Vector2f(getSize().x / 2, getSize().x / 2), fAngle - 90);
 
 	std::vector<sf::Vector2f> newCollisionLine = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine};
 	m_CollisionLine[0].position = newCollisionLine[0];
@@ -666,7 +665,7 @@ Weapon* Character::getWeapon()
 
 bool Character::stepTaken()
 {
-	float stepDist = (getSize().x * getScale().x) / 2.0f;
+	float stepDist = getSize().x / 2.0f;
 	if (fDistanceSinceStep > stepDist)
 	{
 		fDistanceSinceStep = 0;
@@ -677,6 +676,7 @@ bool Character::stepTaken()
 		return false;
 	}
 }
+
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	if (m_bDrawVision)

@@ -26,9 +26,11 @@ class Map : public sf::Drawable
 		void setup(sf::FloatRect area, sf::Vector2f newGridDims);
 		void load(std::string sDir);
 		void setupGrid();
+		void setDimensions(sf::Vector2f newGridDims);
 
 		//Setters
 		void setPosition(sf::Vector2f pos);
+		void setLevelBits(std::vector<std::vector<char>> vcNewBits);
 
 		//Getters
 		std::vector<std::vector<char>> getMapData();
