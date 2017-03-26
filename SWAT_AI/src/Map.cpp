@@ -68,6 +68,48 @@ void Map::load(std::string sDir)
 	mapFile.close();
 }
 
+void Map::loadFloor(std::string sDir)
+{
+	m_vcFloorBits.clear();
+	std::ifstream mapFile;
+	mapFile.open(sDir); //Open the map file
+
+	if (mapFile.is_open()) //If the file opened correctly
+	{
+		//Initialise reading variables
+		int iLongestLineLength = 0;
+		std::string sLine;
+
+		while (!mapFile.eof()) //while the end of file hasnt been reached
+		{
+			getline(mapFile, sLine); //Get the next line
+
+			m_vcFloorBits.resize(m_vcFloorBits.size() + 1); //Adds another row of bits
+
+			if (sLine.length() > iLongestLineLength) //If the length of the line is longer than the longest current line
+			{
+				iLongestLineLength = sLine.length(); //It becomes the new longest
+			}
+
+			//For every bit read it into the data vector
+			for (int i = 0; i < sLine.length(); i++)
+			{
+				m_vcFloorBits.at(m_vcFloorBits.size() - 1).push_back(sLine.at(i));
+			}
+		}
+		m_GridDimensions = sf::Vector2f(iLongestLineLength, m_vcFloorBits.size());
+		m_TileSize = sf::Vector2f(m_WindowSize.x / m_GridDimensions.x, m_WindowSize.y / m_GridDimensions.y);
+		setupGrid();
+	}
+	else
+	{
+		//Ouptut an error
+		std::cout << "Map File: " << sDir << " could not be opened." << "\n";
+	}
+
+	mapFile.close();
+}
+
 void Map::setupGrid()
 {
 	//Sets up the grid size
@@ -110,10 +152,20 @@ void Map::setLevelBits(std::vector<std::vector<char>> vcNewBits)
 	m_vcLevelBits = vcNewBits;
 }
 
+void Map::setFloorBits(std::vector<std::vector<char>> vcNewBits)
+{
+	m_vcFloorBits = vcNewBits;
+}
+
 //Getters
 std::vector<std::vector<char>> Map::getMapData()
 {
 	return m_vcLevelBits;
+}
+
+std::vector<std::vector<char>> Map::getFloorData()
+{
+	return m_vcFloorBits;
 }
 
 sf::Vector2f Map::getTileSize()

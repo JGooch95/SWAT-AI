@@ -14,9 +14,15 @@ class Editor : public sf::Drawable
 		std::vector<sf::Text> UIText;
 		std::vector<Button*> gridButtons;
 
-		std::vector<Button*> editorButtons;
+		std::vector<Button*> objectButtons;
+		std::vector<Button*> toolButtons;
+		std::vector<Button*> floorButtons;
 
 		std::vector<std::vector<Object*>> m_Items;
+		std::vector<std::vector<Object*>> m_FloorTiles;
+
+		bool bEditingFloor;
+
 		TextureLoader* m_Textures; //Contains all textures used in the game
 		sf::Font m_CurrentFont;
 		Map* m_CurrentMap;
@@ -24,6 +30,7 @@ class Editor : public sf::Drawable
 
 		char cCurrentTool;
 		std::vector<std::vector<char>> m_vcLevelBits; //Holds the map layout loaded from the file
+		std::vector<std::vector<char>> m_vcFloorBits; 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:

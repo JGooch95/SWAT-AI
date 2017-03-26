@@ -5,7 +5,6 @@ Button::Button()
 	m_CurrentFont.loadFromFile("Assets/Fonts/arial.ttf");
 
 	m_ButtonText.setFont(m_CurrentFont);
-	m_bUsingText = false;
 	m_ButtonText.setFillColor(sf::Color(255, 255, 255, 255));
 	m_ButtonText.setCharacterSize(100.0f);
 	m_ButtonText.setPosition(0, 0);
@@ -31,20 +30,20 @@ bool Button::hovering(sf::Vector2i pos)
 
 void Button::setText(std::string sValue)
 {
-	m_bUsingText = true;
 	m_ButtonText.setString(sValue);
-
-	while (m_ButtonText.getLocalBounds().width > getSize().x &&m_ButtonText.getLocalBounds().height > getSize().y)
+	
+	while (m_ButtonText.getLocalBounds().width  > m_MainSprite.getSize().x ||
+		   m_ButtonText.getLocalBounds().height > m_MainSprite.getSize().y*(2.0f / 3.0f))
 	{
 		m_ButtonText.setCharacterSize(m_ButtonText.getCharacterSize() - 1);
 	}
 
-	m_ButtonText.setPosition(m_MainSprite.getPosition() + sf::Vector2f(getSize().x/2.0f,0) - sf::Vector2f(m_ButtonText.getLocalBounds().width / 2.0f, 0));
+	m_ButtonText.setPosition(m_MainSprite.getPosition() + sf::Vector2f(getSize().x/2.0f,0.0f) - sf::Vector2f(m_ButtonText.getLocalBounds().width / 2.0f, 0.0f));
 }
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_MainSprite);
-	target.draw(m_ButtonText);
 	target.draw(m_Selector);
+	target.draw(m_ButtonText);
 }

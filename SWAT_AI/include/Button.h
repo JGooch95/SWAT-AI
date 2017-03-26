@@ -7,7 +7,6 @@ class Button : public Object
 		sf::Text m_ButtonText;
 		sf::Font m_CurrentFont;
 		sf::RectangleShape m_Selector;
-		bool m_bUsingText;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:

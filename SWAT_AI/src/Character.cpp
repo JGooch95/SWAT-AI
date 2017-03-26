@@ -188,7 +188,7 @@ void Character::move()
 {
 	if (!m_Path.empty())
 	{
-		const float kfMoveSpeed = 2.0f * m_MainSprite.getScale().x; //The amount of pixels the character moves per frame
+		const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
 
 																	//Sets the node to reach to be the next node in the path
 		sf::Vector2f destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),

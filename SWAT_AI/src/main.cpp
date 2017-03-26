@@ -42,7 +42,10 @@ int main()
 		"Assets/Sprites/ScopeSprite.png",				//19
 		"Assets/Sprites/Back.png",						//20
 		"Assets/Sprites/Plus.png",						//21
-		"Assets/Sprites/Minus.png"						//22
+		"Assets/Sprites/Minus.png",						//22
+		"Assets/Sprites/Eraser.png",					//23
+		"Assets/Sprites/Door.png",						//24
+		"Assets/Sprites/Floor.png"						//25
 	});
 
 	m_Textures->getTexture(14)->setRepeated(true);
@@ -83,14 +86,14 @@ int main()
 				{
 					if (Game1 != NULL)
 					{
-						Game1->clickRight(sf::Mouse::getPosition() - mainWindow.getPosition() - sf::Vector2i(8, 30));
+						Game1->clickRight(sf::Mouse::getPosition(mainWindow));
 					}
 				}
 				if (event.key.code == sf::Mouse::Left)
 				{
 					if (Game1 != NULL)
 					{
-						switch (Game1->clickLeft(sf::Mouse::getPosition() - mainWindow.getPosition() - sf::Vector2i(8, 30)))
+						switch (Game1->clickLeft(sf::Mouse::getPosition(mainWindow)))
 						{
 							case 1:
 								delete Game1;
@@ -101,7 +104,7 @@ int main()
 					}
 					else if (Menu1 != NULL)
 					{
-						switch (Menu1->clickLeft(sf::Mouse::getPosition() - mainWindow.getPosition() - sf::Vector2i(8, 30)))
+						switch (Menu1->clickLeft(sf::Mouse::getPosition(mainWindow)))
 						{
 							case 1:
 								delete Menu1;
@@ -109,7 +112,7 @@ int main()
 								Game1 = new Game(mainWindow.getSize());
 								break;
 
-							case 3:
+							case 2:
 								delete Menu1;
 								Menu1 = NULL;
 								Editor1 = new Editor(mainWindow.getSize());
@@ -124,7 +127,7 @@ int main()
 					}
 					else if (Editor1 != NULL)
 					{
-						switch (Editor1->clickLeft(sf::Mouse::getPosition() - mainWindow.getPosition() - sf::Vector2i(8, 30)))
+						switch (Editor1->clickLeft(sf::Mouse::getPosition(mainWindow)))
 						{
 							case 1:
 								delete Editor1;
@@ -142,16 +145,16 @@ int main()
 			//Update
 			if (Game1 != NULL)
 			{
-				Game1->update(sf::Mouse::getPosition() - mainWindow.getPosition() - sf::Vector2i(8, 30));
+				Game1->update(sf::Mouse::getPosition(mainWindow));
 			}
 
 			if (Menu1 != NULL)
 			{
-				Menu1->update(sf::Mouse::getPosition() - mainWindow.getPosition() - sf::Vector2i(8, 30));
+				Menu1->update(sf::Mouse::getPosition(mainWindow));
 			}
 			if (Editor1 != NULL)
 			{
-				Editor1->update(sf::Mouse::getPosition() - mainWindow.getPosition() - sf::Vector2i(8, 30));
+				Editor1->update(sf::Mouse::getPosition(mainWindow));
 			}
 
 			//Draw

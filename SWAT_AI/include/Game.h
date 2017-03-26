@@ -36,7 +36,7 @@ class Game : public sf::Drawable
 		std::vector<Character*> m_vEnemies; //Holds the enemy units
 		std::vector<Object*> m_vWalls; //Holds the walls
 		std::vector<Entrance*> m_vDoors; //Holds the doors
-		Object m_Background;
+		std::vector<Object*> m_Background;
 		std::vector<sf::Vector2f> m_vEdges; //Holds the wall edges
 		
 		Button* exitButton;

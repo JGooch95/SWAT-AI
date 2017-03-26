@@ -18,6 +18,7 @@ class Menu : public sf::Drawable
 		sf::Text m_CurrentText;
 
 		sf::RectangleShape m_Background;
+		sf::RectangleShape m_ContentBox;
 		std::vector<Button*> m_Buttons;
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;

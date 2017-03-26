@@ -37,6 +37,11 @@ void Object::setSize(sf::Vector2f dims)
 	//}
 }
 
+void Object::setColor(sf::Color newColor)
+{
+	m_MainSprite.setFillColor(newColor);
+}
+
 void Object::setArea(sf::Vector2f dims)
 {
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, dims.x, dims.y));

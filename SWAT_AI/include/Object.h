@@ -23,6 +23,7 @@ class Object : public sf::Drawable
 		void setSize(sf::Vector2f dims);
 		void setArea(sf::Vector2f dims);
 		void setRotation(float fRot);
+		void setColor(sf::Color newColor);
 
 		//Getters
 		sf::Vector2f getPosition();

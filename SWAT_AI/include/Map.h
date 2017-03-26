@@ -14,6 +14,7 @@ class Map : public sf::Drawable
 
 		sf::VertexArray m_Grid; //Holds the lines for the grid
 		std::vector<std::vector<char>> m_vcLevelBits; //Holds the map layout loaded from the file
+		std::vector<std::vector<char>> m_vcFloorBits; //Holds the map layout loaded from the file
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
@@ -25,15 +26,18 @@ class Map : public sf::Drawable
 
 		void setup(sf::FloatRect area, sf::Vector2f newGridDims);
 		void load(std::string sDir);
+		void loadFloor (std::string sDir);
 		void setupGrid();
 		void setDimensions(sf::Vector2f newGridDims);
 
 		//Setters
 		void setPosition(sf::Vector2f pos);
 		void setLevelBits(std::vector<std::vector<char>> vcNewBits);
+		void setFloorBits(std::vector<std::vector<char>> vcNewBits);
 
 		//Getters
 		std::vector<std::vector<char>> getMapData();
+		std::vector<std::vector<char>> getFloorData();
 		sf::Vector2f getTileSize();
 		sf::Vector2f getGridDims();
 		sf::Vector2u getWindowSize();
