@@ -47,8 +47,10 @@ int main()
 		"Assets/Sprites/Door.png",						//24
 		"Assets/Sprites/Floor.png",						//25
 		"Assets/Sprites/Concrete.png",					//26
-		"Assets/Sprites/KitchenTile.png"				//27
-
+		"Assets/Sprites/KitchenTile.png",				//27
+		"Assets/Sprites/BlueCarpet.jpg",				//28
+		"Assets/Sprites/RedCarpet.jpg",				//29
+		"Assets/Sprites/Bricks.jpg"				//30
 	});
 
 	m_Textures->getTexture(14)->setRepeated(true);

@@ -120,7 +120,7 @@ Editor::Editor(sf::Vector2u windowSize)
 		}
 	}
 
-	objectButtons.resize(4);
+	objectButtons.resize(5);
 	for (int i = 0; i < objectButtons.size(); i++)
 	{
 		objectButtons.at(i) = new Button();
@@ -145,8 +145,9 @@ Editor::Editor(sf::Vector2u windowSize)
 	objectButtons.at(1)->setTexture(m_Textures->getTexture(1));
 	objectButtons.at(2)->setTexture(m_Textures->getTexture(2));
 	objectButtons.at(3)->setTexture(m_Textures->getTexture(24));
+	objectButtons.at(4)->setTexture(m_Textures->getTexture(30));
 
-	floorButtons.resize(4);
+	floorButtons.resize(6);
 	for (int i = 0; i < floorButtons.size(); i++)
 	{
 		floorButtons.at(i) = new Button();
@@ -171,6 +172,8 @@ Editor::Editor(sf::Vector2u windowSize)
 	floorButtons.at(1)->setTexture(m_Textures->getTexture(25));
 	floorButtons.at(2)->setTexture(m_Textures->getTexture(26));
 	floorButtons.at(3)->setTexture(m_Textures->getTexture(27));
+	floorButtons.at(4)->setTexture(m_Textures->getTexture(28));
+	floorButtons.at(5)->setTexture(m_Textures->getTexture(29));
 
 	toolButtons.resize(1);
 	for (int i = 0; i < toolButtons.size(); i++)
@@ -410,7 +413,16 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 				}
 				m_Items.at(gridPos.y).at(gridPos.x) = new Object();
 				m_Items.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
-
+			}
+			if (cCurrentTool == 'B')
+			{
+				if (m_Items.at(gridPos.y).at(gridPos.x) != NULL)
+				{
+					delete(m_Items.at(gridPos.y).at(gridPos.x));
+					m_Items.at(gridPos.y).at(gridPos.x) = NULL;
+				}
+				m_Items.at(gridPos.y).at(gridPos.x) = new Object();
+				m_Items.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(30));
 			}
 			if (cCurrentTool == ' ')
 			{
@@ -464,6 +476,26 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
 				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
 			}
+			if (cCurrentTool == 'B')
+			{
+				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+				{
+					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
+					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+				}
+				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
+				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(28));
+			}
+			if (cCurrentTool == 'R')
+			{
+				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+				{
+					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
+					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+				}
+				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
+				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(29));
+			}
 			if (cCurrentTool == ' ')
 			{
 				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
@@ -494,6 +526,11 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		cCurrentTool = 'D';
 		bEditingFloor = false;
 	}
+	if (objectButtons.at(4)->hovering(mousePos))
+	{
+		cCurrentTool = 'B';
+		bEditingFloor = false;
+	}
 
 	if (toolButtons.at(0)->hovering(mousePos))
 	{
@@ -518,6 +555,16 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 	if (floorButtons.at(3)->hovering(mousePos))
 	{
 		cCurrentTool = 'K';
+		bEditingFloor = true;
+	}
+	if (floorButtons.at(4)->hovering(mousePos))
+	{
+		cCurrentTool = 'B';
+		bEditingFloor = true;
+	}
+	if (floorButtons.at(5)->hovering(mousePos))
+	{
+		cCurrentTool = 'R';
 		bEditingFloor = true;
 	}
 

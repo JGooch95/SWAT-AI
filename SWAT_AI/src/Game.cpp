@@ -53,6 +53,20 @@ Game::Game(sf::Vector2u windowSize)
 				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
 				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
 			}
+			if (m_CurrentMap->getFloorData().at(i).at(j) == 'B')
+			{
+				m_Background.push_back(new Object);
+				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(28));
+				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
+				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
+			}
+			if (m_CurrentMap->getFloorData().at(i).at(j) == 'R')
+			{
+				m_Background.push_back(new Object);
+				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(29));
+				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
+				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
+			}
 		}
 	}
 
@@ -79,16 +93,23 @@ Game::Game(sf::Vector2u windowSize)
 		for (int j = 0; j < m_CurrentMap->getMapData().at(i).size(); j++)
 		{
 			//Walls
-			if (m_CurrentMap->getMapData().at(i).at(j) == 'W')
+			if (m_CurrentMap->getMapData().at(i).at(j) == 'W' || m_CurrentMap->getMapData().at(i).at(j) == 'B')
 			{
 				m_vWalls.push_back(new Object);
-				m_vWalls.at(m_vWalls.size() - 1)->setTexture(m_Textures->getTexture(0)); //Sets the unit texture
+				if (m_CurrentMap->getMapData().at(i).at(j) == 'W')
+				{
+					m_vWalls.at(m_vWalls.size() - 1)->setTexture(m_Textures->getTexture(0)); //Sets the unit texture
+				}
+				if (m_CurrentMap->getMapData().at(i).at(j) == 'B')
+				{
+					m_vWalls.at(m_vWalls.size() - 1)->setTexture(m_Textures->getTexture(30));
+				}
 				m_vWalls.at(m_vWalls.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y));
 				m_vWalls.at(m_vWalls.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
 
 				if (i > 0)
 				{
-					if (m_CurrentMap->getMapData().at(i - 1).at(j) != 'W')
+					if (m_CurrentMap->getMapData().at(i - 1).at(j) != 'W' && m_CurrentMap->getMapData().at(i - 1).at(j) != 'B')
 					{
 						//Top Edge
 						vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
@@ -97,7 +118,7 @@ Game::Game(sf::Vector2u windowSize)
 				}
 				if (i < m_CurrentMap->getMapData().size() - 1)
 				{
-					if (m_CurrentMap->getMapData().at(i + 1).at(j) != 'W')
+					if (m_CurrentMap->getMapData().at(i + 1).at(j) != 'W' && m_CurrentMap->getMapData().at(i + 1).at(j) != 'B')
 					{
 						//Bottom Edge
 						vEdgesY.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top + m_vWalls.at(m_vWalls.size() - 1)->getRect().height));
@@ -107,7 +128,7 @@ Game::Game(sf::Vector2u windowSize)
 				
 				if (j > 0)
 				{
-					if (m_CurrentMap->getMapData().at(i).at(j - 1) != 'W')
+					if (m_CurrentMap->getMapData().at(i).at(j - 1) != 'W' && m_CurrentMap->getMapData().at(i).at(j - 1) != 'B')
 					{
 						//Left Edge
 						vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
@@ -116,7 +137,7 @@ Game::Game(sf::Vector2u windowSize)
 				}
 				if (j < m_CurrentMap->getMapData().at(i).size() - 1)
 				{
-					if (m_CurrentMap->getMapData().at(i).at(j + 1) != 'W')
+					if (m_CurrentMap->getMapData().at(i).at(j + 1) != 'W' && m_CurrentMap->getMapData().at(i).at(j + 1) != 'B')
 					{
 						//Right Edge
 						vEdgesX.push_back(sf::Vector2f(m_vWalls.at(m_vWalls.size() - 1)->getRect().left + m_vWalls.at(m_vWalls.size() - 1)->getRect().width, m_vWalls.at(m_vWalls.size() - 1)->getRect().top));
@@ -164,7 +185,7 @@ Game::Game(sf::Vector2u windowSize)
 				bool bNearWall = false;
 				if (j > 0)
 				{
-					if ((m_CurrentMap->getMapData().at(i).at(j - 1) == 'W'))
+					if ((m_CurrentMap->getMapData().at(i).at(j - 1) == 'W') || m_CurrentMap->getMapData().at(i).at(j - 1) == 'B')
 					{
 						bNearWall = true;
 						m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y / 4));
@@ -174,7 +195,7 @@ Game::Game(sf::Vector2u windowSize)
 				}
 				if (j < m_CurrentMap->getMapData().at(i).size() -1)
 				{
-					if ((m_CurrentMap->getMapData().at(i).at(j + 1) == 'W'))
+					if ((m_CurrentMap->getMapData().at(i).at(j + 1) == 'W') || m_CurrentMap->getMapData().at(i).at(j + 1) == 'B')
 					{
 						bNearWall = true;
 						m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y / 4));
@@ -186,7 +207,7 @@ Game::Game(sf::Vector2u windowSize)
 				}
 				if (i > 0)
 				{
-					if ((m_CurrentMap->getMapData().at(i - 1).at(j) == 'W'))
+					if ((m_CurrentMap->getMapData().at(i - 1).at(j) == 'W') || m_CurrentMap->getMapData().at(i - 1).at(j) == 'B')
 					{
 						bNearWall = true;
 						m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x / 4, m_CurrentMap->getTileSize().y));
@@ -196,7 +217,7 @@ Game::Game(sf::Vector2u windowSize)
 				}
 				if (i < m_CurrentMap->getMapData().size()-1)
 				{
-					if ((m_CurrentMap->getMapData().at(i + 1).at(j) == 'W'))
+					if ((m_CurrentMap->getMapData().at(i + 1).at(j) == 'W') || m_CurrentMap->getMapData().at(i + 1).at(j) == 'B')
 					{
 						bNearWall = true;
 						m_vDoors.at(m_vDoors.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x / 4, m_CurrentMap->getTileSize().y));
@@ -297,7 +318,21 @@ void Game::update(sf::Vector2i mousePos)
 
 		if (m_vCharacters.at(i)->stepTaken())
 		{
-			waves.push_back(new soundWave(20, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+			sf::Vector2u CharacterTile(((int)m_vCharacters.at(i)->getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
+			((int)m_vCharacters.at(i)->getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
+
+			if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'B' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
+			{
+				waves.push_back(new soundWave(20, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+			}
+			else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
+			{
+				waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+			}
 		}
 	}
 
