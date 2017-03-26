@@ -11,6 +11,7 @@ class Editor : public sf::Drawable
 		sf::RectangleShape m_Toolbar;
 		sf::RectangleShape m_Sidebar;
 		Button* exitButton;
+		Button* saveButton;
 		std::vector<sf::Text> UIText;
 		std::vector<Button*> gridButtons;
 

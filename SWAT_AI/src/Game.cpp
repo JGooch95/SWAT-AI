@@ -325,13 +325,13 @@ void Game::update(sf::Vector2i mousePos)
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
 			{
-				waves.push_back(new soundWave(20, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+				waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
 			}
 			else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
 			{
-				waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+				waves.push_back(new soundWave(80, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
 			}
 		}
 	}

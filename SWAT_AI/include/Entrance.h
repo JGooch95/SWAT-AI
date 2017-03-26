@@ -1,5 +1,6 @@
 #pragma once
 #include "../include/Object.h"
+#include "SoundManager.h"
 
 class Entrance : public Object
 {
@@ -7,6 +8,8 @@ class Entrance : public Object
 		bool m_bOpen;
 		float m_fOrientation;
 		int m_iOpeningDirection;
+		sf::Sound m_OpeningSound;
+		SoundManager* m_SoundManager;
 		sf::Vector2u m_Tile;
 
 	public:

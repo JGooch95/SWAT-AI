@@ -4,6 +4,7 @@
 #include "../include/TextureLoader.h"
 #include "../include/Menu.h"
 #include "../include/Editor.h"
+#include "../include/SoundManager.h"
 
 
 int main()
@@ -49,8 +50,24 @@ int main()
 		"Assets/Sprites/Concrete.png",					//26
 		"Assets/Sprites/KitchenTile.png",				//27
 		"Assets/Sprites/BlueCarpet.jpg",				//28
-		"Assets/Sprites/RedCarpet.jpg",				//29
-		"Assets/Sprites/Bricks.jpg"				//30
+		"Assets/Sprites/RedCarpet.jpg",					//29
+		"Assets/Sprites/Bricks.jpg",					//30
+		"Assets/Sprites/Save.png"						//31
+	});
+
+	SoundManager* m_SoundManger = SoundManager::getInstance();
+	
+	m_SoundManger->loadSounds(std::vector<std::string>{
+		"Assets/Sounds/Silenced.wav",
+		"Assets/Sounds/AssaultRifle.wav",
+		"Assets/Sounds/Sniper.wav",
+		"Assets/Sounds/Shotgun.wav",
+		"Assets/Sounds/Footstep.wav",
+		"Assets/Sounds/Door.wav",
+		"Assets/Sounds/AssaultRifleReload.wav",
+		"Assets/Sounds/loadout.wav",
+		"Assets/Sounds/ShotgunReload.wav",
+		"Assets/Sounds/SniperReload.wav"
 	});
 
 	m_Textures->getTexture(14)->setRepeated(true);
@@ -212,4 +229,8 @@ int main()
 		delete(m_CurrentSettings);
 		m_CurrentSettings = NULL;
 	}
+
+	delete m_SoundManger;
+	m_SoundManger = NULL;
+
 }

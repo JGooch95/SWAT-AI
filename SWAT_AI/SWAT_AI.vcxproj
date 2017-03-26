@@ -168,6 +168,7 @@
     <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Settings.cpp" />
+    <ClCompile Include="src\SoundManager.cpp" />
     <ClCompile Include="src\soundWave.cpp" />
     <ClCompile Include="src\TextureLoader.cpp" />
     <ClCompile Include="src\Weapon.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Object.h" />
     <ClInclude Include="include\Settings.h" />
+    <ClInclude Include="include\SoundManager.h" />
     <ClInclude Include="include\SoundWave.h" />
     <ClInclude Include="include\TextureLoader.h" />
     <ClInclude Include="include\Weapon.h" />

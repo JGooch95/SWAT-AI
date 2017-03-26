@@ -45,6 +45,10 @@ class Character : public Object
 
 		Character* m_CurrentTarget;
 
+		sf::Sound m_StepSound;
+		sf::Sound m_LoadoutSound;
+		SoundManager* m_SoundManager;
+
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:

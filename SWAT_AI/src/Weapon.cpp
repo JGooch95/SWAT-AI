@@ -41,6 +41,10 @@ Weapon::Weapon()
 
 	m_ReloadClock.restart();
 	m_FireRateClock.restart();
+	m_SoundManager = SoundManager::getInstance();
+	m_ShotSound.setBuffer(*m_SoundManager->getSound(3));
+	m_SilencedShotSound.setBuffer(*m_SoundManager->getSound(0));
+	m_ReloadSound.setBuffer(*m_SoundManager->getSound(6));
 }
 
 void Weapon::aim(sf::Vector2f location)
@@ -135,7 +139,6 @@ void Weapon::shoot()
 		if (m_FireRateClock.getElapsedTime().asSeconds() >= m_fFireRate)
 		{
 			m_bShooting = true;
-
 			sf::Vector2f RotVect(getIntersect() - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
 			RotVect /= Util::magnitude(RotVect);
 
@@ -143,7 +146,12 @@ void Weapon::shoot()
 
 			if (m_bSilencer)
 			{
+				m_SilencedShotSound.play();
 				extraLength = silencer.getSize().y;
+			}
+			else
+			{
+				m_ShotSound.play();
 			}
 
 			sf::Vector2f WeaponDist = (getSize().y  + extraLength) * RotVect; // Finds the end of the weapon
@@ -193,6 +201,7 @@ void Weapon::shoot()
 
 void Weapon::reload()
 {
+	m_ReloadSound.play();
 	m_bReloading = true;
 	m_ReloadClock.restart();
 }
@@ -283,6 +292,11 @@ void Weapon::setLazer(bool bValue)
 void Weapon::setSilencer(bool bValue)
 {
 	m_bSilencer = bValue;
+	/*
+	if (isSilenced())
+	{
+		m_ShotSound.setBuffer(*m_SoundManager->getSound(0));
+	}*/
 }
 
 void  Weapon::setScope(bool bValue)
@@ -293,6 +307,15 @@ void  Weapon::setScope(bool bValue)
 void Weapon::setWeaponVolume(float fValue)
 {
 	m_fWeaponVolume = fValue;
+}
+
+void Weapon::setShotSound(int iIndex)
+{
+	m_ShotSound.setBuffer(*m_SoundManager->getSound(iIndex));
+}
+void Weapon::setReloadSound(int iIndex)
+{
+	m_ReloadSound.setBuffer(*m_SoundManager->getSound(iIndex));
 }
 
 //Getters

@@ -107,6 +107,12 @@ Character::Character()
 	m_CurrentTarget = NULL;
 	m_bDrawVision = false;
 	srand(time(NULL));
+
+	//setClass(Assault, m_)
+
+	m_SoundManager = SoundManager::getInstance();
+	m_StepSound.setBuffer(*m_SoundManager->getSound(4));
+	m_LoadoutSound.setBuffer(*m_SoundManager->getSound(7));
 }
 
 void Character::update()
@@ -420,7 +426,7 @@ float Character::bulletChecks(std::vector<sf::Vector2f>vEdges)
 
 bool Character::checkVisionCone(sf::Vector2f position)
 {
-
+	return false;
 }
 
 bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
@@ -500,6 +506,8 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			m_Weapon1.setReloadTime(2.0f);
 			m_Weapon1.setAccuracy(0.7f);
 			m_Weapon1.setWeaponVolume(100);
+			m_Weapon1.setShotSound(1);
+			m_Weapon1.setReloadSound(6);
 			break;
 
 		case Support:
@@ -511,6 +519,8 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			m_Weapon1.setReloadTime(5.0f);
 			m_Weapon1.setAccuracy(0.3f);
 			m_Weapon1.setWeaponVolume(150);
+			m_Weapon1.setShotSound(0);
+			m_Weapon1.setReloadSound(6);
 			break;
 
 		case Sniper:
@@ -522,17 +532,21 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 			m_Weapon1.setReloadTime(4.0f);
 			m_Weapon1.setAccuracy(0.8f);
 			m_Weapon1.setWeaponVolume(200);
+			m_Weapon1.setShotSound(2);
+			m_Weapon1.setReloadSound(9);
 			break;
 
 		case Shotgunner:
-			m_Weapon1.setDamage(sf::Vector2f(0.5f, 20.0f));
-			m_Weapon1.setFireRate(0.4f);
-			m_Weapon1.setRange(sf::Vector2f(0.0f, 300.0f));
+			m_Weapon1.setDamage(sf::Vector2f(0.5f, 60.0f));
+			m_Weapon1.setFireRate(2.0f);
+			m_Weapon1.setRange(sf::Vector2f(0.0f, 250.0f));
 			m_Weapon1.setAmmoLimit(8);
 			m_Weapon1.setAmmo(0);
-			m_Weapon1.setReloadTime(2.0f);
+			m_Weapon1.setReloadTime(2.5f);
 			m_Weapon1.setAccuracy(0.5f);
 			m_Weapon1.setWeaponVolume(100);
+			m_Weapon1.setShotSound(3);
+			m_Weapon1.setReloadSound(8);
 			break;
 	}
 	m_Weapon1.reload();
@@ -540,6 +554,7 @@ void Character::setClass(classType newClassType, sf::Texture* GunTexture)
 
 void Character::setLoadoutItem(int iIndex, loadoutItem itemType)
 {
+	m_LoadoutSound.play();
 	bool bSame = true;
 	while (bSame)
 	{
@@ -668,6 +683,7 @@ bool Character::stepTaken()
 	float stepDist = getSize().x / 2.0f;
 	if (fDistanceSinceStep > stepDist)
 	{
+		m_StepSound.play();
 		fDistanceSinceStep = 0;
 		return true;
 	}

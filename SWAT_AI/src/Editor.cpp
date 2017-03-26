@@ -26,6 +26,11 @@ Editor::Editor(sf::Vector2u windowSize)
 	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
 	exitButton->setTexture(m_Textures->getTexture(20));
 
+	saveButton = new Button();
+	saveButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
+	saveButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + (m_Toolbar.getSize().x/2) - (saveButton->getSize().x/2), m_Toolbar.getPosition().y));
+	saveButton->setTexture(m_Textures->getTexture(31));
+
 	m_Sidebar.setPosition(m_CurrentMap->getWindowSize().x, m_Toolbar.getSize().y);
 	m_Sidebar.setFillColor(sf::Color(120, 120, 120, 255));
 	m_Sidebar.setSize(sf::Vector2f(windowSize.x - m_CurrentMap->getWindowSize().x, windowSize.y - m_Toolbar.getSize().y));
@@ -205,6 +210,7 @@ Editor::Editor(sf::Vector2u windowSize)
 void Editor::update(sf::Vector2i mousePos)
 {
 	exitButton->hovering(mousePos);
+	saveButton->hovering(mousePos);
 	for (int i = 0; i < gridButtons.size(); i++)
 	{
 		gridButtons.at(i)->hovering(mousePos);
@@ -252,9 +258,13 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 {
 	if (exitButton->hovering(mousePos))
 	{
-		saveMap();
 		m_CurrentSettings->setDebug(false);
 		return 1;
+	}
+
+	if (saveButton->hovering(mousePos))
+	{
+		saveMap();
 	}
 	
 	if (gridButtons.at(0)->hovering(mousePos))
@@ -624,8 +634,6 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(*m_CurrentMap);
 	}
 	target.draw(m_Sidebar);
-	target.draw(m_Toolbar);
-	target.draw(*exitButton);
 
 	for (int i = 0; i < m_FloorTiles.size(); i++)
 	{
@@ -670,6 +678,10 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(UIText.at(i));
 	}
+
+	target.draw(m_Toolbar);
+	target.draw(*exitButton);
+	target.draw(*saveButton);
 }
 
 Editor::~Editor()
@@ -720,4 +732,7 @@ Editor::~Editor()
 	}
 	delete(exitButton);
 	exitButton = NULL;
+
+	delete(saveButton);
+	saveButton = NULL;
 }

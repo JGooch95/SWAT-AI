@@ -15,34 +15,30 @@ soundWave::soundWave(float fRadius, float fIncreaseRate, float fDecreaseRate, sf
 	m_Wave.setFillColor(sf::Color(255,255,255,10));
 	m_Wave.setPosition(position);
 	m_bDone = false;
-	m_Wave.setOutlineThickness(1);
-	m_Wave.setOutlineColor(sf::Color(255, 255, 255, 50));
+	//m_Wave.setOutlineThickness(1);
+	//m_Wave.setOutlineColor(sf::Color(255, 255, 255, 50));
 }
 
 void soundWave::update()
 {
-	if (iDirection == 1)
-	{
-		m_fCurrentRadius += m_fIncreaseRate * iDirection;
-	}
-	else if (iDirection == -1)
-	{
-		m_fCurrentRadius += m_fDecreaseRate * iDirection;
-	}
-
 	m_Wave.setOrigin(sf::Vector2f(m_fCurrentRadius, m_fCurrentRadius));
 
-	if (m_fCurrentRadius >= m_fDesiredRadius)
+	if (m_fCurrentRadius > m_fDesiredRadius/2)
 	{
-		iDirection = -1;
+		m_fCurrentRadius += m_fDecreaseRate;
+		m_Wave.setFillColor(sf::Color(255, 255, 255, ((m_fDesiredRadius  - m_fCurrentRadius) / (m_fDesiredRadius/2)) * 30.0f));
+		m_Wave.setRadius(m_fCurrentRadius);
+		if (m_fCurrentRadius > m_fDesiredRadius)
+		{
+			m_bDone = true;
+		}
 	}
-	if (m_fCurrentRadius < 0)
+	else
 	{
-		m_bDone = true;
+		m_fCurrentRadius += m_fIncreaseRate;
+		m_Wave.setFillColor(sf::Color(255, 255, 255, (m_fCurrentRadius / (m_fDesiredRadius/2)) * 30.0f));
+		m_Wave.setRadius(m_fCurrentRadius);
 	}
-
-	m_Wave.setRadius(m_fCurrentRadius);
-	m_Wave.setFillColor(sf::Color(255, 255, 255, (m_fCurrentRadius/m_fDesiredRadius) * 30.0f));
 }
 
 bool soundWave::isDone()

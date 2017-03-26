@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "MathUtils.h"
 #include "TextureLoader.h"
+#include "SoundManager.h"
 
 
 class Weapon : public Object
@@ -14,6 +15,11 @@ class Weapon : public Object
 		Util::Limits m_DamageLimits; //Holds the maximum and minimum damage levels
 		Util::Limits m_RangeLimits; //Holds the maximum and minimum range levels
 		Util::Limits m_AmmoLevels; //Holds the ammo levels
+
+		sf::Sound m_SilencedShotSound;
+		sf::Sound m_ShotSound;
+		sf::Sound m_ReloadSound;
+		SoundManager* m_SoundManager;
 
 		sf::Clock m_FireRateClock; //Holds how long its been since firing the weapon
 		sf::Clock m_ReloadClock;
@@ -58,6 +64,8 @@ class Weapon : public Object
 		void setSilencer(bool bValue);
 		void setScope(bool bValue);
 		void setWeaponVolume(float fValue);
+		void setShotSound(int iIndex);
+		void setReloadSound(int iIndex);
 
 		//Getters
 		float getDamage();
