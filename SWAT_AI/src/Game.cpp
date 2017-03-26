@@ -39,6 +39,20 @@ Game::Game(sf::Vector2u windowSize)
 				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
 				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
 			}
+			if (m_CurrentMap->getFloorData().at(i).at(j) == 'C')
+			{
+				m_Background.push_back(new Object);
+				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(26));
+				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
+				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
+			}
+			if (m_CurrentMap->getFloorData().at(i).at(j) == 'K')
+			{
+				m_Background.push_back(new Object);
+				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(27));
+				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
+				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
+			}
 		}
 	}
 

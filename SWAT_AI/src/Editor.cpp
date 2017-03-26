@@ -146,7 +146,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	objectButtons.at(2)->setTexture(m_Textures->getTexture(2));
 	objectButtons.at(3)->setTexture(m_Textures->getTexture(24));
 
-	floorButtons.resize(2);
+	floorButtons.resize(4);
 	for (int i = 0; i < floorButtons.size(); i++)
 	{
 		floorButtons.at(i) = new Button();
@@ -169,6 +169,8 @@ Editor::Editor(sf::Vector2u windowSize)
 	}
 	floorButtons.at(0)->setTexture(m_Textures->getTexture(14));
 	floorButtons.at(1)->setTexture(m_Textures->getTexture(25));
+	floorButtons.at(2)->setTexture(m_Textures->getTexture(26));
+	floorButtons.at(3)->setTexture(m_Textures->getTexture(27));
 
 	toolButtons.resize(1);
 	for (int i = 0; i < toolButtons.size(); i++)
@@ -442,6 +444,26 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
 				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(25));
 			}
+			if (cCurrentTool == 'K')
+			{
+				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+				{
+					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
+					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+				}
+				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
+				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(27));
+			}
+			if (cCurrentTool == 'C')
+			{
+				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+				{
+					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
+					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+				}
+				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
+				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
+			}
 			if (cCurrentTool == ' ')
 			{
 				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
@@ -486,6 +508,16 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 	if (floorButtons.at(1)->hovering(mousePos))
 	{
 		cCurrentTool = 'F';
+		bEditingFloor = true;
+	}
+	if (floorButtons.at(2)->hovering(mousePos))
+	{
+		cCurrentTool = 'C';
+		bEditingFloor = true;
+	}
+	if (floorButtons.at(3)->hovering(mousePos))
+	{
+		cCurrentTool = 'K';
 		bEditingFloor = true;
 	}
 
