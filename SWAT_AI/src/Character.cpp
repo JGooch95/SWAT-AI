@@ -114,14 +114,13 @@ Character::Character()
 	m_StepSound.setBuffer(*m_SoundManager->getSound(4));
 	m_LoadoutSound.setBuffer(*m_SoundManager->getSound(7));
 	bDead = false;
+
+	m_Textures = TextureLoader::getInstance();
+	DeathImage.setTexture(m_Textures->getTexture(32));
 }
 
 void Character::update()
 {
-	if (m_HealthLevels.lower <= 0)
-	{
-		bDead = true;
-	}
 	move();
 	m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
 	m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
@@ -192,6 +191,14 @@ void Character::update()
 	{
 		break;
 	}
+	}
+
+	if (m_HealthLevels.lower <= 0)
+	{
+		bDead = true;
+		DeathImage.setPosition(m_MainSprite.getPosition());
+		DeathImage.setSize(m_MainSprite.getSize());
+		DeathImage.setOrigin(DeathImage.getSize()/2.0f);
 	}
 }
 
@@ -702,13 +709,18 @@ bool Character::isDead()
 {
 	return bDead;
 }
+
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	if (m_bDrawVision)
+	if (!bDead)
 	{
-		target.draw(m_VisionRays);
+		if (m_bDrawVision)
+		{
+			target.draw(m_VisionRays);
+		}
+
+		target.draw(m_Weapon1);
 	}
-	target.draw(m_Weapon1);
 	target.draw(m_MainSprite);
 	if (m_CurrentSettings->debugActive())
 	{
@@ -717,6 +729,14 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(m_MovementLine);
 		target.draw(m_CollisionLine);
 	}
-	target.draw(m_AmmoBar);
-	target.draw(m_HealthBar);
+	if (!bDead)
+	{
+		target.draw(m_AmmoBar);
+		target.draw(m_HealthBar);
+	}
+	else
+	{
+		target.draw(DeathImage);
+	}
+	
 }

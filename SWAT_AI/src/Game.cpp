@@ -311,27 +311,30 @@ void Game::update(sf::Vector2i mousePos)
 	//Perform character checks
 	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
-		m_vCharacters.at(i)->update(); //Update data and states
-		m_vCharacters.at(i)->lazerChecks(vEdgesToCheck); //Perform checks for the aiming
-		m_vCharacters.at(i)->visionCalculation(vEdgesToCheck); //Perform checks for the vision cone
-		m_vCharacters.at(i)->bulletChecks(vEdgesToCheck); //Perform checks for any of the shot bullets
-
-		if (m_vCharacters.at(i)->stepTaken())
+		if (!m_vCharacters.at(i)->isDead())
 		{
-			sf::Vector2u CharacterTile(((int)m_vCharacters.at(i)->getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
-			((int)m_vCharacters.at(i)->getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
+			m_vCharacters.at(i)->update(); //Update data and states
+			m_vCharacters.at(i)->lazerChecks(vEdgesToCheck); //Perform checks for the aiming
+			m_vCharacters.at(i)->visionCalculation(vEdgesToCheck); //Perform checks for the vision cone
+			m_vCharacters.at(i)->bulletChecks(vEdgesToCheck); //Perform checks for any of the shot bullets
 
-			if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'B' ||
-				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
-				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
+			if (m_vCharacters.at(i)->stepTaken())
 			{
-				waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
-			}
-			else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
-				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
-				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
-			{
-				waves.push_back(new soundWave(80, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+				sf::Vector2u CharacterTile(((int)m_vCharacters.at(i)->getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
+					((int)m_vCharacters.at(i)->getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
+
+				if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'B' ||
+					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
+					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
+				{
+					waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+				}
+				else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
+					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
+					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
+				{
+					waves.push_back(new soundWave(80, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+				}
 			}
 		}
 	}
@@ -347,16 +350,19 @@ void Game::update(sf::Vector2i mousePos)
 		bool bOpenDoor = false;
 		for (int j = 0; j < m_vCharacters.size(); j++)
 		{
-			sf::Vector2u CharacterTile(((int)m_vCharacters.at(j)->getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
-									   ((int)m_vCharacters.at(j)->getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
-
-			if (CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x + 1, m_vDoors.at(i)->getTile().y) ||
-				CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x - 1, m_vDoors.at(i)->getTile().y) ||
-				CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x, m_vDoors.at(i)->getTile().y + 1) ||
-				CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x, m_vDoors.at(i)->getTile().y - 1) ||
-				CharacterTile == m_vDoors.at(i)->getTile())
+			if (!m_vCharacters.at(j)->isDead())
 			{
-				bOpenDoor = true;
+				sf::Vector2u CharacterTile(((int)m_vCharacters.at(j)->getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
+					((int)m_vCharacters.at(j)->getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
+
+				if (CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x + 1, m_vDoors.at(i)->getTile().y) ||
+					CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x - 1, m_vDoors.at(i)->getTile().y) ||
+					CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x, m_vDoors.at(i)->getTile().y + 1) ||
+					CharacterTile == sf::Vector2u(m_vDoors.at(i)->getTile().x, m_vDoors.at(i)->getTile().y - 1) ||
+					CharacterTile == m_vDoors.at(i)->getTile())
+				{
+					bOpenDoor = true;
+				}
 			}
 		}
 		m_vDoors.at(i)->setOpen(bOpenDoor);
@@ -401,29 +407,32 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 		//Check against every character in the second container
 		for (int j = 0; j < vCharSet2.size(); j++)
 		{
-			//Dont allow checks on itself
-			if (!(vCharSet1 == vCharSet2 && i == j))
+			if (!vCharSet1.at(i)->isDead() && !vCharSet2.at(j)->isDead())
 			{
-				//Check lazer collision
-				if (vCharSet1.at(i)->lazerChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
-												   vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1)}))
+				//Dont allow checks on itself
+				if (!(vCharSet1 == vCharSet2 && i == j))
 				{
-					//If a character is seem then set it to be a target
-					bSeenCharacter = true;
-					if (vCharSet2.at(j)->getHealthData().lower > 0)
+					//Check lazer collision
+					if (vCharSet1.at(i)->lazerChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
+													   vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }))
 					{
-						vCharSet1.at(i)->setTarget(vCharSet2.at(j));
+						//If a character is seem then set it to be a target
+						bSeenCharacter = true;
+						if (vCharSet2.at(j)->getHealthData().lower > 0)
+						{
+							vCharSet1.at(i)->setTarget(vCharSet2.at(j));
+						}
 					}
-				}
-				
-				if (vCharSet1.at(i)->isShooting())
-				{
-					//Take health off if a bullet has been shot
-					vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
-						vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
 
-					waves.push_back(new soundWave(vCharSet1.at(i)->getWeapon()->getWeaponVolume(), 10.0f, 1.0f, vCharSet1.at(i)->getWeapon()->getWeaponEnd()));
-					
+					if (vCharSet1.at(i)->isShooting())
+					{
+						//Take health off if a bullet has been shot
+						vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
+							vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
+
+						waves.push_back(new soundWave(vCharSet1.at(i)->getWeapon()->getWeaponVolume(), 10.0f, 1.0f, vCharSet1.at(i)->getWeapon()->getWeaponEnd()));
+
+					}
 				}
 			}
 		}

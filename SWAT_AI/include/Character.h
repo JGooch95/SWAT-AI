@@ -7,6 +7,7 @@
 #include "Bar.h"
 #include "Weapon.h"
 #include "MathUtils.h"
+#include "TextureLoader.h"
 
 enum classType {Assault, Sniper, Support, Shotgunner};
 enum loadoutItem {Lazer, Silencer, Scope, None};
@@ -18,6 +19,8 @@ class Character : public Object
 		Bar m_HealthBar;
 		Bar m_AmmoBar;
 
+		TextureLoader* m_Textures;
+		Object DeathImage;
 		Weapon m_Weapon1;
 		classType currentClass;
 		std::vector<loadoutItem> loadout;

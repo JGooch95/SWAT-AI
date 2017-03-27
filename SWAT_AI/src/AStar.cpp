@@ -32,7 +32,7 @@ void AStar::setupLists()
 	{
 		for (int j = 0; j < m_CurrentMap->getMapData().at(i).size(); j++)
 		{
-			if (m_CurrentMap->getMapData().at(i).at(j) == 'W')
+			if (m_CurrentMap->getMapData().at(i).at(j) == 'W' || m_CurrentMap->getMapData().at(i).at(j) == 'B')
 			{
 				m_vClosedList.push_back(&m_vGrid.at((i*m_CurrentMap->getGridDims().x) + j));
 			}

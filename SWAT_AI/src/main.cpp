@@ -52,7 +52,8 @@ int main()
 		"Assets/Sprites/BlueCarpet.jpg",				//28
 		"Assets/Sprites/RedCarpet.jpg",					//29
 		"Assets/Sprites/Bricks.jpg",					//30
-		"Assets/Sprites/Save.png"						//31
+		"Assets/Sprites/Save.png",						//31
+		"Assets/Sprites/Dead.png"						//32
 	});
 
 	SoundManager* m_SoundManger = SoundManager::getInstance();
