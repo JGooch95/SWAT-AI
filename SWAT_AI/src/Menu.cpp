@@ -24,7 +24,8 @@ Menu::Menu(sf::Vector2u windowSize)
 
 	for (int i = 0; i < m_Buttons.size(); i++)
 	{
-		m_Buttons.at(i)->setColor(sf::Color(0, 186, 255, 255));
+		m_Buttons.at(i)->setColor(sf::Color(0, 0,0,0));
+		m_Buttons.at(i)->setBackgroundColor(sf::Color(0, 186, 255, 255));
 		m_Buttons.at(i)->setSize(sf::Vector2f(m_ContentBox.getSize().x - (fButtonGap *2), 
 											 ((fButtonArea - (m_Buttons.size() * fButtonGap))/ m_Buttons.size())));
 		m_Buttons.at(i)->setPosition(sf::Vector2f(m_ContentBox.getPosition().x + fButtonGap,
@@ -47,8 +48,6 @@ Menu::Menu(sf::Vector2u windowSize)
 	{
 		m_CurrentText.setCharacterSize(m_CurrentText.getCharacterSize() - 1);
 	}
-
-	
 }
 
 void Menu::update(sf::Vector2i mousePos)

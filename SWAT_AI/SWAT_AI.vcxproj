@@ -161,6 +161,7 @@
     <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\Editor.cpp" />
     <ClCompile Include="src\Entrance.cpp" />
+    <ClCompile Include="src\FontManager.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\HUDWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="include\Character.h" />
     <ClInclude Include="include\Editor.h" />
     <ClInclude Include="include\Entrance.h" />
+    <ClInclude Include="include\FontManager.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\HUDWindow.h" />
     <ClInclude Include="include\Map.h" />

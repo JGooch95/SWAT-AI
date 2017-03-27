@@ -208,7 +208,7 @@ void Weapon::reload()
 
 void Weapon::setupTextures()
 {
-	silencer.setTexture(m_Textures->getTexture(15));
+	silencer.setColor(sf::Color(70, 70, 70, 255));
 	scope.setTexture(m_Textures->getTexture(19));
 }
 

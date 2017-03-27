@@ -5,6 +5,7 @@
 #include "../include/Menu.h"
 #include "../include/Editor.h"
 #include "../include/SoundManager.h"
+#include "../include/FontManager.h"
 
 
 int main()
@@ -70,6 +71,12 @@ int main()
 		"Assets/Sounds/ShotgunReload.wav",
 		"Assets/Sounds/SniperReload.wav"
 	});
+
+	FontManager* m_FontManager = FontManager::getInstance();
+	m_FontManager->loadFonts(std::vector<std::string>{
+		"Assets/Fonts/arial.ttf"
+	});
+
 
 	m_Textures->getTexture(14)->setRepeated(true);
 

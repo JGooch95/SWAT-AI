@@ -30,11 +30,6 @@ void Object::setOrigin(sf::Vector2f pos)
 void Object::setSize(sf::Vector2f dims)
 {
 	m_MainSprite.setSize(dims);
-	//if (m_MainSprite.getTexture() != NULL)
-	//{
-		//m_MainSprite.setTextureRect(sf::IntRect(0,0,dims.x, dims.y));
-		//m_MainSprite.setScale(sf::Vector2f(dims.x / m_MainSprite.getTexture()->getSize().x, dims.y / m_MainSprite.getTexture()->getSize().y));
-	//}
 }
 
 void Object::setColor(sf::Color newColor)

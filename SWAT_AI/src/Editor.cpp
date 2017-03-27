@@ -25,11 +25,13 @@ Editor::Editor(sf::Vector2u windowSize)
 	exitButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
 	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
 	exitButton->setTexture(m_Textures->getTexture(20));
+	exitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
 
 	saveButton = new Button();
 	saveButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
 	saveButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + (m_Toolbar.getSize().x/2) - (saveButton->getSize().x/2), m_Toolbar.getPosition().y));
 	saveButton->setTexture(m_Textures->getTexture(31));
+	saveButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
 
 	m_Sidebar.setPosition(m_CurrentMap->getWindowSize().x, m_Toolbar.getSize().y);
 	m_Sidebar.setFillColor(sf::Color(120, 120, 120, 255));
@@ -73,7 +75,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	{
 		gridButtons.at(i)->setSize(sf::Vector2f(UIText.at(i/2).getLocalBounds().height, UIText.at(i / 2).getLocalBounds().height));
 		gridButtons.at(i)->setPosition( sf::Vector2f(UIText.at(i / 2).getPosition().x + UIText.at(i / 2).getLocalBounds().width, UIText.at(i / 2).getPosition().y + (UIText.at(i / 2).getLocalBounds().height / 2)));
-
+		gridButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
 		if (i % 2 == 0)
 		{
 			gridButtons.at(i)->setTexture(m_Textures->getTexture(21));
@@ -134,7 +136,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	{
 		objectButtons.at(i) = new Button();
 		objectButtons.at(i)->setSize(gridButtons.at(0)->getSize() * 2.0f);
-
+		objectButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
 		float fXOffset = 0.0f;
 		float fYOffset = 0.0f;
 		if (i > 0)
@@ -162,6 +164,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	{
 		floorButtons.at(i) = new Button();
 		floorButtons.at(i)->setSize(gridButtons.at(0)->getSize() * 2.0f);
+		floorButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
 
 		float fXOffset = 0.0f;
 		float fYOffset = 0.0f;
@@ -191,7 +194,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	{
 		toolButtons.at(i) = new Button();
 		toolButtons.at(i)->setSize(gridButtons.at(0)->getSize() * 2.0f);
-
+		toolButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
 		float fXOffset = 0.0f;
 		float fYOffset = 0.0f;
 		if (i > 0)

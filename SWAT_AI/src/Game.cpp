@@ -281,6 +281,8 @@ Game::Game(sf::Vector2u windowSize)
 	exitButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
 	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
 	exitButton->setTexture(m_Textures->getTexture(20));
+	exitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
+
 	m_Pathfinder.setup();
 }
 

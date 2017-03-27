@@ -29,7 +29,12 @@ HUDWindow::HUDWindow()
 
 	m_LoadoutButton.push_back(new Button());
 	m_LoadoutButton.push_back(new Button());
-
+	
+	for (int i = 0; i < m_LoadoutButton.size(); i++)
+	{
+		m_LoadoutButton.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
+	}
+	m_ClassButton.setBackgroundColor(sf::Color(70, 70, 70, 255));
 	scaleUI();
 }
 

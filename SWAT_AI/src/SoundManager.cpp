@@ -1,31 +1,36 @@
 #include "../include/SoundManager.h"
 
 bool SoundManager::m_bInstanceFlag = false;
-SoundManager* SoundManager::soundLocation = nullptr;
+SoundManager* SoundManager::m_SoundLocation = nullptr;
 
 SoundManager* SoundManager::getInstance()
 {
+	//If the object doesnt exist create the object
 	if (!m_bInstanceFlag)
 	{
-		soundLocation = new SoundManager();
+		m_SoundLocation = new SoundManager();
 		m_bInstanceFlag = true;
 	}
-	return soundLocation;
+
+	//Return the object location
+	return m_SoundLocation;
 }
 
-void SoundManager::loadSounds(std::vector<std::string> newSounds)
+void SoundManager::loadSounds(std::vector<std::string> vsNewSounds)
 {
-	for (int i = 0; i < newSounds.size(); i++)
+	//For every directory
+	for (int i = 0; i < vsNewSounds.size(); i++)
 	{
-		buffer.push_back(new sf::SoundBuffer());
-		if (!buffer.at(i)->loadFromFile(newSounds.at(i)))
+		//Load the file and store it
+		m_vBuffers.push_back(new sf::SoundBuffer());
+		if (!m_vBuffers.at(i)->loadFromFile(vsNewSounds.at(i)))
 		{
-			std::cout << newSounds.at(i) << " failed" << "\n";
+			std::cout << vsNewSounds.at(i) << " failed to load" << "\n";
 		}
 	}
 }
 
 sf::SoundBuffer* SoundManager::getSound(int iIndex)
 {
-	return buffer.at(iIndex);
+	return m_vBuffers.at(iIndex);
 }

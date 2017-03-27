@@ -13,7 +13,7 @@ class Bar : public sf::Drawable
 
 	public:
 		Bar(); //Constructor
-		void update();
+		void update(); //Updates the visuals of the bar to the current data
 
 		//Setters
 		void setSize(sf::Vector2f newDimensions);

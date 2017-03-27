@@ -1,21 +1,19 @@
 #include "../include/TextureLoader.h"
 
-TextureLoader::TextureLoader()
-{
-
-}
-
 bool TextureLoader::m_bInstanceFlag = false;
-TextureLoader* TextureLoader::loaderLocation = nullptr;
+TextureLoader* TextureLoader::m_TextureLocation = nullptr;
 
 TextureLoader* TextureLoader::getInstance()
 {
+	//If the object doesnt exist create the object
 	if (!m_bInstanceFlag)
 	{
-		loaderLocation = new TextureLoader();
+		m_TextureLocation = new TextureLoader();
 		m_bInstanceFlag = true;
 	}
-	return loaderLocation;
+
+	//Return the object location
+	return m_TextureLocation;
 }
 
 void TextureLoader::loadTextures(std::vector<std::string> vsFileDirs)
@@ -28,7 +26,7 @@ void TextureLoader::loadTextures(std::vector<std::string> vsFileDirs)
 		if (!CurrentTexture.loadFromFile(m_sBaseDirectory + vsFileDirs.at(i)))
 		{
 			//If the texture fails output error
-			sf::err() << "Texture not loaded";
+			std::cout << vsFileDirs.at(i) << " failed to load" << "\n";
 		}
 		m_vTextures.push_back(CurrentTexture);
 	}

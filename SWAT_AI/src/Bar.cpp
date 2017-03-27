@@ -2,6 +2,7 @@
 
 Bar::Bar()
 {
+	//Sets the default limits of the bar
 	m_LevelLimits.lower = 100.0f;
 	m_LevelLimits.upper = 100.0f;
 }
@@ -38,6 +39,8 @@ void Bar::setBarColor(sf::Color newColor)
 void Bar::setLevel(float fLevel)
 {
 	m_LevelLimits.lower = fLevel;
+
+	//Limits the level of the bar between 0 and the upper limit
 	if (m_LevelLimits.lower < 0.0f)
 	{
 		m_LevelLimits.lower = 0.0f;
