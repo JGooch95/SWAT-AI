@@ -175,7 +175,7 @@ Game::Game(sf::Vector2u windowSize)
 				m_vCharacters.at(m_vCharacters.size() - 1)->setMuzzle(m_Textures->getTexture(11));
 				m_vCharacters.at(m_vCharacters.size() - 1)->setupTextures();
 			}
-			
+
 			//Doors
 			if (m_CurrentMap->getMapData().at(i).at(j) == 'D')
 			{

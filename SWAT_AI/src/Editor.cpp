@@ -42,9 +42,12 @@ Editor::Editor(sf::Vector2u windowSize)
 
 	float fBorderSize = m_Sidebar.getSize().x / 20.0f;
 	float fContentGap = m_Sidebar.getSize().y / 20.0f;
-	UIText.resize(2);
+	UIText.resize(5);
 	UIText.at(0).setString("Grid X: ");
 	UIText.at(1).setString("Grid Y: ");
+	UIText.at(2).setString("Objects: ");
+	UIText.at(3).setString("Floor Tiles: ");
+	UIText.at(4).setString("Tools: ");
 
 	for (int i = 0; i < UIText.size(); i++)
 	{
@@ -125,6 +128,7 @@ Editor::Editor(sf::Vector2u windowSize)
 		}
 	}
 
+	UIText.at(2).setPosition(UIText.at(2).getPosition().x, gridButtons.at(gridButtons.size() - 1)->getPosition().y + gridButtons.at(gridButtons.size() - 1)->getSize().y + fContentGap);
 	objectButtons.resize(5);
 	for (int i = 0; i < objectButtons.size(); i++)
 	{
@@ -144,7 +148,7 @@ Editor::Editor(sf::Vector2u windowSize)
 			}
 
 		}
-		objectButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + ( i* fXOffset), gridButtons.at(gridButtons.size() - 1)->getPosition().y + gridButtons.at(gridButtons.size() - 1)->getSize().y + fContentGap +fYOffset));
+		objectButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + ( i* fXOffset), UIText.at(2).getPosition().y + UIText.at(2).getLocalBounds().height + fContentGap +fYOffset));
 	}
 	objectButtons.at(0)->setTexture(m_Textures->getTexture(0));
 	objectButtons.at(1)->setTexture(m_Textures->getTexture(1));
@@ -152,6 +156,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	objectButtons.at(3)->setTexture(m_Textures->getTexture(24));
 	objectButtons.at(4)->setTexture(m_Textures->getTexture(30));
 
+	UIText.at(3).setPosition(UIText.at(2).getPosition().x, objectButtons.at(objectButtons.size() - 1)->getPosition().y + objectButtons.at(objectButtons.size() - 1)->getSize().y + fContentGap);
 	floorButtons.resize(6);
 	for (int i = 0; i < floorButtons.size(); i++)
 	{
@@ -171,7 +176,7 @@ Editor::Editor(sf::Vector2u windowSize)
 			}
 
 		}
-		floorButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + (i* fXOffset), objectButtons.at(objectButtons.size() - 1)->getPosition().y + objectButtons.at(gridButtons.size() - 1)->getSize().y + fContentGap + fYOffset));
+		floorButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + (i* fXOffset), UIText.at(3).getPosition().y + UIText.at(3).getLocalBounds().height + fContentGap + fYOffset));
 	}
 	floorButtons.at(0)->setTexture(m_Textures->getTexture(14));
 	floorButtons.at(1)->setTexture(m_Textures->getTexture(25));
@@ -180,6 +185,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	floorButtons.at(4)->setTexture(m_Textures->getTexture(28));
 	floorButtons.at(5)->setTexture(m_Textures->getTexture(29));
 
+	UIText.at(4).setPosition(UIText.at(3).getPosition().x, floorButtons.at(floorButtons.size() - 1)->getPosition().y + floorButtons.at(floorButtons.size() - 1)->getSize().y + fContentGap);
 	toolButtons.resize(1);
 	for (int i = 0; i < toolButtons.size(); i++)
 	{
@@ -199,7 +205,7 @@ Editor::Editor(sf::Vector2u windowSize)
 			}
 
 		}
-		toolButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + (i* fXOffset), floorButtons.at(floorButtons.size() - 1)->getPosition().y + floorButtons.at(floorButtons.size() - 1)->getSize().y + fContentGap + fYOffset));
+		toolButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + (i* fXOffset), UIText.at(4).getPosition().y + UIText.at(4).getLocalBounds().height + fContentGap + fYOffset));
 	}
 	toolButtons.at(0)->setTexture(m_Textures->getTexture(23));
 

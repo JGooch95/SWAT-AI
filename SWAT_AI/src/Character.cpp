@@ -113,10 +113,15 @@ Character::Character()
 	m_SoundManager = SoundManager::getInstance();
 	m_StepSound.setBuffer(*m_SoundManager->getSound(4));
 	m_LoadoutSound.setBuffer(*m_SoundManager->getSound(7));
+	bDead = false;
 }
 
 void Character::update()
 {
+	if (m_HealthLevels.lower <= 0)
+	{
+		bDead = true;
+	}
 	move();
 	m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
 	m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
@@ -693,6 +698,10 @@ bool Character::stepTaken()
 	}
 }
 
+bool Character::isDead()
+{
+	return bDead;
+}
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	if (m_bDrawVision)

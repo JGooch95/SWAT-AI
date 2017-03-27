@@ -49,6 +49,7 @@ class Character : public Object
 		sf::Sound m_LoadoutSound;
 		SoundManager* m_SoundManager;
 
+		bool bDead;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:
@@ -87,4 +88,5 @@ class Character : public Object
 		bool isShooting();
 		Weapon* getWeapon();
 		bool stepTaken();
+		bool isDead();
 };

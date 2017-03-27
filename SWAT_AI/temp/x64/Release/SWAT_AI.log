@@ -1,9 +1,9 @@
 ﻿  main.cpp
 c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generating code
-  44 of 2406 functions ( 1.8%) were compiled, the rest were copied from previous compilation.
+  43 of 2406 functions ( 1.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    11 functions had inline decision re-evaluated but remain unchanged
+    12 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.pdb (Full PDB)
