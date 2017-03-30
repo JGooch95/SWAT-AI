@@ -11,10 +11,13 @@ Entrance::Entrance()
 
 void Entrance::setOpen(bool bState)
 {
+	//If the door is being set to be open whilst its closed play the opening sound
 	if (m_bOpen != true && bState == true)
 	{
 		m_OpeningSound.play();
 	}
+	
+	//Sets the rotation of the door depending on if the door is opened or closed
 	m_bOpen = bState;
 	if (m_bOpen == true)
 	{

@@ -40,7 +40,6 @@ void Object::setColor(sf::Color newColor)
 void Object::setArea(sf::Vector2f dims)
 {
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, dims.x, dims.y));
-	//m_CurrentTexture->setRepeated(true);
 	m_MainSprite.setTexture(m_CurrentTexture);
 }
 
@@ -62,7 +61,6 @@ sf::Vector2f Object::getOrigin()
 
 sf::Vector2f Object::getSize()
 {
-	//*m_MainSprite.getScale().y
 	return m_MainSprite.getSize();
 }
 

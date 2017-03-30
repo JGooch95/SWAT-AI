@@ -7,10 +7,11 @@
 class Object : public sf::Drawable
 {
 	protected:
+		Map* m_CurrentMap; //Holds the data for the map
+		Settings* m_CurrentSettings; //Holds the current settings
+
 		sf::RectangleShape m_MainSprite; //Holds the sprite
 		const sf::Texture* m_CurrentTexture; // Holds a pointer to the texture
-		Map* m_CurrentMap; //Holds the data for the map
-		Settings* m_CurrentSettings;
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:

@@ -2,6 +2,9 @@
 
 Weapon::Weapon()
 {
+	m_Textures = TextureLoader::getInstance();
+	m_SoundManager = SoundManager::getInstance();
+
 	//Sets up the AimLine
 	m_AimLine = sf::VertexArray(sf::Lines, 2);
 	m_AimLine[0].position = m_MainSprite.getPosition();
@@ -10,12 +13,19 @@ Weapon::Weapon()
 	{
 		m_AimLine[i].color = sf::Color(255, 0, 0, 255);
 	}
-
-	m_Textures = TextureLoader::getInstance();
+	//Sets up the bullets
+	m_BulletRays.setPrimitiveType(sf::Lines);
+	m_BulletRays.resize(2);
+	for (int i = 0; i < m_BulletRays.getVertexCount(); i++)
+	{
+		m_BulletRays[i].color = sf::Color(255, 255, 0, 255);
+	}
 
 	//Sets up the default texture data
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 25, 50));
-	//m_MainSprite.setOrigin(m_MainSprite.getLocalBounds().width / 2, -m_MainSprite.getLocalBounds().height / 2 + 10);
+	muzzleFlash.setTexture(m_Textures->getTexture(11));
+	scope.setTexture(m_Textures->getTexture(19));
+	silencer.setColor(sf::Color(70, 70, 70, 255));
 
 	//Sets the default fire rate
 	m_fFireRate = 0.2f;
@@ -30,38 +40,30 @@ Weapon::Weapon()
 	m_AmmoLevels.lower = 30.0f;
 	m_AmmoLevels.upper = 30.0f;
 
-	m_BulletRays.setPrimitiveType(sf::Lines);
-	m_BulletRays.resize(2);
-	for (int i = 0; i < m_BulletRays.getVertexCount(); i++)
-	{
-		m_BulletRays[i].color = sf::Color(255, 255, 0, 255);
-	}
-
 	m_bShooting = false;
-
-	m_ReloadClock.restart();
-	m_FireRateClock.restart();
-	m_SoundManager = SoundManager::getInstance();
+	
+	//Sets up the sounds
 	m_ShotSound.setBuffer(*m_SoundManager->getSound(3));
 	m_SilencedShotSound.setBuffer(*m_SoundManager->getSound(0));
 	m_ReloadSound.setBuffer(*m_SoundManager->getSound(6));
+
+	//Restarts the timers
+	m_ReloadClock.restart();
+	m_FireRateClock.restart();
 }
 
 void Weapon::aim(sf::Vector2f location)
 {
+	//Finds the unit vector pointing in the direction of the target
 	sf::Vector2f vect = location - m_MainSprite.getPosition();
-
-	//Finds the unit vector
 	vect /= Util::magnitude(vect);
 
-	//Sets the rotation of the sprite and adjusts the aimline according to the rotation
+	//Sets the rotation of the sprites to point towards the target
 	m_MainSprite.setRotation(Util::getAngle(vect) - 90);
-
 	if (m_bSilencer)
 	{
 		silencer.setRotation(Util::getAngle(vect) - 90);
 	}
-
 	if (m_bScope)
 	{
 		scope.setRotation(Util::getAngle(vect) - 90);
@@ -69,15 +71,15 @@ void Weapon::aim(sf::Vector2f location)
 
 	vect *= 2000.0f; //Multiplies the vector by the desired length
 
+	//Creates an aiming line using the newly calculated vector
 	m_AimLine[0].position = m_MainSprite.getPosition();
 	m_AimLine[1].position = m_MainSprite.getPosition() + vect;
 }
 
 void Weapon::aim(float fAngle)
 {
-	//Sets the rotation of the sprite and adjusts the aimline according to the rotation
+	//Sets the rotation of the sprites to point towards the target angle
 	m_MainSprite.setRotation(fAngle);
-
 	if (m_bSilencer)
 	{
 		silencer.setRotation(fAngle);
@@ -87,6 +89,7 @@ void Weapon::aim(float fAngle)
 		scope.setRotation(fAngle);
 	}
 
+	//Creates an aiming lineby calculating a vector pointing in that direction
 	m_AimLine[0].position = m_MainSprite.getPosition();
 	m_AimLine[1].position = m_MainSprite.getPosition() + Util::rotateVect(sf::Vector2f(2000, 2000), fAngle);
 }
@@ -95,22 +98,17 @@ void Weapon::update()
 {
 	m_bShooting = false;
 
-	muzzleFlash.setOrigin(sf::Vector2f(muzzleFlash.getSize().x / 2, muzzleFlash.getSize().y));
-	muzzleFlash.setSize(getSize() * (1.0f / 3.0f));
-
 	if (m_bSilencer)
 	{
-		//Sets the position of the silencer to the position of the gun(Center of the character)
+		//Moves the silencer to the end of the gun
 		silencer.setPosition(sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y));
-		//Sets the size to be the guns silencer to be the size of the gun ( reduced size in x)
 		silencer.setSize(sf::Vector2f(getSize().x * (1.0f / 4.0f), getSize().y / 3.0f));
-
-		//Sets the origin to the guns (half the silencer size, origin + the size of the gun)
 		silencer.setOrigin(sf::Vector2f((silencer.getSize().x / 2.0f), (getOrigin().y - getSize().y)));
 	}
 
 	if (m_bScope)
 	{
+		//Moves the scope to the center of the gun
 		scope.setPosition(sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y));
 		scope.setSize(sf::Vector2f(getSize().x  /3.0f,getSize().x  / 4.0f));
 		scope.setOrigin(sf::Vector2f(scope.getSize().x / 2.0f, ((-getSize().y) + getOrigin().y)/2));
@@ -119,9 +117,9 @@ void Weapon::update()
 	//Reloading
 	if (m_bReloading)
 	{
-		if (m_ReloadClock.getElapsedTime().asSeconds() >= m_fReloadTime)
+		if (m_ReloadClock.getElapsedTime().asSeconds() >= m_fReloadTime) // If the reload has ended
 		{
-			setAmmo(getAmmoLevels().upper);
+			setAmmo(getAmmoLevels().upper); //Fill up the ammo
 			m_bReloading = false;
 		}
 	}
@@ -133,87 +131,82 @@ void Weapon::update()
 
 void Weapon::shoot()
 {
-	if (!m_bReloading)
+	//Otherwise if the gun can shoot then shoot
+	if (!m_bReloading && m_FireRateClock.getElapsedTime().asSeconds() >= m_fFireRate)
 	{
-		//Otherwise if the gun can shoot then shoot
-		if (m_FireRateClock.getElapsedTime().asSeconds() >= m_fFireRate)
+		m_bShooting = true;
+
+		//Finds the vector between the character's center and the aiming point
+		sf::Vector2f RotVect(getIntersect() - m_MainSprite.getPosition());
+		RotVect /= Util::magnitude(RotVect);
+	
+		float fExtraLength = 0; //Holds an extension to the gun length if a silencer is attatched
+		if (m_bSilencer)
 		{
-			m_bShooting = true;
-			sf::Vector2f RotVect(getIntersect() - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
-			RotVect /= Util::magnitude(RotVect);
-
-			float extraLength(0);
-
-			if (m_bSilencer)
-			{
-				m_SilencedShotSound.play();
-				extraLength = silencer.getSize().y;
-			}
-			else
-			{
-				m_ShotSound.play();
-			}
-
-			sf::Vector2f WeaponDist = (getSize().y  + extraLength) * RotVect; // Finds the end of the weapon
-			RotVect *= getSize().y  / 2; //Gets the edge of the character from the center
-
-			m_BulletRays[0].position = getPosition() + RotVect + WeaponDist; //Sets the point to shoot from
-			
-			//Sets the muzzle flash to point towards out of the gun
-			muzzleFlash.setPosition(getPosition() + RotVect + WeaponDist);
-			muzzleFlash.setRotation(Util::getAngle(RotVect) + 90);
-
-			//Finds the direction the bullet will head towards
-			float fRotAngle = Util::getAngle(getIntersect() - m_BulletRays[0].position);
-
-			float fAccuracyBoost = 0.0f;
-
-			if (m_bLazer)
-			{
-				fAccuracyBoost += 0.4f;
-			}
-
-			if (m_bScope)
-			{
-				fAccuracyBoost += 0.1f;
-			}
-
-			float fOverallAccuracy = std::min( m_fAccuracy + fAccuracyBoost, 1.0f);
-			fOverallAccuracy = std::max(0.0f, fOverallAccuracy);
-
-			//Offsetting the bullet dependant on the accuracy
-			float fAccuracyAngle = 0;
-			if (fOverallAccuracy != 1)
-			{
-				//Ranges between -10 degrees and 10 degrees
-				int iAccuracyPercent = fOverallAccuracy * 100;
-				fAccuracyAngle = 10.0f * (((rand() % ((100 - iAccuracyPercent) * 2)) - (100 - iAccuracyPercent)) / 100.0f);
-			}
-
-			RotVect = Util::rotateVect(sf::Vector2f(2000.0f, 2000.0f), fRotAngle + fAccuracyAngle - 90.0f);
-			m_BulletRays[1].position = m_BulletRays[0].position + RotVect;
-
-			setAmmo(m_AmmoLevels.lower - 1); //Increment the ammo
-			m_FireRateClock.restart();
+			m_SilencedShotSound.play(); //Plays a silenced weapon sound
+			fExtraLength = silencer.getSize().y;
 		}
+		else
+		{
+			m_ShotSound.play(); // Plays an unsilenced sound
+		}
+	
+		m_BulletRays[0].position = getWeaponEnd(); //Sets the point to shoot from
+		
+		//Sets the muzzle flash to point out of the gun
+		muzzleFlash.setOrigin(sf::Vector2f(muzzleFlash.getSize().x / 2, muzzleFlash.getSize().y));
+		muzzleFlash.setSize(getSize() * (1.0f / 3.0f));
+		muzzleFlash.setPosition(getWeaponEnd());
+		muzzleFlash.setRotation(Util::getAngle(RotVect) + 90);
+	
+		//Finds the direction the bullet will head towards
+		float fRotAngle = Util::getAngle(getIntersect() - m_BulletRays[0].position);
+	
+		//Performs an increased accuracy if attachments are on the gun
+		float fAccuracyBoost = 0.0f;	
+		if (m_bLazer)
+		{
+			fAccuracyBoost += 0.4f;
+		}
+		if (m_bScope)
+		{
+			fAccuracyBoost += 0.1f;
+		}
+	
+		//keeps the accuracy between 0 and 1
+		float fOverallAccuracy = std::min( m_fAccuracy + fAccuracyBoost, 1.0f);
+		fOverallAccuracy = std::max(0.0f, fOverallAccuracy);
+	
+		//Offsetting the bullet dependant on the accuracy
+		float fAccuracyAngle = 0;
+		if (fOverallAccuracy != 1)
+		{
+			//Ranges between -10 degrees and 10 degrees
+			int iAccuracyPercent = fOverallAccuracy * 100;
+			//Acuracy levels reduce the cone at which bullets can spawn
+			fAccuracyAngle = 10.0f * (((rand() % ((100 - iAccuracyPercent) * 2)) - (100 - iAccuracyPercent)) / 100.0f);
+		}
+		
+		//Positions the bullet vector ready for collision checks
+		RotVect = Util::rotateVect(sf::Vector2f(2000.0f, 2000.0f), fRotAngle + fAccuracyAngle - 90.0f);
+		m_BulletRays[1].position = m_BulletRays[0].position + RotVect;
+	
+		setAmmo(m_AmmoLevels.lower - 1); //Increment the ammo
+		m_FireRateClock.restart(); //Resets the firerate
 	}
 }
 
 void Weapon::reload()
 {
+	//Plays a reload sound and starts the reload duration
 	m_ReloadSound.play();
 	m_bReloading = true;
 	m_ReloadClock.restart();
 }
 
-void Weapon::setupTextures()
-{
-	silencer.setColor(sf::Color(70, 70, 70, 255));
-	scope.setTexture(m_Textures->getTexture(19));
-}
-
 float Weapon::bulletChecks(std::vector<sf::Vector2f>vEdges)
 {
+	//Checks collisions between the given edges and the current bullet and returns a collision point
 	if (m_bShooting)
 	{
 		std::pair<bool, sf::Vector2f> lowestIntersect = Util::findLowestIntersect(vEdges, std::vector<sf::Vector2f>{ m_BulletRays[0].position, m_BulletRays[1].position});
@@ -245,11 +238,6 @@ void Weapon::setRange(sf::Vector2f Val)
 	m_RangeLimits.upper = Val.y;
 }
 
-void Weapon::setOrigin(sf::Vector2f Val)
-{
-	m_MainSprite.setOrigin(Val);
-}
-
 void Weapon::setIntersect(sf::Vector2f vect)
 {
 	m_AimLine[1].position = vect;
@@ -279,11 +267,6 @@ void Weapon::setAccuracy(float fLevel)
 	m_fAccuracy = fLevel;
 }
 
-void Weapon::setMuzzle(sf::Texture* tex2)
-{
-	muzzleFlash.setTexture(tex2);
-}
-
 void Weapon::setLazer(bool bValue)
 {
 	m_bLazer = bValue;
@@ -292,11 +275,6 @@ void Weapon::setLazer(bool bValue)
 void Weapon::setSilencer(bool bValue)
 {
 	m_bSilencer = bValue;
-	/*
-	if (isSilenced())
-	{
-		m_ShotSound.setBuffer(*m_SoundManager->getSound(0));
-	}*/
 }
 
 void  Weapon::setScope(bool bValue)
@@ -318,23 +296,85 @@ void Weapon::setReloadSound(int iIndex)
 	m_ReloadSound.setBuffer(*m_SoundManager->getSound(iIndex));
 }
 
+void Weapon::setWeaponType(classType newClassType)
+{
+	//Sets up the weapon depending on the class given
+	switch (newClassType)
+	{
+		case Assault:
+			setDamage(sf::Vector2f(1.0f, 5.0f));
+			setFireRate(0.2f);
+			setRange(sf::Vector2f(200.0f, 500.0f));
+			setAmmoLimit(30);
+			setAmmo(0);
+			setReloadTime(2.0f);
+			setAccuracy(0.7f);
+			setWeaponVolume(100);
+			setShotSound(1);
+			setReloadSound(6);
+			m_MainSprite.setTexture(m_Textures->getTexture(7));
+			break;
+
+		case Support:
+			setDamage(sf::Vector2f(1.0f, 3.0f));
+			setFireRate(0.05f);
+			setRange(sf::Vector2f(200.0f, 500.0f));
+			setAmmoLimit(100);
+			setAmmo(0);
+			setReloadTime(5.0f);
+			setAccuracy(0.3f);
+			setWeaponVolume(150);
+			setShotSound(0);
+			setReloadSound(6);
+			m_MainSprite.setTexture(m_Textures->getTexture(5));
+			break;
+
+		case Sniper:
+			setDamage(sf::Vector2f(2.0f, 50.0f));
+			setFireRate(1.0f);
+			setRange(sf::Vector2f(400.0f, 1000.0f));
+			setAmmoLimit(1);
+			setAmmo(0);
+			setReloadTime(4.0f);
+			setAccuracy(0.8f);
+			setWeaponVolume(200);
+			setShotSound(2);
+			setReloadSound(9);
+			m_MainSprite.setTexture(m_Textures->getTexture(4));
+			break;
+
+		case Shotgunner:
+			setDamage(sf::Vector2f(0.5f, 60.0f));
+			setFireRate(2.0f);
+			setRange(sf::Vector2f(0.0f, 250.0f));
+			setAmmoLimit(8);
+			setAmmo(0);
+			setReloadTime(2.5f);
+			setAccuracy(0.5f);
+			setWeaponVolume(100);
+			setShotSound(3);
+			setReloadSound(8);
+			m_MainSprite.setTexture(m_Textures->getTexture(6));
+			break;
+	}
+}
 //Getters
 float Weapon::getDamage()
 {
-	float fRangeReduction = 0.0f;
-	float fRangeIncrease = 0.0f;
-
+	//Calculates the alteration in range from the attatchments
+	float fRangeAlter = 0.0f;
 	if (m_bSilencer)
 	{
-		fRangeReduction =  m_RangeLimits.upper*0.2f;
+		fRangeAlter -=  m_RangeLimits.upper*0.2f;
 	}
 	if (m_bScope)
 	{
-		fRangeIncrease = m_RangeLimits.upper*0.3f;
+		fRangeAlter += m_RangeLimits.upper*0.3f;
 	}
 
-	float fOverallMaxRange =  std::max(0.0f, m_RangeLimits.upper - fRangeReduction + fRangeIncrease);
-	float fOverallMinRange = std::max(0.0f, m_RangeLimits.lower - fRangeReduction + fRangeIncrease);
+	//Calculates the altered ranges whilst capping them at 0
+	float fOverallMaxRange =  std::max(0.0f, m_RangeLimits.upper + fRangeAlter);
+	float fOverallMinRange = std::max(0.0f, m_RangeLimits.lower + fRangeAlter);
 
 	//Finds the distance between the target and the character
 	float fDist = Util::magnitude(m_AimLine[1].position - m_MainSprite.getPosition());
@@ -400,20 +440,19 @@ sf::Vector2f Weapon::getIntersect()
 
 sf::Vector2f  Weapon::getWeaponEnd()
 {
-	sf::Vector2f RotVect(getIntersect() - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
+	sf::Vector2f RotVect(getIntersect() - m_MainSprite.getPosition()); //Finding the vector between the character's center and the aiming position
 	RotVect /= Util::magnitude(RotVect);
 
-	float extraLength(0);
-
+	//Checks for the extra length of the silencer.
+	float fExtraLength = 0;
 	if (m_bSilencer)
 	{
-		extraLength = silencer.getSize().y *silencer.getScale().y;
+		fExtraLength = silencer.getSize().y;
 	}
 
-	sf::Vector2f WeaponDist = ((getSize().y * getScale().y) + extraLength) * RotVect; // Finds the end of the weapon
-	RotVect *= (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2; //Gets the edge of the character from the center
+	sf::Vector2f WeaponDist = ((-m_MainSprite.getOrigin().y) + m_MainSprite.getSize().y  + fExtraLength) * RotVect; // Finds the end of the weapon
 
-	return getPosition() + RotVect + WeaponDist; //Sets the point to shoot from
+	return getPosition() + WeaponDist; //Sets the point to shoot from
 }
 
 bool Weapon::usingScope()

@@ -16,7 +16,6 @@
 class Game : public sf::Drawable
 {
 	private:
-		std::vector<soundWave*> waves;
 		//UI
 		sf::RectangleShape m_Toolbar;
 		std::vector<HUDWindow*> m_UnitUI;
@@ -28,7 +27,6 @@ class Game : public sf::Drawable
 
 		//RESOURCES
 		TextureLoader* m_Textures; //Contains all textures used in the game
-		sf::Font m_CurrentFont;
 
 		//Objects
 		std::vector<Character*> m_vCharacters; //Holds all of the characters
@@ -38,8 +36,9 @@ class Game : public sf::Drawable
 		std::vector<Entrance*> m_vDoors; //Holds the doors
 		std::vector<Object*> m_Background;
 		std::vector<sf::Vector2f> m_vEdges; //Holds the wall edges
+		std::vector<soundWave*> m_Waves; //Holds soundwaves which are emitted
 		
-		Button* exitButton;
+		Button* exitButton; //Holds the button which exits to the menu
 
 		//DEBUGGING LINES
 		sf::VertexArray m_EdgeLines;
@@ -51,8 +50,7 @@ class Game : public sf::Drawable
 		void update(sf::Vector2i mousePos); //Updates all objects in game
 		void characterInteractions(std::vector<Character*> charSet1, std::vector<Character*>  charSet2); //Processes interactions between 2 sets of characters
 		int clickLeft(sf::Vector2i mousePos); //Processes left click
-		void clickRight(sf::Vector2i mousePos); //Processes right click
-		void enableDebug();
-		std::vector<sf::Vector2f> edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges);
+		void clickRight(sf::Vector2i mousePos); //Processes right click 
+		std::vector<sf::Vector2f> edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges); //Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
 		~Game(); //Deconstructor
 };

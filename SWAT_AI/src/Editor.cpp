@@ -6,6 +6,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	m_CurrentMap = Map::getInstance();
 	m_CurrentSettings = Settings::getInstance();
 	m_Textures = TextureLoader::getInstance();
+	m_Fonts = FontManager::getInstance();
 
 	//Sets up the toolbar 
 	m_Toolbar.setPosition(0, 0);
@@ -17,76 +18,87 @@ Editor::Editor(sf::Vector2u windowSize)
 		sf::Vector2f(20, 20)
 	);
 
-	m_CurrentFont.loadFromFile("Assets/Fonts/arial.ttf"); //Loads the main font
-
+	//Enables debug mode for the grid
 	m_CurrentSettings->setDebug(true);
 
-	exitButton = new Button();
-	exitButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
-	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
-	exitButton->setTexture(m_Textures->getTexture(20));
-	exitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
+	//Sets up the exit button
+	m_ExitButton = new Button();
+	m_ExitButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
+	m_ExitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - m_ExitButton->getSize().x, m_Toolbar.getPosition().y));
+	m_ExitButton->setTexture(m_Textures->getTexture(20));
+	m_ExitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
 
-	saveButton = new Button();
-	saveButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
-	saveButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + (m_Toolbar.getSize().x/2) - (saveButton->getSize().x/2), m_Toolbar.getPosition().y));
-	saveButton->setTexture(m_Textures->getTexture(31));
-	saveButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
+	//Sets up the save button
+	m_SaveButton = new Button();
+	m_SaveButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
+	m_SaveButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + (m_Toolbar.getSize().x/2) - (m_SaveButton->getSize().x/2), m_Toolbar.getPosition().y));
+	m_SaveButton->setTexture(m_Textures->getTexture(31));
+	m_SaveButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
 
+	//Sets up the sidebar containing all of the buttons
 	m_Sidebar.setPosition(m_CurrentMap->getWindowSize().x, m_Toolbar.getSize().y);
 	m_Sidebar.setFillColor(sf::Color(120, 120, 120, 255));
 	m_Sidebar.setSize(sf::Vector2f(windowSize.x - m_CurrentMap->getWindowSize().x, windowSize.y - m_Toolbar.getSize().y));
 
+	// Creates 4 new buttons for grid resizing
 	for (int i = 0; i < 4; i++)
 	{
-		gridButtons.push_back(new Button);
+		m_vGridButtons.push_back(new Button);
 	}
+	 
+	float fBorderSize = m_Sidebar.getSize().x / 20.0f; //Gap between the edge of the sidebar and the content inside
+	float fContentGap = m_Sidebar.getSize().y / 20.0f; //The gap between sets of content in the y axis
 
-	float fBorderSize = m_Sidebar.getSize().x / 20.0f;
-	float fContentGap = m_Sidebar.getSize().y / 20.0f;
-	UIText.resize(5);
-	UIText.at(0).setString("Grid X: ");
-	UIText.at(1).setString("Grid Y: ");
-	UIText.at(2).setString("Objects: ");
-	UIText.at(3).setString("Floor Tiles: ");
-	UIText.at(4).setString("Tools: ");
+	//Labels for the tools
+	m_vUIText.resize(5);
+	m_vUIText.at(0).setString("Grid X: ");
+	m_vUIText.at(1).setString("Grid Y: ");
+	m_vUIText.at(2).setString("Objects: ");
+	m_vUIText.at(3).setString("Floor Tiles: ");
+	m_vUIText.at(4).setString("Tools: ");
 
-	for (int i = 0; i < UIText.size(); i++)
+	//For every label
+	for (int i = 0; i < m_vUIText.size(); i++)
 	{
-		UIText.at(i).setFont(m_CurrentFont);
-		UIText.at(i).setCharacterSize(100);
-		while (UIText.at(i).getLocalBounds().width > m_Sidebar.getSize().x / 4)
+		//Setup the text sizing
+		m_vUIText.at(i).setFont(*m_Fonts->getFont(0));
+		m_vUIText.at(i).setCharacterSize(100);
+		while (m_vUIText.at(i).getLocalBounds().width > m_Sidebar.getSize().x / 4)
 		{
-			UIText.at(i).setCharacterSize(UIText.at(i).getCharacterSize()-1);
+			m_vUIText.at(i).setCharacterSize(m_vUIText.at(i).getCharacterSize()-1);
 		}
+
+		//Sets the position of the text to be incrementally further down the sidebar
 		float fYOffset = 0.0f;
 		if (i > 0)
 		{
-			fYOffset = UIText.at(i - 1).getLocalBounds().height;
+			fYOffset = m_vUIText.at(i - 1).getLocalBounds().height;
 		}
-
-		UIText.at(i).setPosition(m_Sidebar.getPosition().x + fBorderSize, m_Sidebar.getPosition().y + ((i + 1) * fYOffset) + fBorderSize);
+		m_vUIText.at(i).setPosition(m_Sidebar.getPosition().x + fBorderSize, m_Sidebar.getPosition().y + ((i + 1) * fYOffset) + fBorderSize);
+		m_vUIText.at(i).setFillColor(sf::Color::White);
 	}
 
-	UIText.at(0).setFillColor(sf::Color::White);
-	UIText.at(1).setFillColor(sf::Color::White);
-
-	for (int i = 0; i < gridButtons.size(); i++)
+	//For the grid buttons
+	for (int i = 0; i < m_vGridButtons.size(); i++)
 	{
-		gridButtons.at(i)->setSize(sf::Vector2f(UIText.at(i/2).getLocalBounds().height, UIText.at(i / 2).getLocalBounds().height));
-		gridButtons.at(i)->setPosition( sf::Vector2f(UIText.at(i / 2).getPosition().x + UIText.at(i / 2).getLocalBounds().width, UIText.at(i / 2).getPosition().y + (UIText.at(i / 2).getLocalBounds().height / 2)));
-		gridButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
+		//Set up their main data
+		m_vGridButtons.at(i)->setSize(sf::Vector2f(m_vUIText.at(i/2).getLocalBounds().height, m_vUIText.at(i / 2).getLocalBounds().height));
+		m_vGridButtons.at(i)->setPosition( sf::Vector2f(m_vUIText.at(i / 2).getPosition().x + m_vUIText.at(i / 2).getLocalBounds().width, m_vUIText.at(i / 2).getPosition().y + (m_vUIText.at(i / 2).getLocalBounds().height / 2)));
+		m_vGridButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
+
+		//If theyre a second button then shift them to the right and change the texture
 		if (i % 2 == 0)
 		{
-			gridButtons.at(i)->setTexture(m_Textures->getTexture(21));
-			gridButtons.at(i)->setPosition(sf::Vector2f(gridButtons.at(i)->getPosition().x + gridButtons.at(i)->getSize().x + (gridButtons.at(i)->getSize().x / 2), gridButtons.at(i)->getPosition().y ));
+			m_vGridButtons.at(i)->setTexture(m_Textures->getTexture(21));
+			m_vGridButtons.at(i)->setPosition(sf::Vector2f(m_vGridButtons.at(i)->getPosition().x + m_vGridButtons.at(i)->getSize().x + (m_vGridButtons.at(i)->getSize().x / 2), m_vGridButtons.at(i)->getPosition().y ));
 		}
 		else
 		{
-			gridButtons.at(i)->setTexture(m_Textures->getTexture(22));
+			m_vGridButtons.at(i)->setTexture(m_Textures->getTexture(22));
 		}
 	}
 
+	//Sets up the levelbits
 	m_vcLevelBits.clear();
 	m_vcLevelBits.resize(m_CurrentMap->getGridDims().x);
 	for (int i = 0; i < m_vcLevelBits.size(); i++)
@@ -94,19 +106,20 @@ Editor::Editor(sf::Vector2u windowSize)
 		m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
 
-	m_Items.resize(m_CurrentMap->getGridDims().x);
-	for (int i = 0; i < m_Items.size(); i++)
+	//Sets up the map objects array
+	m_vItems.resize(m_CurrentMap->getGridDims().x);
+	for (int i = 0; i < m_vItems.size(); i++)
 	{
-		m_Items.at(i).resize(m_CurrentMap->getGridDims().y);
+		m_vItems.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
 
+	//Sets up the floor bits and fills them with grass tiles
 	m_vcFloorBits.clear();
 	m_vcFloorBits.resize(m_CurrentMap->getGridDims().x);
 	for (int i = 0; i < m_vcFloorBits.size(); i++)
 	{
 		m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
-
 	for (int i = 0; i < m_vcFloorBits.size(); i++)
 	{
 		for (int j = 0; j < m_vcFloorBits.at(i).size(); j++)
@@ -115,496 +128,444 @@ Editor::Editor(sf::Vector2u windowSize)
 		}
 	}
 
-	m_FloorTiles.resize(m_CurrentMap->getGridDims().x);
-	for (int i = 0; i < m_FloorTiles.size(); i++)
+	//Sets up the floor tiles and fills them with grass tiles
+	m_vFloorTiles.resize(m_CurrentMap->getGridDims().x);
+	for (int i = 0; i < m_vFloorTiles.size(); i++)
 	{
-		m_FloorTiles.at(i).resize(m_CurrentMap->getGridDims().y);
+		m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
-
-	for (int i = 0; i < m_FloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); i++)
 	{
-		for (int j = 0; j < m_FloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
 		{
-			m_FloorTiles.at(i).at(j) = new Object();
-			m_FloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(14));
+			m_vFloorTiles.at(i).at(j) = new Object();
+			m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(14));
 		}
 	}
 
-	UIText.at(2).setPosition(UIText.at(2).getPosition().x, gridButtons.at(gridButtons.size() - 1)->getPosition().y + gridButtons.at(gridButtons.size() - 1)->getSize().y + fContentGap);
-	objectButtons.resize(5);
-	for (int i = 0; i < objectButtons.size(); i++)
-	{
-		objectButtons.at(i) = new Button();
-		objectButtons.at(i)->setSize(gridButtons.at(0)->getSize() * 2.0f);
-		objectButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
-		float fXOffset = 0.0f;
-		float fYOffset = 0.0f;
-		if (i > 0)
-		{
-			fXOffset = objectButtons.at(i - 1)->getSize().x;
+	//Sets the position of the label to be below the previous content and creates buttons underneath
+	//Objects
+	m_vUIText.at(2).setPosition(m_vUIText.at(2).getPosition().x, m_vGridButtons.at(m_vGridButtons.size() - 1)->getPosition().y + m_vGridButtons.at(m_vGridButtons.size() - 1)->getSize().y + fContentGap);
+	createButtons(&m_vObjectButtons, 2, std::vector<int>{0,1,2,24,30});
 
-			if (objectButtons.at(i - 1)->getPosition().x + objectButtons.at(i - 1)->getSize().x + objectButtons.at(i)->getSize().x > m_Sidebar.getPosition().x + m_Sidebar.getSize().x - fBorderSize)
+	//Floor objects
+	m_vUIText.at(3).setPosition(m_vUIText.at(2).getPosition().x, m_vObjectButtons.at(m_vObjectButtons.size() - 1)->getPosition().y + m_vObjectButtons.at(m_vObjectButtons.size() - 1)->getSize().y + fContentGap);
+	createButtons(&m_vFloorButtons, 3, std::vector<int>{14, 25, 26, 27, 28, 29});
+
+	//Tools
+	m_vUIText.at(4).setPosition(m_vUIText.at(3).getPosition().x, m_vFloorButtons.at(m_vFloorButtons.size() - 1)->getPosition().y + m_vFloorButtons.at(m_vFloorButtons.size() - 1)->getSize().y + fContentGap);
+	createButtons(&m_vToolButtons, 4, std::vector<int>{23});
+
+	//Sets the starting tool to the wooden wall tool
+	m_cCurrentTool = 'W';
+
+	//Starts the editing on the main objects
+	m_bEditingFloor = false;
+}
+
+void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std::vector<int> iTexIndex)
+{
+	float fBorderSize = m_Sidebar.getSize().x / 20.0f; //Gap between the edge of the sidebar and the content inside
+	float fContentGap = m_Sidebar.getSize().y / 20.0f; //The gap between sets of content in the y axis
+
+	if (vButtonSet != NULL) //If there is a set of buttons
+	{
+		vButtonSet->resize(iTexIndex.size()); //Resize the button count
+
+		//The buttons under the label are then created 
+		for (int i = 0; i < vButtonSet->size(); i++)
+		{
+			vButtonSet->at(i) = new Button();
+			vButtonSet->at(i)->setSize(m_vGridButtons.at(0)->getSize() * 2.0f);
+			vButtonSet->at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
+
+			//They are then positioned to be beneath the label to act in a tight grid fashion
+			float fXOffset = 0.0f;
+			float fYOffset = 0.0f;
+			if (i > 0)
 			{
-				fXOffset = 0.0f;
-				fYOffset += objectButtons.at(i - 1)->getSize().y;
+				//Once the buttons start to leave the screen a new row is created
+				fXOffset = vButtonSet->at(i - 1)->getSize().x;
+				if (vButtonSet->at(i - 1)->getPosition().x + vButtonSet->at(i - 1)->getSize().x + vButtonSet->at(i)->getSize().x > m_Sidebar.getPosition().x + m_Sidebar.getSize().x - fBorderSize)
+				{
+					fXOffset = 0.0f;
+					fYOffset += vButtonSet->at(i - 1)->getSize().y;
+				}
+
 			}
-
+			vButtonSet->at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + (i* fXOffset), m_vUIText.at(iUIindex).getPosition().y + m_vUIText.at(iUIindex).getLocalBounds().height + fContentGap + fYOffset));
 		}
-		objectButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + ( i* fXOffset), UIText.at(2).getPosition().y + UIText.at(2).getLocalBounds().height + fContentGap +fYOffset));
-	}
-	objectButtons.at(0)->setTexture(m_Textures->getTexture(0));
-	objectButtons.at(1)->setTexture(m_Textures->getTexture(1));
-	objectButtons.at(2)->setTexture(m_Textures->getTexture(2));
-	objectButtons.at(3)->setTexture(m_Textures->getTexture(24));
-	objectButtons.at(4)->setTexture(m_Textures->getTexture(30));
 
-	UIText.at(3).setPosition(UIText.at(2).getPosition().x, objectButtons.at(objectButtons.size() - 1)->getPosition().y + objectButtons.at(objectButtons.size() - 1)->getSize().y + fContentGap);
-	floorButtons.resize(6);
-	for (int i = 0; i < floorButtons.size(); i++)
-	{
-		floorButtons.at(i) = new Button();
-		floorButtons.at(i)->setSize(gridButtons.at(0)->getSize() * 2.0f);
-		floorButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
-
-		float fXOffset = 0.0f;
-		float fYOffset = 0.0f;
-		if (i > 0)
+		//Set the button textures
+		for (int i = 0; i < iTexIndex.size(); i++)
 		{
-			fXOffset = floorButtons.at(i - 1)->getSize().x;
-
-			if (floorButtons.at(i - 1)->getPosition().x + floorButtons.at(i - 1)->getSize().x + floorButtons.at(i)->getSize().x > m_Sidebar.getPosition().x + m_Sidebar.getSize().x - fBorderSize)
-			{
-				fXOffset = 0.0f;
-				fYOffset += floorButtons.at(i - 1)->getSize().y;
-			}
-
+			vButtonSet->at(i)->setTexture(m_Textures->getTexture(iTexIndex.at(i)));
 		}
-		floorButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + (i* fXOffset), UIText.at(3).getPosition().y + UIText.at(3).getLocalBounds().height + fContentGap + fYOffset));
 	}
-	floorButtons.at(0)->setTexture(m_Textures->getTexture(14));
-	floorButtons.at(1)->setTexture(m_Textures->getTexture(25));
-	floorButtons.at(2)->setTexture(m_Textures->getTexture(26));
-	floorButtons.at(3)->setTexture(m_Textures->getTexture(27));
-	floorButtons.at(4)->setTexture(m_Textures->getTexture(28));
-	floorButtons.at(5)->setTexture(m_Textures->getTexture(29));
-
-	UIText.at(4).setPosition(UIText.at(3).getPosition().x, floorButtons.at(floorButtons.size() - 1)->getPosition().y + floorButtons.at(floorButtons.size() - 1)->getSize().y + fContentGap);
-	toolButtons.resize(1);
-	for (int i = 0; i < toolButtons.size(); i++)
-	{
-		toolButtons.at(i) = new Button();
-		toolButtons.at(i)->setSize(gridButtons.at(0)->getSize() * 2.0f);
-		toolButtons.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
-		float fXOffset = 0.0f;
-		float fYOffset = 0.0f;
-		if (i > 0)
-		{
-			fXOffset = toolButtons.at(i - 1)->getSize().x;
-
-			if (toolButtons.at(i - 1)->getPosition().x + toolButtons.at(i - 1)->getSize().x + toolButtons.at(i)->getSize().x > m_Sidebar.getPosition().x + m_Sidebar.getSize().x - fBorderSize)
-			{
-				fXOffset = 0.0f;
-				fYOffset += toolButtons.at(i - 1)->getSize().y;
-			}
-
-		}
-		toolButtons.at(i)->setPosition(sf::Vector2f(m_Sidebar.getPosition().x + fBorderSize + (i* fXOffset), UIText.at(4).getPosition().y + UIText.at(4).getLocalBounds().height + fContentGap + fYOffset));
-	}
-	toolButtons.at(0)->setTexture(m_Textures->getTexture(23));
-
-	cCurrentTool = 'W';
-	bEditingFloor = false;
 }
 
 void Editor::update(sf::Vector2i mousePos)
 {
-	exitButton->hovering(mousePos);
-	saveButton->hovering(mousePos);
-	for (int i = 0; i < gridButtons.size(); i++)
+	//Performs hover checks for all of the buttons for highlighting
+	m_ExitButton->hovering(mousePos);
+	m_SaveButton->hovering(mousePos);
+	for (int i = 0; i < m_vGridButtons.size(); i++)
 	{
-		gridButtons.at(i)->hovering(mousePos);
+		m_vGridButtons.at(i)->hovering(mousePos);
+	}
+	for (int i = 0; i < m_vObjectButtons.size(); i++)
+	{
+		m_vObjectButtons.at(i)->hovering(mousePos);
+	}
+	for (int i = 0; i < m_vToolButtons.size(); i++)
+	{
+		m_vToolButtons.at(i)->hovering(mousePos);
+	}
+	for (int i = 0; i < m_vFloorButtons.size(); i++)
+	{
+		m_vFloorButtons.at(i)->hovering(mousePos);
 	}
 
-	for (int i = 0; i < m_Items.size(); i++)
+	//Positions all items that exist within the world objects at their respective grid space
+	for (int i = 0; i < m_vItems.size(); i++)
 	{
-		for (int j = 0; j < m_Items.at(i).size(); j++)
+		for (int j = 0; j < m_vItems.at(i).size(); j++)
 		{
-			if (m_Items.at(i).at(j) != NULL)
+			if (m_vItems.at(i).at(j) != NULL)
 			{
-				m_Items.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
-				m_Items.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
+				m_vItems.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
+				m_vItems.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
 			}
 		}
 	}
 
-	for (int i = 0; i < m_FloorTiles.size(); i++)
+	//Positions all floor items that exist within the world at their respective grid space
+	for (int i = 0; i < m_vFloorTiles.size(); i++)
 	{
-		for (int j = 0; j < m_FloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
 		{
-			if (m_FloorTiles.at(i).at(j) != NULL)
+			if (m_vFloorTiles.at(i).at(j) != NULL)
 			{
-				m_FloorTiles.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
-				m_FloorTiles.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
+				m_vFloorTiles.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
+				m_vFloorTiles.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
 			}
 		}
-	}
-
-	for (int i = 0; i < objectButtons.size(); i++)
-	{
-		objectButtons.at(i)->hovering(mousePos);
-	}
-	for (int i = 0; i < toolButtons.size(); i++)
-	{
-		toolButtons.at(i)->hovering(mousePos);
-	}
-	for (int i = 0; i < floorButtons.size(); i++)
-	{
-		floorButtons.at(i)->hovering(mousePos);
 	}
 }
 
 int Editor::clickLeft(sf::Vector2i mousePos)
 {
-	if (exitButton->hovering(mousePos))
+	//If the exit button is clicked return to the menu
+	if (m_ExitButton->hovering(mousePos))
 	{
 		m_CurrentSettings->setDebug(false);
 		return 1;
 	}
 
-	if (saveButton->hovering(mousePos))
+	//If the save button is clicked save the game
+	if (m_SaveButton->hovering(mousePos))
 	{
 		saveMap();
 	}
 	
-	if (gridButtons.at(0)->hovering(mousePos))
+	//If the + X Grid button is pressed
+	if (m_vGridButtons.at(0)->hovering(mousePos))
 	{
+		//Increment the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x+1, m_CurrentMap->getGridDims().y));
+
+		//Increment every row of the map by adding a new item
 		for (int i = 0; i < m_vcLevelBits.size(); i++)
 		{
 			m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 		for (int i = 0; i < m_vcLevelBits.size(); i++)
 		{
-			m_Items.at(i).resize(m_CurrentMap->getGridDims().x);
+			m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 
+		//Increment every row of the floor map by adding a new item
 		for (int i = 0; i < m_vcFloorBits.size(); i++)
 		{
 			m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 		for (int i = 0; i <  m_vcFloorBits.size(); i++)
 		{
-			m_FloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
+			m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 	}
-	if (gridButtons.at(1)->hovering(mousePos))
+
+	//If the - X Grid button is pressed
+	if (m_vGridButtons.at(1)->hovering(mousePos))
 	{
+		//Decrement the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x -1, m_CurrentMap->getGridDims().y));
+
+		//Decrement the LevelBits vector
 		for (int i = 0; i < m_vcLevelBits.size(); i++)
 		{
 			m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 
-		for (int i = 0; i < m_Items.size(); i++)
+		//For the objects the pointers are cleared at the end of each row.
+		for (int i = 0; i < m_vItems.size(); i++)
 		{
-			if (m_Items.at(i).at(m_Items.at(i).size() - 1) != NULL)
+			if (m_vItems.at(i).at(m_vItems.at(i).size() - 1) != NULL)
 			{
-				delete(m_Items.at(i).at(m_Items.at(i).size() - 1));
-				m_Items.at(i).at(m_Items.at(i).size()-1) = NULL;
+				delete(m_vItems.at(i).at(m_vItems.at(i).size() - 1));
+				m_vItems.at(i).at(m_vItems.at(i).size()-1) = NULL;
 			}
-			m_Items.at(i).resize(m_CurrentMap->getGridDims().x);
+			m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 
+		//Decrement the FloorBits vector
 		for (int i = 0; i < m_vcFloorBits.size(); i++)
 		{
 			m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 
-		for (int i = 0; i < m_FloorTiles.size(); i++)
+		//For the objects the pointers are cleared at the end of each row.
+		for (int i = 0; i < m_vFloorTiles.size(); i++)
 		{
-			if (m_FloorTiles.at(i).at(m_FloorTiles.at(i).size() - 1) != NULL)
+			if (m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1) != NULL)
 			{
-				delete(m_FloorTiles.at(i).at(m_FloorTiles.at(i).size() - 1));
-				m_FloorTiles.at(i).at(m_FloorTiles.at(i).size() - 1) = NULL;
+				delete(m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1));
+				m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1) = NULL;
 			}
-			m_FloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
+			m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 	}
 
-	if (gridButtons.at(2)->hovering(mousePos))
+	//If the + Y Grid button is pressed
+	if (m_vGridButtons.at(2)->hovering(mousePos))
 	{
+		//Increment the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y+1));
+
+		//A new row is added to each vector
+		//LevelBits
 		m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
 		m_vcLevelBits.at(m_vcLevelBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
-
-		m_Items.resize(m_CurrentMap->getGridDims().y);
-		m_Items.at(m_Items.size() - 1).resize(m_CurrentMap->getGridDims().x);
-
-
+		//Map objects
+		m_vItems.resize(m_CurrentMap->getGridDims().y);
+		m_vItems.at(m_vItems.size() - 1).resize(m_CurrentMap->getGridDims().x);
+		//FloorBits
 		m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
 		m_vcFloorBits.at(m_vcFloorBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
-
-		m_FloorTiles.resize(m_CurrentMap->getGridDims().y);
-		m_FloorTiles.at(m_FloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
+		//Floor objects
+		m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
+		m_vFloorTiles.at(m_vFloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
 	}
-	if (gridButtons.at(3)->hovering(mousePos))
+
+	//If the - Y Grid button is pressed
+	if (m_vGridButtons.at(3)->hovering(mousePos))
 	{
+		//Decrement the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y - 1));
+
+		//Decrement the levelBits vector
 		m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
 		m_vcLevelBits.at(m_vcLevelBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
 
-		for (int i = 0; i < m_Items.at(m_Items.size() - 1).size(); i++)
+		//Clear the pointers of all objects on the bottom row and decrement the row
+		for (int i = 0; i < m_vItems.at(m_vItems.size() - 1).size(); i++)
 		{
-			if (m_Items.at(m_Items.size()-1).at(i) != NULL)
+			if (m_vItems.at(m_vItems.size()-1).at(i) != NULL)
 			{
-				delete(m_Items.at(m_Items.size()-1).at(i));
-				m_Items.at(m_Items.size()-1).at(i) = NULL;
+				delete(m_vItems.at(m_vItems.size()-1).at(i));
+				m_vItems.at(m_vItems.size()-1).at(i) = NULL;
 			}
 		}
-		m_Items.resize(m_CurrentMap->getGridDims().y);
-		m_Items.at(m_Items.size() - 1).resize(m_CurrentMap->getGridDims().x);
+		m_vItems.resize(m_CurrentMap->getGridDims().y);
+		m_vItems.at(m_vItems.size() - 1).resize(m_CurrentMap->getGridDims().x);
 
+		//Decrement the floorBits vector
 		m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
 		m_vcFloorBits.at(m_vcFloorBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
-		for (int i = 0; i < m_FloorTiles.at(m_Items.size() - 1).size(); i++)
+
+		//Clear the pointers of all objects on the bottom row and decrement the row
+		for (int i = 0; i < m_vFloorTiles.at(m_vItems.size() - 1).size(); i++)
 		{
-			if (m_FloorTiles.at(m_FloorTiles.size() - 1).at(i) != NULL)
+			if (m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i) != NULL)
 			{
-				delete(m_FloorTiles.at(m_FloorTiles.size() - 1).at(i));
-				m_FloorTiles.at(m_FloorTiles.size() - 1).at(i) = NULL;
+				delete(m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i));
+				m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i) = NULL;
 			}
 		}
-		m_FloorTiles.resize(m_CurrentMap->getGridDims().y);
-		m_FloorTiles.at(m_FloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
+		m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
+		m_vFloorTiles.at(m_vFloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
 	}
 	
+	//If the mouse is within the bounds of the grid
 	if (mousePos.x > m_CurrentMap->getPosition().x &&
 		mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
 		mousePos.y > m_CurrentMap->getPosition().y &&
 		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 	{
+		//Calculate the mouses position on the grid
 		sf::Vector2f gridPos(0,0);
 		gridPos.x = (mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x;
 		gridPos.y = (mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y;
 
-		if (!bEditingFloor)
+		if (!m_bEditingFloor) //If the main map being edited
 		{
-			m_vcLevelBits.at(gridPos.y).at(gridPos.x) = cCurrentTool;
+			//If the tool is valid
+			if (m_cCurrentTool == 'W' || m_cCurrentTool == 'P' || m_cCurrentTool == 'E' || 
+				m_cCurrentTool == 'D' || m_cCurrentTool == 'B' || m_cCurrentTool == ' ')
+			{
+				//Set the main map bit to the current tool letter
+				m_vcLevelBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
 
-			if (cCurrentTool == 'W')
-			{
-				if (m_Items.at(gridPos.y).at(gridPos.x) != NULL)
+				//If there is an item currently in that location clear the pointer
+				if (m_vItems.at(gridPos.y).at(gridPos.x) != NULL)
 				{
-					delete(m_Items.at(gridPos.y).at(gridPos.x));
-					m_Items.at(gridPos.y).at(gridPos.x) = NULL;
+					delete(m_vItems.at(gridPos.y).at(gridPos.x));
+					m_vItems.at(gridPos.y).at(gridPos.x) = NULL;
 				}
-				m_Items.at(gridPos.y).at(gridPos.x) = new Object();
-				m_Items.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(0));
-			}
-			if (cCurrentTool == 'P')
-			{
-				if (m_Items.at(gridPos.y).at(gridPos.x) != NULL)
+				//If the tool isnt an eraser create a new object
+				if (m_cCurrentTool != ' ')
 				{
-					delete(m_Items.at(gridPos.y).at(gridPos.x));
-					m_Items.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_Items.at(gridPos.y).at(gridPos.x) = new Object();
-				m_Items.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(1));
+					m_vItems.at(gridPos.y).at(gridPos.x) = new Object();
 
-			}
-			if (cCurrentTool == 'E')
-			{
-				if (m_Items.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_Items.at(gridPos.y).at(gridPos.x));
-					m_Items.at(gridPos.y).at(gridPos.x) = NULL;
+					//Give the object the following texture
+					switch (m_cCurrentTool)
+					{
+					case 'W':
+						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(0));
+						break;
+					case 'P':
+						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(1));
+						break;
+					case 'E':
+						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(2));
+						break;
+					case 'D':
+						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
+						break;
+					case 'B':
+						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(30));
+						break;
+					}
 				}
-				m_Items.at(gridPos.y).at(gridPos.x) = new Object();
-				m_Items.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(2));
-
-			}
-			if (cCurrentTool == 'D')
-			{
-				if (m_Items.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_Items.at(gridPos.y).at(gridPos.x));
-					m_Items.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_Items.at(gridPos.y).at(gridPos.x) = new Object();
-				m_Items.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
-			}
-			if (cCurrentTool == 'B')
-			{
-				if (m_Items.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_Items.at(gridPos.y).at(gridPos.x));
-					m_Items.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_Items.at(gridPos.y).at(gridPos.x) = new Object();
-				m_Items.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(30));
-			}
-			if (cCurrentTool == ' ')
-			{
-				if (m_Items.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_Items.at(gridPos.y).at(gridPos.x));
-					m_Items.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-			}
+			}			
 		}
 		else
 		{
-			m_vcFloorBits.at(gridPos.y).at(gridPos.x) = cCurrentTool;
-			if (cCurrentTool == 'G')
+			//If the tool is valid
+			if (m_cCurrentTool == 'G' || m_cCurrentTool == 'F' || m_cCurrentTool == 'K' ||
+				m_cCurrentTool == 'C' || m_cCurrentTool == 'B' || m_cCurrentTool == 'R' ||
+				m_cCurrentTool == ' ')
 			{
-				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+				//Set the floor map bit to the current tool letter
+				m_vcFloorBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
+
+				//If there is an item currently in that location clear the pointer
+				if (m_vFloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
 				{
-					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
-					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+					delete(m_vFloorTiles.at(gridPos.y).at(gridPos.x));
+					m_vFloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
 				}
-				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(14));
-			}
-			if (cCurrentTool == 'F')
-			{
-				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+
+				//If the tool isnt an eraser create a new object
+				if (m_cCurrentTool != ' ')
 				{
-					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
-					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(25));
-			}
-			if (cCurrentTool == 'K')
-			{
-				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
-					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(27));
-			}
-			if (cCurrentTool == 'C')
-			{
-				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
-					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
-			}
-			if (cCurrentTool == 'B')
-			{
-				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
-					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(28));
-			}
-			if (cCurrentTool == 'R')
-			{
-				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
-					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				m_FloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-				m_FloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(29));
-			}
-			if (cCurrentTool == ' ')
-			{
-				if (m_FloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_FloorTiles.at(gridPos.y).at(gridPos.x));
-					m_FloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+					m_vFloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
+
+					//Give the object the following texture
+					switch (m_cCurrentTool)
+					{
+					case 'G':
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(14));
+						break;
+					case 'F':
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(25));
+						break;
+					case 'K':
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(27));
+						break;
+					case 'C':
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
+						break;
+					case 'B':
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(28));
+						break;
+					case 'R':
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(29));
+						break;
+					}
 				}
 			}
 		}
 	}
-	if (objectButtons.at(0)->hovering(mousePos))
+	//If an object button is being hovered over set the tool to the value of the tool
+	if (m_vObjectButtons.at(0)->hovering(mousePos)) //Wooden Wall
 	{
-		cCurrentTool = 'W';
-		bEditingFloor = false;
+		m_cCurrentTool = 'W';
+		m_bEditingFloor = false;
 	}
-	if (objectButtons.at(1)->hovering(mousePos))
+	if (m_vObjectButtons.at(1)->hovering(mousePos)) //Friendly unit
 	{
-		cCurrentTool = 'P';
-		bEditingFloor = false;
+		m_cCurrentTool = 'P';
+		m_bEditingFloor = false;
 	}
-	if (objectButtons.at(2)->hovering(mousePos))
+	if (m_vObjectButtons.at(2)->hovering(mousePos)) //Enemy unit
 	{
-		cCurrentTool = 'E';
-		bEditingFloor = false;
+		m_cCurrentTool = 'E';
+		m_bEditingFloor = false;
 	}
-	if (objectButtons.at(3)->hovering(mousePos))
+	if (m_vObjectButtons.at(3)->hovering(mousePos)) //Door
 	{
-		cCurrentTool = 'D';
-		bEditingFloor = false;
+		m_cCurrentTool = 'D';
+		m_bEditingFloor = false;
 	}
-	if (objectButtons.at(4)->hovering(mousePos))
+	if (m_vObjectButtons.at(4)->hovering(mousePos)) //Brick wall
 	{
-		cCurrentTool = 'B';
-		bEditingFloor = false;
-	}
-
-	if (toolButtons.at(0)->hovering(mousePos))
-	{
-		cCurrentTool = ' ';
+		m_cCurrentTool = 'B';
+		m_bEditingFloor = false;
 	}
 
-	if (floorButtons.at(0)->hovering(mousePos))
+	if (m_vToolButtons.at(0)->hovering(mousePos)) //Eraser
 	{
-		cCurrentTool = 'G';
-		bEditingFloor = true;
+		m_cCurrentTool = ' ';
 	}
-	if (floorButtons.at(1)->hovering(mousePos))
+
+	if (m_vFloorButtons.at(0)->hovering(mousePos)) //Grass
 	{
-		cCurrentTool = 'F';
-		bEditingFloor = true;
+		m_cCurrentTool = 'G';
+		m_bEditingFloor = true;
 	}
-	if (floorButtons.at(2)->hovering(mousePos))
+	if (m_vFloorButtons.at(1)->hovering(mousePos)) //Wooden floor
 	{
-		cCurrentTool = 'C';
-		bEditingFloor = true;
+		m_cCurrentTool = 'F';
+		m_bEditingFloor = true;
 	}
-	if (floorButtons.at(3)->hovering(mousePos))
+	if (m_vFloorButtons.at(2)->hovering(mousePos)) //Concrete
 	{
-		cCurrentTool = 'K';
-		bEditingFloor = true;
+		m_cCurrentTool = 'C';
+		m_bEditingFloor = true;
 	}
-	if (floorButtons.at(4)->hovering(mousePos))
+	if (m_vFloorButtons.at(3)->hovering(mousePos)) //Kitchen tile
 	{
-		cCurrentTool = 'B';
-		bEditingFloor = true;
+		m_cCurrentTool = 'K';
+		m_bEditingFloor = true;
 	}
-	if (floorButtons.at(5)->hovering(mousePos))
+	if (m_vFloorButtons.at(4)->hovering(mousePos)) //Blue carpet
 	{
-		cCurrentTool = 'R';
-		bEditingFloor = true;
+		m_cCurrentTool = 'B';
+		m_bEditingFloor = true;
+	}
+	if (m_vFloorButtons.at(5)->hovering(mousePos)) //Red carpet
+	{
+		m_cCurrentTool = 'R';
+		m_bEditingFloor = true;
 	}
 
 	return 0;
 }
 
-void Editor::enableDebug()
-{
-	if (m_CurrentSettings->debugActive())
-	{
-		m_CurrentSettings->setDebug(false);
-	}
-	else
-	{
-		m_CurrentSettings->setDebug(true);
-	}
-}
-
 void Editor::saveMap()
 {
-	//Saves a score value to a text file
+	//Saves the object map 
 	std::ofstream File1;
 	File1.open("Assets/Maps/CustomMap.txt", std::ios::out);
 	for (int i = 0; i < m_vcLevelBits.size(); i++)
@@ -613,6 +574,7 @@ void Editor::saveMap()
 		{
 			File1 << m_vcLevelBits.at(i).at(j);
 		}
+		//Creates a new row of bits
 		if (i != m_vcLevelBits.size() - 1)
 		{
 			File1 << "\n";
@@ -620,6 +582,7 @@ void Editor::saveMap()
 	}
 	File1.close();
 
+	//Saves the floor map 
 	File1.open("Assets/Maps/CustomMapFloor.txt", std::ios::out);
 	for (int i = 0; i < m_vcFloorBits.size(); i++)
 	{
@@ -627,6 +590,7 @@ void Editor::saveMap()
 		{
 			File1 << m_vcFloorBits.at(i).at(j);
 		}
+		//Creates a new row of bits
 		if (i != m_vcFloorBits.size() - 1)
 		{
 			File1 << "\n";
@@ -644,104 +608,104 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	}
 	target.draw(m_Sidebar);
 
-	for (int i = 0; i < m_FloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); i++)
 	{
-		for (int j = 0; j < m_FloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
 		{
-			if (m_FloorTiles.at(i).at(j) != NULL)
+			if (m_vFloorTiles.at(i).at(j) != NULL)
 			{
-				target.draw(*m_FloorTiles.at(i).at(j));
+				target.draw(*m_vFloorTiles.at(i).at(j));
 			}
 		}
 	}
 
-	for (int i = 0; i < m_Items.size(); i++)
+	for (int i = 0; i < m_vItems.size(); i++)
 	{
-		for (int j = 0; j < m_Items.at(i).size(); j++)
+		for (int j = 0; j < m_vItems.at(i).size(); j++)
 		{
-			if (m_Items.at(i).at(j) != NULL)
+			if (m_vItems.at(i).at(j) != NULL)
 			{
-				target.draw(*m_Items.at(i).at(j));
+				target.draw(*m_vItems.at(i).at(j));
 			}
 		}
 	}
 
-	for (int i = 0; i < gridButtons.size(); i++)
+	for (int i = 0; i < m_vGridButtons.size(); i++)
 	{
-		target.draw(*gridButtons.at(i));
+		target.draw(*m_vGridButtons.at(i));
 	}
-	for (int i = 0; i < objectButtons.size(); i++)
+	for (int i = 0; i < m_vObjectButtons.size(); i++)
 	{
-		target.draw(*objectButtons.at(i));
+		target.draw(*m_vObjectButtons.at(i));
 	}
-	for (int i = 0; i < toolButtons.size(); i++)
+	for (int i = 0; i < m_vToolButtons.size(); i++)
 	{
-		target.draw(*toolButtons.at(i));
+		target.draw(*m_vToolButtons.at(i));
 	}
-	for (int i = 0; i < floorButtons.size(); i++)
+	for (int i = 0; i < m_vFloorButtons.size(); i++)
 	{
-		target.draw(*floorButtons.at(i));
+		target.draw(*m_vFloorButtons.at(i));
 	}
 
-	for (int i = 0; i < UIText.size(); i++)
+	for (int i = 0; i < m_vUIText.size(); i++)
 	{
-		target.draw(UIText.at(i));
+		target.draw(m_vUIText.at(i));
 	}
 
 	target.draw(m_Toolbar);
-	target.draw(*exitButton);
-	target.draw(*saveButton);
+	target.draw(*m_ExitButton);
+	target.draw(*m_SaveButton);
 }
 
 Editor::~Editor()
 {
-	for (int i = 0; i < gridButtons.size(); i++)
+	for (int i = 0; i < m_vGridButtons.size(); i++)
 	{
-		delete(gridButtons.at(i));
-		gridButtons.at(i) = NULL;
+		delete(m_vGridButtons.at(i));
+		m_vGridButtons.at(i) = NULL;
 	}
 
-	for (int i = 0; i < objectButtons.size(); i++)
+	for (int i = 0; i < m_vObjectButtons.size(); i++)
 	{
-		delete(objectButtons.at(i));
-		objectButtons.at(i) = NULL;
+		delete(m_vObjectButtons.at(i));
+		m_vObjectButtons.at(i) = NULL;
 	}
-	for (int i = 0; i < floorButtons.size(); i++)
+	for (int i = 0; i < m_vFloorButtons.size(); i++)
 	{
-		delete(floorButtons.at(i));
-		floorButtons.at(i) = NULL;
+		delete(m_vFloorButtons.at(i));
+		m_vFloorButtons.at(i) = NULL;
 	}
-	for (int i = 0; i < toolButtons.size(); i++)
+	for (int i = 0; i < m_vToolButtons.size(); i++)
 	{
-		delete(toolButtons.at(i));
-		toolButtons.at(i) = NULL;
+		delete(m_vToolButtons.at(i));
+		m_vToolButtons.at(i) = NULL;
 	}
-	for (int i = 0; i < m_FloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); i++)
 	{
-		for (int j = 0; j < m_FloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
 		{
-			if (m_FloorTiles.at(i).at(j) != NULL)
+			if (m_vFloorTiles.at(i).at(j) != NULL)
 			{
-				delete(m_FloorTiles.at(i).at(j));
-				m_FloorTiles.at(i).at(j) = NULL;
+				delete(m_vFloorTiles.at(i).at(j));
+				m_vFloorTiles.at(i).at(j) = NULL;
 			}
 		}
 	}
 
-	for (int i = 0; i < m_Items.size(); i++)
+	for (int i = 0; i < m_vItems.size(); i++)
 	{
-		for (int j = 0; j < m_Items.at(i).size(); j++)
+		for (int j = 0; j < m_vItems.at(i).size(); j++)
 		{
-			if (m_Items.at(i).at(j) != NULL)
+			if (m_vItems.at(i).at(j) != NULL)
 			{
-				delete(m_Items.at(i).at(j));
-				m_Items.at(i).at(j) = NULL;
+				delete(m_vItems.at(i).at(j));
+				m_vItems.at(i).at(j) = NULL;
 			}
 		}
 	}
-	delete(exitButton);
-	exitButton = NULL;
+	delete(m_ExitButton);
+	m_ExitButton = NULL;
 
-	delete(saveButton);
-	saveButton = NULL;
+	delete(m_SaveButton);
+	m_SaveButton = NULL;
 }

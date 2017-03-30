@@ -5,12 +5,12 @@
 class Entrance : public Object
 {
 	private:
-		bool m_bOpen;
-		float m_fOrientation;
-		int m_iOpeningDirection;
-		sf::Sound m_OpeningSound;
-		SoundManager* m_SoundManager;
-		sf::Vector2u m_Tile;
+		SoundManager* m_SoundManager; //A link to the sounds
+		bool m_bOpen; //States whether the door is open
+		float m_fOrientation; //Holds the current orientation
+		int m_iOpeningDirection; //Holds the direction at which the door rotates
+		sf::Sound m_OpeningSound; // Holds the sound of the door opening
+		sf::Vector2u m_Tile; //Holds the tile the door is sitting on
 
 	public:
 		Entrance(); //Constructor

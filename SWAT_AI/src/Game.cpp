@@ -16,56 +16,46 @@ Game::Game(sf::Vector2u windowSize)
 		sf::FloatRect(sf::Vector2f(0, m_Toolbar.getSize().y), sf::Vector2f(windowSize) - sf::Vector2f(windowSize.x/3, m_Toolbar.getSize().y)),
 		sf::Vector2f(20, 20)
 	);
-	m_CurrentMap->load("./Assets/Maps/CustomMap.txt"); //Loads a map from a file
-	m_CurrentMap->loadFloor("./Assets/Maps/CustomMapFloor.txt");
 
-	m_CurrentFont.loadFromFile("Assets/Fonts/arial.ttf"); //Loads the main font
+	//Loads the map files
+	m_CurrentMap->load(ObjectMap, "./Assets/Maps/CustomMap.txt"); 
+	m_CurrentMap->load(FloorMap, "./Assets/Maps/CustomMapFloor.txt");
 
+	//Setting up the floor tiles
 	for (int i = 0; i < m_CurrentMap->getFloorData().size(); i++)
 	{
 		for (int j = 0; j < m_CurrentMap->getFloorData().at(i).size(); j++)
 		{
-			if (m_CurrentMap->getFloorData().at(i).at(j) == 'G')
+			if (m_CurrentMap->getFloorData().at(i).at(j) == 'G' || m_CurrentMap->getFloorData().at(i).at(j) == 'F' || m_CurrentMap->getFloorData().at(i).at(j) == 'C' ||
+				m_CurrentMap->getFloorData().at(i).at(j) == 'K' || m_CurrentMap->getFloorData().at(i).at(j) == 'B' || m_CurrentMap->getFloorData().at(i).at(j) == 'R')
 			{
+				//Sets up the tile
 				m_Background.push_back(new Object);
-				m_Background.at(m_Background.size()-1)->setTexture(m_Textures->getTexture(14));
 				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
 				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
-			}
-			if (m_CurrentMap->getFloorData().at(i).at(j) == 'F')
-			{
-				m_Background.push_back(new Object);
-				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(25));
-				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
-				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
-			}
-			if (m_CurrentMap->getFloorData().at(i).at(j) == 'C')
-			{
-				m_Background.push_back(new Object);
-				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(26));
-				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
-				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
-			}
-			if (m_CurrentMap->getFloorData().at(i).at(j) == 'K')
-			{
-				m_Background.push_back(new Object);
-				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(27));
-				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
-				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
-			}
-			if (m_CurrentMap->getFloorData().at(i).at(j) == 'B')
-			{
-				m_Background.push_back(new Object);
-				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(28));
-				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
-				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
-			}
-			if (m_CurrentMap->getFloorData().at(i).at(j) == 'R')
-			{
-				m_Background.push_back(new Object);
-				m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(29));
-				m_Background.at(m_Background.size() - 1)->setSize(sf::Vector2f(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y));
-				m_Background.at(m_Background.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition() + sf::Vector2f(j * m_CurrentMap->getTileSize().x, i * m_CurrentMap->getTileSize().y)));
+
+				//Sets the floor texture
+				switch (m_CurrentMap->getFloorData().at(i).at(j))
+				{
+					case 'G':
+						m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(14));
+						break;
+					case 'F':
+						m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(25));
+						break;
+					case 'C':
+						m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(26));
+						break;
+					case 'K':
+						m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(27));
+						break;
+					case 'B':
+						m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(28));
+						break;
+					case 'R':
+						m_Background.at(m_Background.size() - 1)->setTexture(m_Textures->getTexture(29));
+						break;
+				}
 			}
 		}
 	}
@@ -154,7 +144,7 @@ Game::Game(sf::Vector2u windowSize)
 				{
 					m_vEnemies.push_back(new Character);
 					m_vEnemies.at(m_vEnemies.size() - 1)->setTexture(m_Textures->getTexture(2)); //Sets the unit texture
-					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault, m_Textures->getTexture(7));
+					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault);
 					m_vCharacters.push_back(m_vEnemies.at(m_vEnemies.size() - 1));
 				}
 
@@ -163,7 +153,7 @@ Game::Game(sf::Vector2u windowSize)
 				{
 					m_vUnits.push_back(new Character);
 					m_vUnits.at(m_vUnits.size() - 1)->setTexture(m_Textures->getTexture(1)); //Sets the unit texture
-					m_vUnits.at(m_vUnits.size() - 1)->setClass(Sniper, m_Textures->getTexture(4));
+					m_vUnits.at(m_vUnits.size() - 1)->setClass(Sniper);
 					m_vUnits.at(m_vUnits.size() - 1)->setVision(true);
 					m_vCharacters.push_back(m_vUnits.at(m_vUnits.size() - 1));
 				}
@@ -172,8 +162,6 @@ Game::Game(sf::Vector2u windowSize)
 				m_vCharacters.at(m_vCharacters.size() - 1)->setPosition(m_CurrentMap->getPosition() + sf::Vector2f((j * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2), (i * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 				m_vCharacters.at(m_vCharacters.size() - 1)->setSize(sf::Vector2f(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y), std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y)));
 				m_vCharacters.at(m_vCharacters.size() - 1)->setOrigin(sf::Vector2f(m_vCharacters.at(m_vCharacters.size() - 1)->getRect().width/2.0f, (m_vCharacters.at(m_vCharacters.size() - 1)->getRect().height / 2)));
-				m_vCharacters.at(m_vCharacters.size() - 1)->setMuzzle(m_Textures->getTexture(11));
-				m_vCharacters.at(m_vCharacters.size() - 1)->setupTextures();
 			}
 
 			//Doors
@@ -240,12 +228,14 @@ Game::Game(sf::Vector2u windowSize)
 		}
 	}
 
+	//Calculates the size of the unit UI so it scales relative to the screen size
 	sf::Vector2f newSize(windowSize.x - m_CurrentMap->getWindowSize().x, ((windowSize.y - m_Toolbar.getSize().y - (5 * (m_vUnits.size() - 1))) / m_vUnits.size()));
 	if (newSize.y > windowSize.y / 4)
 	{
 		newSize.y = windowSize.y / 4;
 	}
 
+	//Set up every UI window to fit on the right side of the screen
 	for (int i = 0; i < m_vUnits.size(); i++)
 	{
 		m_UnitUI.push_back(new HUDWindow);
@@ -260,8 +250,6 @@ Game::Game(sf::Vector2u windowSize)
 		m_UnitUI.at(m_UnitUI.size() - 1)->setBarLevels(AmmoBar, m_vUnits.at(i)->getAmmoData());
 		m_UnitUI.at(m_UnitUI.size() - 1)->setBarIcon(AmmoBar, m_Textures->getTexture(13));
 		m_UnitUI.at(m_UnitUI.size() - 1)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
-					
-		m_UnitUI.at(m_UnitUI.size() - 1)->setFont(&m_CurrentFont);
 
 		m_UnitUI.at(m_UnitUI.size() - 1)->setLoadoutTexture(0, m_Textures->getTexture(15));
 		m_UnitUI.at(m_UnitUI.size() - 1)->setLoadoutTexture(1, m_Textures->getTexture(15));
@@ -269,34 +257,40 @@ Game::Game(sf::Vector2u windowSize)
 		m_UnitUI.at(m_UnitUI.size() - 1)->scaleUI();
 	}
 
+	//Removes unnecessary wall edges
 	m_vEdges = edgeReduction(vEdgesX, vEdgesY);
 
+	//Sets up the debug lines for the edges of the walls
 	m_EdgeLines.resize(m_vEdges.size());
 	m_EdgeLines.setPrimitiveType(sf::Lines);
 	for (int i = 0; i < m_vEdges.size(); i++)
 	{
 		m_EdgeLines[i] = sf::Vertex(m_vEdges.at(i), sf::Color(255,0,0,255));
 	}
+
+	//Sets up the exit button
 	exitButton = new Button();
 	exitButton->setSize(sf::Vector2f(m_Toolbar.getSize().y, m_Toolbar.getSize().y));
 	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
 	exitButton->setTexture(m_Textures->getTexture(20));
 	exitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
 
+	//Initialises the path finder
 	m_Pathfinder.setup();
 }
 
 void Game::update(sf::Vector2i mousePos)
 {
-	for (int i = 0; i < waves.size(); i++)
+	//Updates any sound waves that are expanding
+	for (int i = 0; i < m_Waves.size(); i++)
 	{
-		if (waves.at(i) != NULL)
+		if (m_Waves.at(i) != NULL)
 		{
-			waves.at(i)->update();
-			if (waves.at(i)->isDone())
+			m_Waves.at(i)->update();
+			if (m_Waves.at(i)->isDone()) //If the wave has finished delete it
 			{
-				delete waves.at(i);
-				waves.at(i) = NULL;
+				delete m_Waves.at(i);
+				m_Waves.at(i) = NULL;
 			}
 		}
 	}
@@ -325,17 +319,18 @@ void Game::update(sf::Vector2i mousePos)
 				sf::Vector2u CharacterTile(((int)m_vCharacters.at(i)->getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
 					((int)m_vCharacters.at(i)->getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
 
+				//Changes the amount of sound footsteps make if the character treads on different materials
 				if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'B' ||
 					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
 					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
 				{
-					waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+					m_Waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
 				}
 				else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
 					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
 					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
 				{
-					waves.push_back(new soundWave(80, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
+					m_Waves.push_back(new soundWave(80, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
 				}
 			}
 		}
@@ -374,11 +369,11 @@ void Game::update(sf::Vector2i mousePos)
 	for (int i = 0; i < m_vUnits.size(); i++)
 	{
 		//Updates the UI bars
-		//Health
 		m_UnitUI.at(i)->setBarLevels(HealthBar, m_vUnits.at(i)->getHealthData());
 		m_UnitUI.at(i)->setBarLevels(AmmoBar, m_vUnits.at(i)->getAmmoData());
 		m_UnitUI.at(i)->setBarText(HealthBar, std::to_string((int)m_vUnits.at(i)->getHealthData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().upper));
 
+		//If the character is reloading replace the values with reloading text
 		if (m_vUnits.at(i)->reloading())
 		{
 			m_UnitUI.at(i)->setBarText(AmmoBar, "Reloading");
@@ -388,6 +383,7 @@ void Game::update(sf::Vector2i mousePos)
 			m_UnitUI.at(i)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
 		}
 
+		//Check if the mouse is above the buttons for highlighting
 		m_UnitUI.at(i)->getClassButton()->hovering(mousePos);
 		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
 		{
@@ -395,6 +391,7 @@ void Game::update(sf::Vector2i mousePos)
 		}
 	}
 
+	//Check if the mouse is above the exit button for highlighting
 	exitButton->hovering(mousePos);
 }
 
@@ -432,7 +429,8 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 						vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
 							vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
 
-						waves.push_back(new soundWave(vCharSet1.at(i)->getWeapon()->getWeaponVolume(), 10.0f, 1.0f, vCharSet1.at(i)->getWeapon()->getWeaponEnd()));
+						//Output a shooting wave from the end of the characters gun
+						m_Waves.push_back(new soundWave(vCharSet1.at(i)->getWeapon()->getWeaponVolume(), 10.0f, 1.0f, vCharSet1.at(i)->getWeapon()->getWeaponEnd()));
 
 					}
 				}
@@ -444,18 +442,6 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 		{
 			vCharSet1.at(i)->setTarget(NULL);
 		}
-	}
-}
-
-void Game::enableDebug()
-{
-	if (m_CurrentSettings->debugActive())
-	{
-		m_CurrentSettings->setDebug(false);
-	}
-	else
-	{
-		m_CurrentSettings->setDebug(true);
 	}
 }
 
@@ -471,19 +457,19 @@ int Game::clickLeft(sf::Vector2i mousePos)
 			switch (m_vUnits.at(i)->getClass())
 			{
 				case Sniper:
-					m_vUnits.at(i)->setClass(Support, m_Textures->getTexture(5));
+					m_vUnits.at(i)->setClass(Support);
 					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
 					break;
 				case Support:
-					m_vUnits.at(i)->setClass(Shotgunner, m_Textures->getTexture(6));
+					m_vUnits.at(i)->setClass(Shotgunner);
 					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
 					break;
 				case Shotgunner:
-					m_vUnits.at(i)->setClass(Assault, m_Textures->getTexture(7));
+					m_vUnits.at(i)->setClass(Assault);
 					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
 					break;
 				case Assault:
-					m_vUnits.at(i)->setClass(Sniper, m_Textures->getTexture(4));
+					m_vUnits.at(i)->setClass(Sniper);
 					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
 					break;
 			}
@@ -491,7 +477,7 @@ int Game::clickLeft(sf::Vector2i mousePos)
 
 		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
 		{
-			//If a loadout button
+			//If a loadout button is pressd
 			if (m_UnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos))
 			{
 				//Switches the class of the unit
@@ -521,6 +507,7 @@ int Game::clickLeft(sf::Vector2i mousePos)
 		}
 	}
 
+	//If the exit button is pressed return to the menu
 	if (exitButton->hovering(mousePos))
 	{
 		return 1;
@@ -537,8 +524,198 @@ void Game::clickRight(sf::Vector2i mousePos)
 	}
 }
 
+std::vector<sf::Vector2f> Game::edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges)
+{
+	//Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
+	std::vector<float> vfXValues; //Holds all X values used for wall edges
+	std::vector<float> vfYValues; //Holds all Y values used for wall edges
+	bool bFoundMatch = false; //Used to check if that X or Y value has already been entered
+
+	//Edge sorting
+	//For every edge
+	for (int i = 0; i < vXEdges.size(); i++)
+	{
+		bFoundMatch = false;
+		if (vfXValues.size() == 0) //If there are no current x values add one
+		{
+			vfXValues.push_back(vXEdges.at(i).x);
+		}
+		else
+		{
+			for (int j = 0; j < vfXValues.size(); j++) //For every current x value found
+			{
+				if (vXEdges.at(i).x == vfXValues.at(j)) //If the x matches to the current Xs
+				{
+					//A match has been found so dont add the value
+					bFoundMatch = true;
+				}
+			}
+			if (!bFoundMatch) //If none of the xs match add the x to the list of xs
+			{
+				vfXValues.push_back(vXEdges.at(i).x);
+			}
+		}
+	}
+
+	for (int i = 0; i < vYEdges.size(); i++)
+	{
+		bFoundMatch = false;
+		if (vfYValues.size() == 0) //If there are no current y values add one
+		{
+			vfYValues.push_back(vYEdges.at(i).y);
+		}
+		else
+		{
+			for (int j = 0; j < vfYValues.size(); j++) //For every current y value found
+			{
+				if (vYEdges.at(i).y == vfYValues.at(j)) //If the y matches to the current Ys
+				{
+					//A match has been found so dont add the value
+					bFoundMatch = true;
+				}
+			}
+			if (!bFoundMatch) //If none of the ys match add the y to the list of xs
+			{
+				vfYValues.push_back(vYEdges.at(i).y);
+			}
+		}
+	}
+
+	std::vector<std::vector<sf::Vector2f>> vComparissonVectsX; //Holds the X edge vectors to compare
+	std::vector<std::vector<sf::Vector2f>> vComparissonVectsY;  //Holds the Y edge vectors to compare
+
+	//Check the vectors against the X values collected and pushes the vector back if it matches for sorting
+	vComparissonVectsX.resize(vfXValues.size());
+	for (int i = 0; i < vfXValues.size(); i++)
+	{
+		for (int j = 0; j < vXEdges.size(); j++)
+		{
+			if (vXEdges.at(j).x == vfXValues.at(i)) //If the x matches to the current Xs
+			{
+				vComparissonVectsX.at(i).push_back(vXEdges.at(j));
+			}
+		}
+	}
+
+	//Check the vectors against the Y values collected and pushes the vector back if it matches for sorting
+	vComparissonVectsY.resize(vfYValues.size());
+	for (int i = 0; i < vfYValues.size(); i++)
+	{
+		for (int j = 0; j < vYEdges.size(); j++)
+		{
+			if (vYEdges.at(j).y == vfYValues.at(i)) //If the x matches to the current Xs
+			{
+				vComparissonVectsY.at(i).push_back(vYEdges.at(j));
+			}
+		}
+	}
+
+	bool bCurrentlyEqual = true;
+	int iBegin = 0;
+	int iEnd = 0;
+	std::vector<sf::Vector2f> vEdges;
+
+	//For every x value
+	for (int i = 0; i < vComparissonVectsX.size(); i++)
+	{
+		iBegin = 0;
+		iEnd = 0;
+		//For every vector that has this x value
+		for (int j = 0; j < vComparissonVectsX.at(i).size(); j++)
+		{
+			//While the x values of adjacent edges top and bottom sides  are the same
+			while (bCurrentlyEqual) 
+			{
+				//If moving up the vector doesnt exceed the extents
+				if (j + 2 < vComparissonVectsX.at(i).size())
+				{
+					//If the ys match move to the next set of edges
+					if (vComparissonVectsX.at(i).at(j + 1).y == vComparissonVectsX.at(i).at(j + 2).y)
+					{
+						j += 2;
+					}
+					else //Else set the current point as the end of the edge
+					{
+						j++;
+						iEnd = j;
+						bCurrentlyEqual = false;
+					}
+				}
+				else if (j + 2 == vComparissonVectsX.at(i).size())
+				{
+					iEnd = j + 1;
+					bCurrentlyEqual = false;
+				}
+				else
+				{
+					iEnd = j;
+					bCurrentlyEqual = false;
+				}
+			}
+			//If the end of the vector has been reached store the current edge
+			if (j < vComparissonVectsX.at(i).size() - 1)
+			{
+				vEdges.push_back(vComparissonVectsX.at(i).at(iBegin));
+				vEdges.push_back(vComparissonVectsX.at(i).at(iEnd));
+				iBegin = j + 1;
+			}
+			bCurrentlyEqual = true;
+		}
+	}
+
+	//For every y value
+	for (int i = 0; i < vComparissonVectsY.size(); i++)
+	{
+		iBegin = 0;
+		iEnd = 0;
+		for (int j = 0; j < vComparissonVectsY.at(i).size(); j++)
+		{
+			//While the y values of adjacent edges left and right sides  are the same
+			while (bCurrentlyEqual)
+			{
+				//If moving up the vector doesnt exceed the extents
+				if (j + 2 < vComparissonVectsY.at(i).size())
+				{
+					//If the Xs match move to the next set of edges
+					if (vComparissonVectsY.at(i).at(j + 1).x == vComparissonVectsY.at(i).at(j + 2).x)
+					{
+						j += 2;
+					}
+					else //Else set the current point as the end of the edge
+					{
+						j++;
+						iEnd = j;
+						bCurrentlyEqual = false;
+					}
+				}
+				else if (j + 2 == vComparissonVectsY.at(i).size())
+				{
+					iEnd = j + 1;
+					bCurrentlyEqual = false;
+				}
+				else
+				{
+					iEnd = j;
+					bCurrentlyEqual = false;
+				}
+			}
+			//If the end of the vector has been reached store the current edge
+			if (j < vComparissonVectsY.at(i).size() - 1)
+			{
+				vEdges.push_back(vComparissonVectsY.at(i).at(iBegin));
+				vEdges.push_back(vComparissonVectsY.at(i).at(iEnd));
+				iBegin = j + 1;
+			}
+			bCurrentlyEqual = true;
+		}
+	}
+
+	return vEdges; //Return the reduced edges
+}
+
 void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+	//Draws the floor
 	for (int i = 0; i < m_Background.size(); i++)
 	{
 		if (m_Background.at(i) != NULL)
@@ -552,18 +729,19 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(*m_CurrentMap); //Draws the Grid
 	}
 
-	for (int i = 0; i < waves.size(); i++)
+	//Draws the sound waves
+	for (int i = 0; i < m_Waves.size(); i++)
 	{
-		if (waves.at(i) != NULL)
+		if (m_Waves.at(i) != NULL)
 		{
-			target.draw(*waves.at(i));
+			target.draw(*m_Waves.at(i));
 		}
 	}
 
 	//Draws the walls
 	for (int i = 0; i < m_vWalls.size(); i++)
 	{
-		target.draw(*m_vWalls.at(i)); 
+		target.draw(*m_vWalls.at(i));
 	}
 
 	//Draws the doors
@@ -592,182 +770,6 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	//Draws the UI
 	target.draw(m_Toolbar);
 	target.draw(*exitButton);
-}
-
-std::vector<sf::Vector2f> Game::edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges)
-{
-	//Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
-	std::vector<float> vfXValues;
-	std::vector<float> vfYValues;
-	bool bFoundMatch = false;
-
-	//For every edge
-	for (int i = 0; i < vXEdges.size(); i++)
-	{
-		bFoundMatch = false;
-		if (vfXValues.size() == 0) //If there are no current x values add one
-		{
-			vfXValues.push_back(vXEdges.at(i).x);
-		}
-		else
-		{
-			for (int j = 0; j < vfXValues.size(); j++) //For every current x value found
-			{
-				if (vXEdges.at(i).x == vfXValues.at(j)) //If the x matches to the current Xs
-				{
-					//A match has been found
-					bFoundMatch = true;
-				}
-			}
-			if (!bFoundMatch) //If none of the xs match add the x to the list of xs
-			{
-				vfXValues.push_back(vXEdges.at(i).x);
-			}
-		}
-	}
-
-	for (int i = 0; i < vYEdges.size(); i++)
-	{
-		bFoundMatch = false;
-		if (vfYValues.size() == 0) //If there are no current x values add one
-		{
-			vfYValues.push_back(vYEdges.at(i).y);
-		}
-		else
-		{
-			for (int j = 0; j < vfYValues.size(); j++) //For every current x value found
-			{
-				if (vYEdges.at(i).y == vfYValues.at(j)) //If the x matches to the current Xs
-				{
-					//A match has been found
-					bFoundMatch = true;
-				}
-			}
-			if (!bFoundMatch) //If none of the xs match add the x to the list of xs
-			{
-				vfYValues.push_back(vYEdges.at(i).y);
-			}
-		}
-	}
-
-	std::vector<std::vector<sf::Vector2f>> vComparissonVectsX;
-	std::vector<std::vector<sf::Vector2f>> vComparissonVectsY;
-
-	vComparissonVectsX.resize(vfXValues.size());
-	for (int i = 0; i < vfXValues.size(); i++)
-	{
-		for (int j = 0; j < vXEdges.size(); j++)
-		{
-			if (vXEdges.at(j).x == vfXValues.at(i)) //If the x matches to the current Xs
-			{
-				vComparissonVectsX.at(i).push_back(vXEdges.at(j));
-			}
-		}
-	}
-
-	vComparissonVectsY.resize(vfYValues.size());
-	for (int i = 0; i < vfYValues.size(); i++)
-	{
-		for (int j = 0; j < vYEdges.size(); j++)
-		{
-			if (vYEdges.at(j).y == vfYValues.at(i)) //If the x matches to the current Xs
-			{
-				vComparissonVectsY.at(i).push_back(vYEdges.at(j));
-			}
-		}
-	}
-
-	bool currentlyEqual = true;
-	int iBegin = 0;
-	int iEnd = 0;
-	std::vector<sf::Vector2f> vEdges;
-
-	for (int i = 0; i < vComparissonVectsX.size(); i++)
-	{
-		iBegin = 0;
-		iEnd = 0;
-		for (int j = 0; j < vComparissonVectsX.at(i).size(); j++)
-		{
-			while (currentlyEqual)
-			{
-				if (j + 2 < vComparissonVectsX.at(i).size())
-				{
-					if (vComparissonVectsX.at(i).at(j + 1).y == vComparissonVectsX.at(i).at(j + 2).y)
-					{
-						j += 2;
-					}
-					else
-					{
-						j++;
-						iEnd = j;
-						currentlyEqual = false;
-					}
-				}
-				else if (j + 2 == vComparissonVectsX.at(i).size())
-				{
-					iEnd = j + 1;
-					currentlyEqual = false;
-				}
-				else
-				{
-					iEnd = j;
-					currentlyEqual = false;
-				}
-			}
-			if (j < vComparissonVectsX.at(i).size() - 1)
-			{
-				vEdges.push_back(vComparissonVectsX.at(i).at(iBegin));
-				vEdges.push_back(vComparissonVectsX.at(i).at(iEnd));
-				iBegin = j + 1;
-			}
-			currentlyEqual = true;
-		}
-	}
-
-
-	for (int i = 0; i < vComparissonVectsY.size(); i++)
-	{
-		iBegin = 0;
-		iEnd = 0;
-		for (int j = 0; j < vComparissonVectsY.at(i).size(); j++)
-		{
-			while (currentlyEqual)
-			{
-				if (j + 2 < vComparissonVectsY.at(i).size())
-				{
-					if (vComparissonVectsY.at(i).at(j + 1).x == vComparissonVectsY.at(i).at(j + 2).x)
-					{
-						j += 2;
-					}
-					else
-					{
-						j++;
-						iEnd = j;
-						currentlyEqual = false;
-					}
-				}
-				else if (j + 2 == vComparissonVectsY.at(i).size())
-				{
-					iEnd = j + 1;
-					currentlyEqual = false;
-				}
-				else
-				{
-					iEnd = j;
-					currentlyEqual = false;
-				}
-			}
-			if (j < vComparissonVectsY.at(i).size() - 1)
-			{
-				vEdges.push_back(vComparissonVectsY.at(i).at(iBegin));
-				vEdges.push_back(vComparissonVectsY.at(i).at(iEnd));
-				iBegin = j + 1;
-			}
-			currentlyEqual = true;
-		}
-	}
-
-	return vEdges;
 }
 
 Game::~Game()
@@ -803,12 +805,12 @@ Game::~Game()
 		m_UnitUI.at(i) = NULL;
 	}
 
-	for (int i = 0; i < waves.size(); i++)
+	for (int i = 0; i < m_Waves.size(); i++)
 	{
-		if (waves.at(i) != NULL)
+		if (m_Waves.at(i) != NULL)
 		{
-			delete waves.at(i);
-			waves.at(i) = NULL;
+			delete m_Waves.at(i);
+			m_Waves.at(i) = NULL;
 		}
 	}
 

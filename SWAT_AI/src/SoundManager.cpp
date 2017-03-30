@@ -22,8 +22,8 @@ void SoundManager::loadSounds(std::vector<std::string> vsNewSounds)
 	for (int i = 0; i < vsNewSounds.size(); i++)
 	{
 		//Load the file and store it
-		m_vBuffers.push_back(new sf::SoundBuffer());
-		if (!m_vBuffers.at(i)->loadFromFile(vsNewSounds.at(i)))
+		m_vBuffers.push_back(sf::SoundBuffer());
+		if (!m_vBuffers.at(i).loadFromFile(vsNewSounds.at(i)))
 		{
 			std::cout << vsNewSounds.at(i) << " failed to load" << "\n";
 		}
@@ -32,5 +32,5 @@ void SoundManager::loadSounds(std::vector<std::string> vsNewSounds)
 
 sf::SoundBuffer* SoundManager::getSound(int iIndex)
 {
-	return m_vBuffers.at(iIndex);
+	return &m_vBuffers.at(iIndex);
 }

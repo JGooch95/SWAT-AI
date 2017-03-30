@@ -38,18 +38,18 @@ void QuickSort(std::vector<Ray>& Rays, int startIndex, int endIndex)
 
 Character::Character()
 {
+	//Links the textures and sounds
+	m_Textures = TextureLoader::getInstance();
+	m_SoundManager = SoundManager::getInstance();
+
 	//Sets up the sprite
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 50, 50));
 	m_MainSprite.setPosition(100, 100);
-	//m_MainSprite.setOrigin((m_MainSprite.getLocalBounds().width / 2), (m_MainSprite.getLocalBounds().height / 2));
-
-	//m_Weapon1.setPosition(sf::Vector2f(m_MainSprite.getPosition().x + (m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y), m_MainSprite.getPosition().y));
-	//m_Weapon1.setOrigin(sf::Vector2f((m_MainSprite.getLocalBounds().width * m_MainSprite.getScale().x) / 2, -(m_MainSprite.getLocalBounds().height * m_MainSprite.getScale().y) / 2));
 
 	//Sets up the Path line
 	m_PathLine.setPrimitiveType(sf::LinesStrip); 
 
-	//Sets up the orientation indication
+	//Sets up the orientation indication line
 	m_OrientationLine = sf::VertexArray(sf::Lines, 2);
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
 	m_OrientationLine[1].position = sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y - (m_MainSprite.getLocalBounds().height / 2));
@@ -58,7 +58,7 @@ Character::Character()
 		m_OrientationLine[i].color = sf::Color(255, 0, 255, 255);
 	}
 
-	//Sets up the movement indication
+	//Sets up the movement indication line
 	m_MovementLine.setPrimitiveType(sf::LinesStrip);
 	m_MovementLine.resize(2);
 	for (int i = 0; i < m_MovementLine.getVertexCount(); i++)
@@ -66,7 +66,7 @@ Character::Character()
 		m_MovementLine[i].color = sf::Color(0, 255, 255, 255);
 	}
 
-	//Sets up the collision indication
+	//Sets up the collision indication line
 	m_CollisionLine.setPrimitiveType(sf::LinesStrip);
 	m_CollisionLine.resize(2);
 	for (int i = 0; i < m_CollisionLine.getVertexCount(); i++)
@@ -77,19 +77,15 @@ Character::Character()
 	//Sets up the vision cone
 	m_VisionRays.setPrimitiveType(sf::TrianglesFan);
 
+	//Sets up the health bar
 	m_HealthLevels.lower = 100;
 	m_HealthLevels.upper = 100;
-
-	//Sets up the health bar
 	m_HealthBar.setSize(sf::Vector2f(70, 5));
 	m_HealthBar.setBarColor(sf::Color(255, 0, 0, 255));
 	m_HealthBar.setLevelColor(sf::Color(0, 255, 0, 255));
 	m_HealthBar.setLevel(m_HealthLevels.lower);
 	m_HealthBar.setLimit(m_HealthLevels.upper);
 	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 50));
-
-	m_Weapon1.setAmmoLimit(30);
-	m_Weapon1.setAmmo(30);
 
 	//Sets up the ammo bar
 	m_AmmoBar.setSize(sf::Vector2f(70, 5));
@@ -99,29 +95,37 @@ Character::Character()
 	m_AmmoBar.setLimit(m_Weapon1.getAmmoLevels().upper);
 	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - 40));
 
-	loadout.push_back(None);
-	loadout.push_back(None);
+	//Sets up the characters loadout
+	m_vLoadout.push_back(None);
+	m_vLoadout.push_back(None);
 
+	//Sets up the weapon
+	m_Weapon1.setWeaponType(Assault);
+
+	//Sets the up the sounds
+	m_StepSound.setBuffer(*m_SoundManager->getSound(4));
+	m_LoadoutSound.setBuffer(*m_SoundManager->getSound(7));
+
+	//Sets up the textures
+	m_DeathImage.setTexture(m_Textures->getTexture(32));
+
+	//Sets the other variables
 	m_CurrentState = SEARCH_SWEEP;
 	m_iAimingDirection = 1;
 	m_CurrentTarget = NULL;
 	m_bDrawVision = false;
-	srand(time(NULL));
+	m_bDead = false;
 
-	//setClass(Assault, m_)
-
-	m_SoundManager = SoundManager::getInstance();
-	m_StepSound.setBuffer(*m_SoundManager->getSound(4));
-	m_LoadoutSound.setBuffer(*m_SoundManager->getSound(7));
-	bDead = false;
-
-	m_Textures = TextureLoader::getInstance();
-	DeathImage.setTexture(m_Textures->getTexture(32));
+	//Sets up the seed for the randomiser
+	srand(time(NULL)); 
 }
 
 void Character::update()
 {
+	//Moves the player 
 	move();
+
+	//Repositions,resizes and updates the ammo and health UI
 	m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
 	m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
 
@@ -134,126 +138,130 @@ void Character::update()
 	m_AmmoBar.setLevel(m_Weapon1.getAmmoLevels().lower);
 	m_AmmoBar.setLimit(m_Weapon1.getAmmoLevels().upper);
 
+	//Repositions, resizes and updates the weapon
 	m_Weapon1.setPosition(getPosition());
 	m_Weapon1.setSize(sf::Vector2f(getSize().x*(2.0f / 3.0f), getSize().y *(4.0f / 3.0f)));
 	m_Weapon1.setOrigin(sf::Vector2f(m_Weapon1.getSize().x / 2.0f, -getSize().y / 2.0f));
-
 	m_Weapon1.update();
-
-	float fCone = 30.0f;
 
 	switch (m_CurrentState)
 	{
-	case SEARCH_SWEEP:
-	{
-		if (m_fAimingAngle > fCone)
+		case SEARCH_SWEEP:
 		{
-			m_fAimingAngle = fCone;
-			m_iAimingDirection *= -1;
-		}
-		if (m_fAimingAngle < -fCone)
-		{
-			m_fAimingAngle = -fCone;
-			m_iAimingDirection *= -1;
-		}
-		m_fAimingAngle += m_iAimingDirection;
+			float fCone = 30.0f; //Holds the breadth of the cone to turn between
 
-		lookAt(m_fMovementAngle + m_fAimingAngle);
-		break;
-	}
-	case AIM:
-	{
-		if (m_CurrentTarget != NULL)
-		{
-			lookAt(m_CurrentTarget->getPosition());
-			sf::Vector2f Vect = m_CurrentTarget->getPosition() - m_MainSprite.getPosition();
-			m_fAimingAngle = Util::getAngle(Vect) - m_fMovementAngle - 90;// -m_fMovementAngle; // Finding the angle of the vector for the sprite
-			m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
-
-			//if (lazerChecks({ m_CurrentTarget->getCollisionLine(getRotation()).at(0),
-			//				  m_CurrentTarget->getCollisionLine(getRotation()).at(1) }))
-			//{
-			m_Weapon1.shoot();
-			//}
-
-			if (m_CurrentTarget->getHealthData().lower <= 0)
+			//Sweeps between the cone extents
+			if (m_fAimingAngle > fCone)
 			{
-				m_CurrentTarget = NULL;
+				m_fAimingAngle = fCone;
+				m_iAimingDirection *= -1;
 			}
+			if (m_fAimingAngle < -fCone)
+			{
+				m_fAimingAngle = -fCone;
+				m_iAimingDirection *= -1;
+			}
+
+			//Aims at the new amgle
+			m_fAimingAngle += m_iAimingDirection;
+			lookAt(m_fMovementAngle + m_fAimingAngle);
+			break;
 		}
-		else
+		case AIM:
 		{
-			m_CurrentState = SEARCH_SWEEP;
+			//If there is a target
+			if (m_CurrentTarget != NULL)
+			{
+				lookAt(m_CurrentTarget->getPosition()); //Aim at the target
+
+				//Aims the vision cone towards the new aiming direction
+				sf::Vector2f Vect = m_CurrentTarget->getPosition() - m_MainSprite.getPosition();
+				m_fAimingAngle = Util::getAngle(Vect) - m_fMovementAngle - 90; // Finding the angle of the vector for the sprite
+				m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
+
+				if (m_CurrentTarget->isDead()) //If the target is dead
+				{
+					m_CurrentTarget = NULL; //Clear the target
+				}
+				else
+				{
+					m_Weapon1.shoot(); //Shoots the weapon
+				}
+			}
+			else
+			{
+				m_CurrentState = SEARCH_SWEEP; //Switch states
+			}
+			break;
 		}
-		break;
-	}
-	default:
-	{
-		break;
-	}
 	}
 
+	//If the characters health is empty
 	if (m_HealthLevels.lower <= 0)
 	{
-		bDead = true;
-		DeathImage.setPosition(m_MainSprite.getPosition());
-		DeathImage.setSize(m_MainSprite.getSize());
-		DeathImage.setOrigin(DeathImage.getSize()/2.0f);
+		//Kill the character and set up the death sprite
+		m_bDead = true;
+		m_DeathImage.setPosition(m_MainSprite.getPosition());
+		m_DeathImage.setSize(m_MainSprite.getSize());
+		m_DeathImage.setOrigin(m_DeathImage.getSize()/2.0f);
 	}
 }
 
 void Character::move()
 {
-	if (!m_Path.empty())
+	if (!m_Path.empty()) //If there is a path to follow
 	{
 		const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
 
-																	//Sets the node to reach to be the next node in the path
+		//Sets the node to reach to be the next node in the path
 		sf::Vector2f destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-			(((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+								 (((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 		destination += m_CurrentMap->getPosition();
 
 		sf::Vector2f velocity(destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
 
-																		 //Finds the unit normal
+		//If the node has already been reached move to the next node
 		float fMagnitude = Util::magnitude(velocity);
-
 		if (fMagnitude == 0)
 		{
 			m_Path.pop_front();
 		}
 		else
 		{
+			//Finds the unit normal
 			velocity /= fMagnitude;
 
+			//Sets up the movement line
 			m_MovementLine[0].position = m_MainSprite.getPosition();
 			m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * getSize().y / 2.0f);
 
+			//Gets the angle the character is heading towards for later use
 			m_fMovementAngle = Util::getAngle(velocity) - 90;
 			m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
 
-			velocity *= kfMoveSpeed; //Multiplies it by the speed
+			velocity *= kfMoveSpeed; //Multiplies the direction by the speed
 
 			fDistanceSinceStep += Util::magnitude(velocity);
 			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
+			//If the node has been reached then move to the next node
 			if (m_MainSprite.getPosition().x >= destination.x - 10 &&
 				m_MainSprite.getPosition().x <= destination.x + 10 &&
 				m_MainSprite.getPosition().y <= destination.y + 10 &&
 				m_MainSprite.getPosition().y >= destination.y - 10)
 			{
 				m_Path.pop_front();
-			}
 
-			//Sets up the path line ready to start drawing a new path
-			m_PathLine.clear();
-			m_PathLine.resize(m_Path.size());
-			for (int i = 0; i < m_Path.size(); i++)
-			{
-				m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
-					(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-					(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
-					sf::Color(0, 255, 0, 255));
+				//Sets up the path line ready to start drawing a new path
+				m_PathLine.clear();
+				m_PathLine.resize(m_Path.size());
+				for (int i = 0; i < m_Path.size(); i++)
+				{
+					m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
+						(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+						(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
+						sf::Color(0, 255, 0, 255));
+				}
 			}
 		}
 	}
@@ -263,15 +271,15 @@ void Character::lookAt(sf::Vector2f position)
 {
 	sf::Vector2f rotVect (position - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
 
+	//Aims the weapon towards that position
 	m_Weapon1.aim(position);
 
 	rotVect /= Util::magnitude(rotVect); 
 
-	m_MainSprite.setRotation(Util::getAngle(rotVect) + 90);
+	m_MainSprite.setRotation(Util::getAngle(rotVect) + 90); //Rotates the sprite towards the target
 
-	rotVect *= (getSize().y / 2.0f);
-
-	//Sets the rotation of the sprite and adjusts the orientation line according to the rotation
+	//Updates the orientation line
+	rotVect *= (getSize().y / 2.0f); //Sets the size of the rotation for the orientation line
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
 	m_OrientationLine[1].position = m_MainSprite.getPosition() + rotVect;
 }
@@ -285,6 +293,7 @@ void Character::lookAt(float fAngle)
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
 	m_OrientationLine[1].position = m_MainSprite.getPosition() + rotVect;
 
+	//Points the character and the weapon towards the location
 	m_MainSprite.setRotation(fAngle);
 	m_Weapon1.aim(fAngle);
 }
@@ -296,6 +305,8 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	Ray tempRay;
 	float fViewDistance = 2000.0f;
 	float fVisionCone = 45.0f;
+
+	//If a scope is being used the vision is refined
 	if (m_Weapon1.usingScope())
 	{
 		fVisionCone -= 20.0f;
@@ -433,16 +444,12 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 
 float Character::bulletChecks(std::vector<sf::Vector2f>vEdges)
 {
-	return m_Weapon1.bulletChecks(vEdges);
-}
-
-bool Character::checkVisionCone(sf::Vector2f position)
-{
-	return false;
+	return m_Weapon1.bulletChecks(vEdges); //Returns the damage the weapon deals if it hits
 }
 
 bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 {
+	//Finds where the lazer intersects and updates its position
 	std::vector<sf::Vector2f> lazerRay = { m_Weapon1.getPosition(), m_Weapon1.getIntersect() };
 	std::pair<bool, sf::Vector2f> lowestIntersect = Util::findLowestIntersect(vEdges, lazerRay);
 
@@ -457,11 +464,6 @@ bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 	}
 }
 
-void Character::setupTextures()
-{
-	m_Weapon1.setSize(sf::Vector2f((getSize().x / 2), getSize().y / 2));
-	m_Weapon1.setupTextures();
-}
 //Setters
 void Character::setHealth(float fLevel)
 {
@@ -471,12 +473,6 @@ void Character::setHealth(float fLevel)
 	}
 	m_HealthLevels.lower = fLevel;
 	m_HealthBar.setLevel(fLevel);
-
-}
-
-void Character::setGunTexture(sf::Texture* tex2)
-{
-	m_Weapon1.setTexture(tex2); //Applies the texture to the sprite.
 }
 
 void Character::setPath(std::deque<Node*> newPath)
@@ -492,122 +488,69 @@ void Character::setVision(bool bState)
 void Character::setTarget(Character* newTarget)
 {
 	m_CurrentTarget = newTarget;
-	if (m_CurrentTarget != NULL)
+	if (m_CurrentTarget != NULL) //If the target isnt empty then aim at the target
 	{
 		m_CurrentState = AIM;
 	}
 }
 
-void Character::setMuzzle(sf::Texture* tex2)
+void Character::setClass(classType newClassType)
 {
-	m_Weapon1.setMuzzle(tex2);
-}
-
-void Character::setClass(classType newClassType, sf::Texture* GunTexture)
-{
-	currentClass = newClassType;
-	setGunTexture(GunTexture);
-	switch (newClassType)
-	{
-		case Assault:
-			m_Weapon1.setDamage(sf::Vector2f(1.0f, 5.0f));
-			m_Weapon1.setFireRate(0.2f);
-			m_Weapon1.setRange(sf::Vector2f(200.0f, 500.0f));
-			m_Weapon1.setAmmoLimit(30);
-			m_Weapon1.setAmmo(0);
-			m_Weapon1.setReloadTime(2.0f);
-			m_Weapon1.setAccuracy(0.7f);
-			m_Weapon1.setWeaponVolume(100);
-			m_Weapon1.setShotSound(1);
-			m_Weapon1.setReloadSound(6);
-			break;
-
-		case Support:
-			m_Weapon1.setDamage(sf::Vector2f(1.0f, 3.0f));
-			m_Weapon1.setFireRate(0.05f);
-			m_Weapon1.setRange(sf::Vector2f(200.0f, 500.0f));
-			m_Weapon1.setAmmoLimit(100);
-			m_Weapon1.setAmmo(0);
-			m_Weapon1.setReloadTime(5.0f);
-			m_Weapon1.setAccuracy(0.3f);
-			m_Weapon1.setWeaponVolume(150);
-			m_Weapon1.setShotSound(0);
-			m_Weapon1.setReloadSound(6);
-			break;
-
-		case Sniper:
-			m_Weapon1.setDamage(sf::Vector2f(2.0f, 50.0f));
-			m_Weapon1.setFireRate(1.0f);
-			m_Weapon1.setRange(sf::Vector2f(400.0f, 1000.0f));
-			m_Weapon1.setAmmoLimit(1);
-			m_Weapon1.setAmmo(0);
-			m_Weapon1.setReloadTime(4.0f);
-			m_Weapon1.setAccuracy(0.8f);
-			m_Weapon1.setWeaponVolume(200);
-			m_Weapon1.setShotSound(2);
-			m_Weapon1.setReloadSound(9);
-			break;
-
-		case Shotgunner:
-			m_Weapon1.setDamage(sf::Vector2f(0.5f, 60.0f));
-			m_Weapon1.setFireRate(2.0f);
-			m_Weapon1.setRange(sf::Vector2f(0.0f, 250.0f));
-			m_Weapon1.setAmmoLimit(8);
-			m_Weapon1.setAmmo(0);
-			m_Weapon1.setReloadTime(2.5f);
-			m_Weapon1.setAccuracy(0.5f);
-			m_Weapon1.setWeaponVolume(100);
-			m_Weapon1.setShotSound(3);
-			m_Weapon1.setReloadSound(8);
-			break;
-	}
+	m_CurrentClass = newClassType;
+	m_Weapon1.setWeaponType(newClassType);
 	m_Weapon1.reload();
 }
 
 void Character::setLoadoutItem(int iIndex, loadoutItem itemType)
 {
 	m_LoadoutSound.play();
+
+	//If skip a loadout item if that item has been selected in another slot
 	bool bSame = true;
 	while (bSame)
 	{
 		bSame = false;
-		for (int i = 0; i < loadout.size(); i++)
+
+		//For every loadout slot
+		for (int i = 0; i <  m_vLoadout.size(); i++)
 		{
-			if (i != iIndex)
+			if (i != iIndex) //If the slot isnt the current slot being changed
 			{
-				if (loadout.at(i) == itemType && itemType != None)
+				if (m_vLoadout.at(i) == itemType && itemType != None) //Check if the item is the same
 				{
-					itemType = getNextLoadoutItem(itemType);
+					itemType = getNextLoadoutItem(itemType); //If it is then get the next loadout item
 					bSame = true;
 				}
 			}
 		}
 	}
-	loadout.at(iIndex) = itemType;
+	m_vLoadout.at(iIndex) = itemType;
 
+	//Resets the weapon attachments 
 	m_Weapon1.setLazer(false);
 	m_Weapon1.setSilencer(false);
 	m_Weapon1.setScope(false);
 
-	for (int i = 0; i < loadout.size(); i++)
+	//For every loadout slot
+	for (int i = 0; i <  m_vLoadout.size(); i++)
 	{
-		switch (loadout.at(i))
+		//If theyre any of the items given then activate the attachments
+		switch (m_vLoadout.at(i))
 		{
-		case Lazer:
-			m_Weapon1.setLazer(true);
-			break;
+			case Lazer:
+				m_Weapon1.setLazer(true);
+				break;
 
-		case Silencer:
-			m_Weapon1.setSilencer(true);
-			break;
+			case Silencer:
+				m_Weapon1.setSilencer(true);
+				break;
 
-		case Scope:
-			m_Weapon1.setScope(true);
-			break;
+			case Scope:
+				m_Weapon1.setScope(true);
+				break;
 
-		case None:
-
-			break;
+			case None:
+				break;
 		}
 	}
 }
@@ -618,9 +561,9 @@ float Character::getRotation()
 	return m_MainSprite.getRotation();
 }
 
-bool Character::reloading()
+int Character::getLoadoutSize()
 {
-	return m_Weapon1.reloading();
+	return m_vLoadout.size();
 }
 
 Util::Limits Character::getHealthData()
@@ -635,31 +578,29 @@ Util::Limits Character::getAmmoData()
 
 std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 {
+	//Gets the radius and rotates it to the current orientation 
 	sf::Vector2f radiusLine = Util::rotateVect(sf::Vector2f(getSize().x / 2, getSize().x / 2), fAngle - 90);
 
-	std::vector<sf::Vector2f> newCollisionLine = {m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine};
-	m_CollisionLine[0].position = newCollisionLine[0];
-	m_CollisionLine[1].position = newCollisionLine[1];
-	return newCollisionLine;
+	//The orientation is then applied to the position to get aan orientation spanning the characters width
+	std::vector<sf::Vector2f> vNewCollisionLine = { m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine };
+	m_CollisionLine[0].position = vNewCollisionLine[0];
+	m_CollisionLine[1].position = vNewCollisionLine[1];
+	return vNewCollisionLine;
 }
 
 classType Character::getClass()
 {
-	return currentClass;
+	return m_CurrentClass;
 }
 
 loadoutItem Character::getLoadoutItem(int iIndex)
 {
-	return loadout.at(iIndex);
-}
-
-int Character::getLoadoutSize()
-{
-	return loadout.size();
+	return m_vLoadout.at(iIndex);
 }
 
 loadoutItem Character::getNextLoadoutItem(loadoutItem itemType)
 {
+	//Switches to the next loadout item in line
 	switch (itemType)
 	{
 		case Lazer:
@@ -680,20 +621,27 @@ loadoutItem Character::getNextLoadoutItem(loadoutItem itemType)
 	}
 }
 
-bool Character::isShooting()
-{
-	return m_Weapon1.isShooting();
-}
-
 Weapon* Character::getWeapon()
 {
 	return &m_Weapon1;
 }
 
+bool Character::reloading()
+{
+	return m_Weapon1.reloading();
+}
+
+bool Character::isShooting()
+{
+	return m_Weapon1.isShooting();
+}
+
 bool Character::stepTaken()
 {
-	float stepDist = getSize().x / 2.0f;
-	if (fDistanceSinceStep > stepDist)
+	float fStepDist = getSize().x / 2.0f;
+
+	//If the distance taken is farther than the step distance then play a sound and restart the step
+	if (fDistanceSinceStep > fStepDist)
 	{
 		m_StepSound.play();
 		fDistanceSinceStep = 0;
@@ -707,12 +655,12 @@ bool Character::stepTaken()
 
 bool Character::isDead()
 {
-	return bDead;
+	return m_bDead;
 }
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	if (!bDead)
+	if (!m_bDead)
 	{
 		if (m_bDrawVision)
 		{
@@ -721,7 +669,9 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 		target.draw(m_Weapon1);
 	}
+
 	target.draw(m_MainSprite);
+
 	if (m_CurrentSettings->debugActive())
 	{
 		target.draw(m_OrientationLine);
@@ -729,14 +679,15 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(m_MovementLine);
 		target.draw(m_CollisionLine);
 	}
-	if (!bDead)
+
+	if (!m_bDead)
 	{
 		target.draw(m_AmmoBar);
 		target.draw(m_HealthBar);
 	}
 	else
 	{
-		target.draw(DeathImage);
+		target.draw(m_DeathImage);
 	}
 	
 }

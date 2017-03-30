@@ -1,21 +1,25 @@
 #include "../include/Map.h"
 
-Map::Map()
-{
-	m_Grid.setPrimitiveType(sf::Lines);
-}
-
 bool Map::m_bInstanceFlag = false;
-Map* Map::mapLocation = nullptr;
+Map* Map::m_MapLocation = nullptr;
 
 Map* Map::getInstance()
 {
+	//If the object doesnt exist create the object
 	if (!m_bInstanceFlag)
 	{
-		mapLocation = new Map();
+		m_MapLocation = new Map();
 		m_bInstanceFlag = true;
 	}
-	return mapLocation;
+
+	//Return the object location
+	return m_MapLocation;
+}
+
+
+Map::Map()
+{
+	m_Grid.setPrimitiveType(sf::Lines);
 }
 
 void Map::setup(sf::FloatRect area, sf::Vector2f newGridDims)
@@ -26,9 +30,18 @@ void Map::setup(sf::FloatRect area, sf::Vector2f newGridDims)
 	setDimensions(newGridDims);
 }
 
-void Map::load(std::string sDir)
+void Map::load(MapType newMap, std::string sDir)
 {
-	m_vcLevelBits.clear();
+	//Clears the current map depending on the map type
+	switch (newMap)
+	{
+		case ObjectMap:
+			m_vcLevelBits.clear();
+			break;
+		case FloorMap:
+			m_vcFloorBits.clear();
+			break;
+	}
 	std::ifstream mapFile;
 	mapFile.open(sDir); //Open the map file
 
@@ -42,8 +55,17 @@ void Map::load(std::string sDir)
 		{
 			getline(mapFile, sLine); //Get the next line
 
-			m_vcLevelBits.resize(m_vcLevelBits.size() + 1); //Adds another row of bits
-
+			//Increments the map row
+			switch (newMap)
+			{
+				case ObjectMap:
+					m_vcLevelBits.resize(m_vcLevelBits.size() + 1);
+					break;
+				case FloorMap:
+					m_vcFloorBits.resize(m_vcFloorBits.size() + 1);
+					break;
+			}
+			
 			if (sLine.length() > iLongestLineLength) //If the length of the line is longer than the longest current line
 			{
 				iLongestLineLength = sLine.length(); //It becomes the new longest
@@ -52,52 +74,20 @@ void Map::load(std::string sDir)
 			//For every bit read it into the data vector
 			for (int i = 0; i < sLine.length(); i++)
 			{
-				m_vcLevelBits.at(m_vcLevelBits.size() - 1).push_back(sLine.at(i));
+				//Adds the bit to the row of the appropriate vector
+				switch (newMap)
+				{
+					case ObjectMap:
+						m_vcLevelBits.at(m_vcLevelBits.size() - 1).push_back(sLine.at(i));
+						break;
+					case FloorMap:
+						m_vcFloorBits.at(m_vcFloorBits.size() - 1).push_back(sLine.at(i));
+						break;
+				}
 			}
 		}
+		//Sets up the variables from the map and sets up the grid
 		m_GridDimensions = sf::Vector2f(iLongestLineLength, m_vcLevelBits.size());
-		m_TileSize = sf::Vector2f(m_WindowSize.x / m_GridDimensions.x, m_WindowSize.y / m_GridDimensions.y);
-		setupGrid();
-	}
-	else
-	{
-		//Ouptut an error
-		std::cout << "Map File: " << sDir << " could not be opened." << "\n";
-	}
-
-	mapFile.close();
-}
-
-void Map::loadFloor(std::string sDir)
-{
-	m_vcFloorBits.clear();
-	std::ifstream mapFile;
-	mapFile.open(sDir); //Open the map file
-
-	if (mapFile.is_open()) //If the file opened correctly
-	{
-		//Initialise reading variables
-		int iLongestLineLength = 0;
-		std::string sLine;
-
-		while (!mapFile.eof()) //while the end of file hasnt been reached
-		{
-			getline(mapFile, sLine); //Get the next line
-
-			m_vcFloorBits.resize(m_vcFloorBits.size() + 1); //Adds another row of bits
-
-			if (sLine.length() > iLongestLineLength) //If the length of the line is longer than the longest current line
-			{
-				iLongestLineLength = sLine.length(); //It becomes the new longest
-			}
-
-			//For every bit read it into the data vector
-			for (int i = 0; i < sLine.length(); i++)
-			{
-				m_vcFloorBits.at(m_vcFloorBits.size() - 1).push_back(sLine.at(i));
-			}
-		}
-		m_GridDimensions = sf::Vector2f(iLongestLineLength, m_vcFloorBits.size());
 		m_TileSize = sf::Vector2f(m_WindowSize.x / m_GridDimensions.x, m_WindowSize.y / m_GridDimensions.y);
 		setupGrid();
 	}
@@ -134,9 +124,12 @@ void Map::setupGrid()
 
 void Map::setDimensions(sf::Vector2f newGridDims)
 {
+	//Sets the dimensions to be above 1
 	newGridDims.x = std::max(1.0f, newGridDims.x);
 	newGridDims.y = std::max(1.0f, newGridDims.y);
-	m_TileSize = sf::Vector2f(m_WindowSize.x / newGridDims.x, m_WindowSize.y / newGridDims.y);
+
+	//Scales the tiles to be in proportion to the window size
+	m_TileSize = sf::Vector2f(m_WindowSize.x / newGridDims.x, m_WindowSize.y / newGridDims.y); 
 	m_GridDimensions = newGridDims;
 	setupGrid();
 }

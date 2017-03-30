@@ -5,6 +5,7 @@
 
 namespace Util
 {
+	//Holds an upper and lower bound of an object such as a health bar
 	struct Limits
 	{
 		float upper;
@@ -12,9 +13,9 @@ namespace Util
 	};
 
 	//Calculates the 2D cross product
-	static float cross(sf::Vector2f pointA, sf::Vector2f pointB)
+	static float cross(sf::Vector2f vectA, sf::Vector2f vectB)
 	{
-		return (pointA.x * pointB.y - pointA.y * pointB.x);
+		return (vectA.x * vectB.y - vectA.y * vectB.x);
 	}
 
 	//Calculates the point at which two lines intersect
@@ -48,10 +49,12 @@ namespace Util
 	//Keeps an angle between a range of values
 	static float setWithinRange(float fAngle, float fLowerBound, float fUpperBound)
 	{
+		//While lower than the lower bound increase the angle by the range
 		while (fAngle < fLowerBound)
 		{
 			fAngle += (fUpperBound - fLowerBound);
 		}
+		//While higher than the upper bound decrease the angle by the range
 		while (fAngle >= fUpperBound)
 		{
 			fAngle -= (fUpperBound - fLowerBound);
@@ -59,10 +62,11 @@ namespace Util
 		return fAngle;
 	}
 
+	//Finds the closest point at which a ray intersects with a set of edges
 	static std::pair<bool, sf::Vector2f> findLowestIntersect(std::vector<sf::Vector2f>vEdges, std::vector<sf::Vector2f> newRay)
 	{
-		sf::Vector2f lowestIntersect = newRay.at(1);
-		bool intersected = false;
+		sf::Vector2f lowestIntersect = newRay.at(1); //Sets the lowest intersect to be the original length of the ray
+		bool bIntersected = false; //Holds whether an intersection has been found
 
 		//For every edge
 		for (int j = 0; j < vEdges.size(); j += 2)
@@ -74,18 +78,19 @@ namespace Util
 			if (Util::magnitude(currentIntersect - newRay.at(0)) < Util::magnitude(lowestIntersect - newRay.at(0)))
 			{
 				lowestIntersect = currentIntersect;
-				intersected = true;
+				bIntersected = true;
 			}
 		}
-		return std::pair<bool, sf::Vector2f>{ intersected, lowestIntersect };
+		return std::pair<bool, sf::Vector2f>{ bIntersected, lowestIntersect };
 	}
 
+	//Gets the angle a vector is pointing towards
 	static float getAngle(sf::Vector2f vect)
 	{
-		return atan2f(vect.y, vect.x) * (180.0f / 3.14f);
-		//return -atan2f(vect.x, vect.y) * (180.0f / 3.14f);
+		return atan2f(vect.y, vect.x) * (180.0f / 3.14f); 
 	}
 
+	//Rotates a vector by a given angle.
 	static sf::Vector2f rotateVect(sf::Vector2f vect, float fAngle)
 	{
 		return sf::Vector2f(vect.x * cos((fAngle + 90.0f) * (3.14159265359 / 180)),

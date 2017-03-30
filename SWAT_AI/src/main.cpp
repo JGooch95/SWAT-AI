@@ -7,7 +7,6 @@
 #include "../include/SoundManager.h"
 #include "../include/FontManager.h"
 
-
 int main()
 {
 	//Sets up the window
@@ -19,8 +18,8 @@ int main()
 	//Sets up the timer for tracking the frame times
 	sf::Clock timer;
 
+	//Loads the textures
 	TextureLoader* m_Textures = TextureLoader::getInstance();
-	//Loads the main textures into the software
 	m_Textures->loadTextures(std::vector<std::string>{
 		"Assets/Sprites/Wood.jpg",						//0
 		"Assets/Sprites/Unit.png",						//1
@@ -57,36 +56,35 @@ int main()
 		"Assets/Sprites/Dead.png"						//32
 	});
 
+	//Loads the sounds
 	SoundManager* m_SoundManger = SoundManager::getInstance();
-	
 	m_SoundManger->loadSounds(std::vector<std::string>{
-		"Assets/Sounds/Silenced.wav",
-		"Assets/Sounds/AssaultRifle.wav",
-		"Assets/Sounds/Sniper.wav",
-		"Assets/Sounds/Shotgun.wav",
-		"Assets/Sounds/Footstep.wav",
-		"Assets/Sounds/Door.wav",
-		"Assets/Sounds/AssaultRifleReload.wav",
-		"Assets/Sounds/loadout.wav",
-		"Assets/Sounds/ShotgunReload.wav",
-		"Assets/Sounds/SniperReload.wav"
+		"Assets/Sounds/Silenced.wav",					//0
+		"Assets/Sounds/AssaultRifle.wav",				//1
+		"Assets/Sounds/Sniper.wav",						//2
+		"Assets/Sounds/Shotgun.wav",					//3
+		"Assets/Sounds/Footstep.wav",					//4
+		"Assets/Sounds/Door.wav",						//5
+		"Assets/Sounds/AssaultRifleReload.wav",			//6
+		"Assets/Sounds/loadout.wav",					//7
+		"Assets/Sounds/ShotgunReload.wav",				//8
+		"Assets/Sounds/SniperReload.wav"				//9
 	});
 
+	//Loads the fonts
 	FontManager* m_FontManager = FontManager::getInstance();
 	m_FontManager->loadFonts(std::vector<std::string>{
-		"Assets/Fonts/arial.ttf"
+		"Assets/Fonts/arial.ttf"						//0
 	});
 
-
-	m_Textures->getTexture(14)->setRepeated(true);
-
-	Map* m_CurrentMap = NULL;
-	Settings* m_CurrentSettings = NULL;
-
-	//Sets up the game ready for use
+	//Sets up the main objects needed
+	Menu* Menu1 = new Menu(mainWindow.getSize());
 	Game* Game1 = NULL;
 	Editor* Editor1 = NULL;
-	Menu* Menu1 = new Menu(mainWindow.getSize());
+
+	Map* m_CurrentMap = NULL;
+	Settings* m_CurrentSettings = Settings::getInstance();
+
 	const float kfTargetFPS = 60; //Holds the target frames per second
 
 	//Main Loop
@@ -104,9 +102,17 @@ int main()
 			{
 				if (event.key.code == sf::Keyboard::D)
 				{
-					if (Game1 != NULL)
+					//Toggles Debug mode if the settings have been initialised
+					if (m_CurrentSettings != NULL)
 					{
-						Game1->enableDebug();
+						if (m_CurrentSettings->debugActive())
+						{
+							m_CurrentSettings->setDebug(false);
+						}
+						else
+						{
+							m_CurrentSettings->setDebug(true);
+						}
 					}
 				}
 			}
@@ -125,6 +131,7 @@ int main()
 					{
 						switch (Game1->clickLeft(sf::Mouse::getPosition(mainWindow)))
 						{
+							//Exit button to menu
 							case 1:
 								delete Game1;
 								Game1 = NULL;
@@ -136,18 +143,21 @@ int main()
 					{
 						switch (Menu1->clickLeft(sf::Mouse::getPosition(mainWindow)))
 						{
+							//Start game button
 							case 1:
 								delete Menu1;
 								Menu1 = NULL;
 								Game1 = new Game(mainWindow.getSize());
 								break;
 
+							//Editor button
 							case 2:
 								delete Menu1;
 								Menu1 = NULL;
 								Editor1 = new Editor(mainWindow.getSize());
 								break;
 
+							//Exit button
 							case 4:
 								delete Menu1;
 								Menu1 = NULL;
@@ -159,6 +169,7 @@ int main()
 					{
 						switch (Editor1->clickLeft(sf::Mouse::getPosition(mainWindow)))
 						{
+							//Exit button to menu
 							case 1:
 								delete Editor1;
 								Editor1 = NULL;
@@ -182,6 +193,7 @@ int main()
 			{
 				Menu1->update(sf::Mouse::getPosition(mainWindow));
 			}
+
 			if (Editor1 != NULL)
 			{
 				Editor1->update(sf::Mouse::getPosition(mainWindow));
@@ -193,10 +205,12 @@ int main()
 			{
 				mainWindow.draw(*Game1);
 			}
+
 			if (Menu1 != NULL)
 			{
 				mainWindow.draw(*Menu1);
 			}
+
 			if (Editor1 != NULL)
 			{
 				mainWindow.draw(*Editor1);
