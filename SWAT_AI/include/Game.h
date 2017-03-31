@@ -18,7 +18,7 @@ class Game : public sf::Drawable
 	private:
 		//UI
 		sf::RectangleShape m_Toolbar;
-		std::vector<HUDWindow*> m_UnitUI;
+		std::vector<HUDWindow*> m_vUnitUI;
 		
 		//Tools
 		AStar m_Pathfinder;
@@ -36,7 +36,6 @@ class Game : public sf::Drawable
 		std::vector<Entrance*> m_vDoors; //Holds the doors
 		std::vector<Object*> m_Background;
 		std::vector<sf::Vector2f> m_vEdges; //Holds the wall edges
-		std::vector<soundWave*> m_Waves; //Holds soundwaves which are emitted
 		
 		Button* exitButton; //Holds the button which exits to the menu
 

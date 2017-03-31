@@ -8,6 +8,7 @@
 #include "Weapon.h"
 #include "MathUtils.h"
 #include "TextureLoader.h"
+#include "SoundWave.h"
 
 enum loadoutItem {Lazer, Silencer, Scope, None};
 
@@ -24,15 +25,17 @@ class Character : public Object
 		SoundManager* m_SoundManager;
 
 		//Sounds
+		std::vector<soundWave*> m_Waves; //Holds soundwaves which are emitted
 		sf::Sound m_StepSound; //The sound played every step
 		sf::Sound m_LoadoutSound; //The loadout switching sound
+		sf::Sound m_DeathSound; //The dying sound
 
 		//Equipment
 		Weapon m_Weapon1;
 		std::vector<loadoutItem> m_vLoadout;
 
 		//AI
-		enum States { SEARCH_SWEEP, AIM };
+		enum States { SEARCH_SWEEP, AIM, INVESTIGATING };
 		States m_CurrentState;
 		int m_iAimingDirection; //Holds the direction the character aims towards when doing a sweep search
 		std::deque<Node*> m_Path; //Holds the current movement path
@@ -53,6 +56,8 @@ class Character : public Object
 		float fDistanceSinceStep; //Holds how many pixels the unit has moved in a step
 		bool m_bDrawVision; //States whether vision cones are drawn
 		bool m_bDead; //States whether the character is dead
+
+		sf::Vector2f m_InvestigationArea;
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
@@ -89,4 +94,8 @@ class Character : public Object
 		bool isShooting();
 		bool stepTaken();
 		bool isDead();
+		bool hearsSound(soundWave* soundArea);
+		std::vector<soundWave*>* getSoundWaves();
+
+		~Character();
 };

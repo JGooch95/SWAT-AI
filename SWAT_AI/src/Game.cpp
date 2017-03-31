@@ -238,23 +238,23 @@ Game::Game(sf::Vector2u windowSize)
 	//Set up every UI window to fit on the right side of the screen
 	for (int i = 0; i < m_vUnits.size(); i++)
 	{
-		m_UnitUI.push_back(new HUDWindow);
-		m_UnitUI.at(m_UnitUI.size() - 1)->setSize(newSize);
-		m_UnitUI.at(m_UnitUI.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x, (m_Toolbar.getSize().y + (i * m_UnitUI.at(m_UnitUI.size() - 1)->getSize().y)) + (i * 5)));
-		m_UnitUI.at(m_UnitUI.size() - 1)->setClassTexture(m_Textures->getTexture(3));
-					
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarLevels(HealthBar, m_vUnits.at(i)->getHealthData());
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarIcon(HealthBar, m_Textures->getTexture(12));		
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarText(HealthBar, std::to_string((int)m_vUnits.at(i)->getHealthData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().upper));
-					
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarLevels(AmmoBar, m_vUnits.at(i)->getAmmoData());
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarIcon(AmmoBar, m_Textures->getTexture(13));
-		m_UnitUI.at(m_UnitUI.size() - 1)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
-
-		m_UnitUI.at(m_UnitUI.size() - 1)->setLoadoutTexture(0, m_Textures->getTexture(15));
-		m_UnitUI.at(m_UnitUI.size() - 1)->setLoadoutTexture(1, m_Textures->getTexture(15));
-
-		m_UnitUI.at(m_UnitUI.size() - 1)->scaleUI();
+		m_vUnitUI.push_back(new HUDWindow);
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setSize(newSize);
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x, (m_Toolbar.getSize().y + (i * m_vUnitUI.at(m_vUnitUI.size() - 1)->getSize().y)) + (i * 5)));
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setClassTexture(m_Textures->getTexture(3));
+					   
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setBarLevels(HealthBar, m_vUnits.at(i)->getHealthData());
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setBarIcon(HealthBar, m_Textures->getTexture(12));		
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setBarText(HealthBar, std::to_string((int)m_vUnits.at(i)->getHealthData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().upper));
+					   
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setBarLevels(AmmoBar, m_vUnits.at(i)->getAmmoData());
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setBarIcon(AmmoBar, m_Textures->getTexture(13));
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
+		  			   
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setLoadoutTexture(0, m_Textures->getTexture(15));
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->setLoadoutTexture(1, m_Textures->getTexture(15));
+		  			   
+		m_vUnitUI.at(m_vUnitUI.size() - 1)->scaleUI();
 	}
 
 	//Removes unnecessary wall edges
@@ -281,19 +281,6 @@ Game::Game(sf::Vector2u windowSize)
 
 void Game::update(sf::Vector2i mousePos)
 {
-	//Updates any sound waves that are expanding
-	for (int i = 0; i < m_Waves.size(); i++)
-	{
-		if (m_Waves.at(i) != NULL)
-		{
-			m_Waves.at(i)->update();
-			if (m_Waves.at(i)->isDone()) //If the wave has finished delete it
-			{
-				delete m_Waves.at(i);
-				m_Waves.at(i) = NULL;
-			}
-		}
-	}
 	std::vector<sf::Vector2f> vEdgesToCheck; //Holds all of the edges to be checked this frame
 
 	//Adds all of the door edges to the checked edges.
@@ -307,32 +294,12 @@ void Game::update(sf::Vector2i mousePos)
 	//Perform character checks
 	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
+		m_vCharacters.at(i)->update(); //Update data and states
 		if (!m_vCharacters.at(i)->isDead())
 		{
-			m_vCharacters.at(i)->update(); //Update data and states
 			m_vCharacters.at(i)->lazerChecks(vEdgesToCheck); //Perform checks for the aiming
 			m_vCharacters.at(i)->visionCalculation(vEdgesToCheck); //Perform checks for the vision cone
 			m_vCharacters.at(i)->bulletChecks(vEdgesToCheck); //Perform checks for any of the shot bullets
-
-			if (m_vCharacters.at(i)->stepTaken())
-			{
-				sf::Vector2u CharacterTile(((int)m_vCharacters.at(i)->getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
-					((int)m_vCharacters.at(i)->getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
-
-				//Changes the amount of sound footsteps make if the character treads on different materials
-				if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'B' ||
-					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
-					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
-				{
-					m_Waves.push_back(new soundWave(40, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
-				}
-				else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
-					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
-					m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
-				{
-					m_Waves.push_back(new soundWave(80, 3.0f, 1.0f, m_vCharacters.at(i)->getPosition()));
-				}
-			}
 		}
 	}
 
@@ -369,25 +336,25 @@ void Game::update(sf::Vector2i mousePos)
 	for (int i = 0; i < m_vUnits.size(); i++)
 	{
 		//Updates the UI bars
-		m_UnitUI.at(i)->setBarLevels(HealthBar, m_vUnits.at(i)->getHealthData());
-		m_UnitUI.at(i)->setBarLevels(AmmoBar, m_vUnits.at(i)->getAmmoData());
-		m_UnitUI.at(i)->setBarText(HealthBar, std::to_string((int)m_vUnits.at(i)->getHealthData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().upper));
+		m_vUnitUI.at(i)->setBarLevels(HealthBar, m_vUnits.at(i)->getHealthData());
+		m_vUnitUI.at(i)->setBarLevels(AmmoBar, m_vUnits.at(i)->getAmmoData());
+		m_vUnitUI.at(i)->setBarText(HealthBar, std::to_string((int)m_vUnits.at(i)->getHealthData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getHealthData().upper));
 
 		//If the character is reloading replace the values with reloading text
 		if (m_vUnits.at(i)->reloading())
 		{
-			m_UnitUI.at(i)->setBarText(AmmoBar, "Reloading");
+			m_vUnitUI.at(i)->setBarText(AmmoBar, "Reloading");
 		}
 		else
 		{
-			m_UnitUI.at(i)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
+			m_vUnitUI.at(i)->setBarText(AmmoBar, std::to_string((int)m_vUnits.at(i)->getAmmoData().lower) + "/" + std::to_string((int)m_vUnits.at(i)->getAmmoData().upper));
 		}
 
 		//Check if the mouse is above the buttons for highlighting
-		m_UnitUI.at(i)->getClassButton()->hovering(mousePos);
+		m_vUnitUI.at(i)->getClassButton()->hovering(mousePos);
 		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
 		{
-			m_UnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos);
+			m_vUnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos);
 		}
 	}
 
@@ -428,10 +395,15 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 						//Take health off if a bullet has been shot
 						vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
 							vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
+					}
 
-						//Output a shooting wave from the end of the characters gun
-						m_Waves.push_back(new soundWave(vCharSet1.at(i)->getWeapon()->getWeaponVolume(), 10.0f, 1.0f, vCharSet1.at(i)->getWeapon()->getWeaponEnd()));
-
+					for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
+					{
+						if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
+						{
+							m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
+							vCharSet1.at(i)->setPath(m_Pathfinder.findPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition()));
+						}
 					}
 				}
 			}
@@ -448,29 +420,29 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 int Game::clickLeft(sf::Vector2i mousePos)
 {
 	//Checks all of the UI Buttons
-	for (int i = 0; i < m_UnitUI.size(); i++)
+	for (int i = 0; i < m_vUnitUI.size(); i++)
 	{
 		//If a Class button is pressed
-		if (m_UnitUI.at(i)->getClassButton()->hovering(mousePos))
+		if (m_vUnitUI.at(i)->getClassButton()->hovering(mousePos))
 		{
 			//Switches the class of the unit
 			switch (m_vUnits.at(i)->getClass())
 			{
 				case Sniper:
 					m_vUnits.at(i)->setClass(Support);
-					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
+					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
 					break;
 				case Support:
 					m_vUnits.at(i)->setClass(Shotgunner);
-					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
+					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
 					break;
 				case Shotgunner:
 					m_vUnits.at(i)->setClass(Assault);
-					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
+					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
 					break;
 				case Assault:
 					m_vUnits.at(i)->setClass(Sniper);
-					m_UnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
+					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
 					break;
 			}
 		}
@@ -478,7 +450,7 @@ int Game::clickLeft(sf::Vector2i mousePos)
 		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
 		{
 			//If a loadout button is pressd
-			if (m_UnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos))
+			if (m_vUnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos))
 			{
 				//Switches the class of the unit
 				m_vUnits.at(i)->setLoadoutItem(j, m_vUnits.at(i)->getNextLoadoutItem(m_vUnits.at(i)->getLoadoutItem(j)));
@@ -487,22 +459,22 @@ int Game::clickLeft(sf::Vector2i mousePos)
 				switch (m_vUnits.at(i)->getLoadoutItem(j))
 				{
 					case Lazer:
-						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(16));
+						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(16));
 						break;
 
 					case Silencer:
-						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(17));
+						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(17));
 						break;
 
 					case Scope:
-						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(18));
+						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(18));
 						break;
 
 					case None:
-						m_UnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(15));
+						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(15));
 						break;
 				}
-				m_UnitUI.at(m_UnitUI.size() - 1)->scaleUI();
+				m_vUnitUI.at(m_vUnitUI.size() - 1)->scaleUI();
 			}
 		}
 	}
@@ -730,11 +702,14 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	}
 
 	//Draws the sound waves
-	for (int i = 0; i < m_Waves.size(); i++)
+	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
-		if (m_Waves.at(i) != NULL)
+		for (int j = 0; j < m_vCharacters.at(i)->getSoundWaves()->size(); j++)
 		{
-			target.draw(*m_Waves.at(i));
+			if (m_vCharacters.at(i)->getSoundWaves()->at(j) != NULL)
+			{
+				target.draw(*m_vCharacters.at(i)->getSoundWaves()->at(j));
+			}
 		}
 	}
 
@@ -762,9 +737,9 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(m_EdgeLines);
 	}
 
-	for (int i = 0; i < m_UnitUI.size(); i++)
+	for (int i = 0; i < m_vUnitUI.size(); i++)
 	{
-		target.draw(*m_UnitUI.at(i));
+		target.draw(*m_vUnitUI.at(i));
 	}
 
 	//Draws the UI
@@ -783,6 +758,7 @@ Game::~Game()
 	//Cleans all pointers.
 	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
+		m_vCharacters.at(i)->~Character();
 		delete(m_vCharacters.at(i));
 		m_vCharacters.at(i) = NULL;
 	}
@@ -799,19 +775,10 @@ Game::~Game()
 		m_vDoors.at(i) = NULL;
 	}
 
-	for (int i = 0; i < m_UnitUI.size(); i++)
+	for (int i = 0; i < m_vUnitUI.size(); i++)
 	{
-		delete(m_UnitUI.at(i));
-		m_UnitUI.at(i) = NULL;
-	}
-
-	for (int i = 0; i < m_Waves.size(); i++)
-	{
-		if (m_Waves.at(i) != NULL)
-		{
-			delete m_Waves.at(i);
-			m_Waves.at(i) = NULL;
-		}
+		delete(m_vUnitUI.at(i));
+		m_vUnitUI.at(i) = NULL;
 	}
 
 	delete(exitButton);

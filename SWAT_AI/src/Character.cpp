@@ -2,37 +2,45 @@
 #include <iostream>
 #include <math.h>
 
-struct Ray
+struct Ray //Used for ray casting algorithms
 {
 	float angle;
-	sf::Vector2f Vect;
-	sf::Vector2f OriginalVect;
+	sf::Vector2f vect;
+	sf::Vector2f originalVect;
 };
 
-int partition(std::vector<Ray>& Rays, int startIndex, int endIndex)
+int partition(std::vector<Ray>& vRays, int iStartIndex, int iEndIndex)
 {
-	int i = startIndex;
+	//Set the divider to the first item and uses the start item as a pivot
+	int iPivot = iStartIndex;
+	int iDivider = iStartIndex;
 
-	for (int j = startIndex + 1; j < endIndex; j++)
+	//For every item after the divider
+	for (int iCurrentElement = iDivider + 1; iCurrentElement < iEndIndex; iCurrentElement++)
 	{
-		if (Rays.at(j).angle < Rays.at(startIndex).angle)
+		//If the angle is less than the angle of the pivot
+		if (vRays.at(iCurrentElement).angle < vRays.at(iPivot).angle)
 		{
-			i = i + 1;
-			iter_swap(Rays.begin() + i, Rays.begin() + j);
+			//Then swap the item next to the divider and the item 
+			//being checked then move the divider along 1 unit to have the lower item on the left side of the divider
+			iDivider += 1;
+			iter_swap(vRays.begin() + iDivider, vRays.begin() + iCurrentElement);
 		}
 	}
 
-	iter_swap(Rays.begin() + i, Rays.begin() + startIndex);
-	return i;
+	//Place the pivot item in the center of these items by switching the lower side of the wall and the starting index
+	iter_swap(vRays.begin() + iDivider, vRays.begin() + iPivot);
+	return iDivider;
 }
 
-void QuickSort(std::vector<Ray>& Rays, int startIndex, int endIndex)
+void QuickSort(std::vector<Ray>& vRays, int iStartIndex, int iEndIndex)
 {
-	if (startIndex < endIndex)
+	//Keeps recursively looping until the divider surpasses the end of the list
+	if (iStartIndex < iEndIndex)
 	{
-		int r = partition(Rays, startIndex, endIndex);
-		QuickSort(Rays, startIndex, r);
-		QuickSort(Rays, r + 1, endIndex);
+		int iDivider = partition(vRays, iStartIndex, iEndIndex); //Finds where the divider lies for the next level of sorting
+		QuickSort(vRays, iStartIndex, iDivider); //Sorts the left side of the divider
+		QuickSort(vRays, iDivider + 1, iEndIndex);  //Sorts the right side of the divider
 	}
 }
 
@@ -105,6 +113,7 @@ Character::Character()
 	//Sets the up the sounds
 	m_StepSound.setBuffer(*m_SoundManager->getSound(4));
 	m_LoadoutSound.setBuffer(*m_SoundManager->getSound(7));
+	m_DeathSound.setBuffer(*m_SoundManager->getSound(10));
 
 	//Sets up the textures
 	m_DeathImage.setTexture(m_Textures->getTexture(32));
@@ -122,88 +131,139 @@ Character::Character()
 
 void Character::update()
 {
-	//Moves the player 
-	move();
-
-	//Repositions,resizes and updates the ammo and health UI
-	m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
-	m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
-
-	m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - m_MainSprite.getSize().y - m_AmmoBar.getSize().y - (m_AmmoBar.getSize().y/2)));
-	m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_AmmoBar.getSize().x / 2, m_MainSprite.getPosition().y - m_MainSprite.getSize().y));
-
-	m_HealthBar.setLevel(m_HealthLevels.lower);
-	m_HealthBar.setLimit(m_HealthLevels.upper);
-
-	m_AmmoBar.setLevel(m_Weapon1.getAmmoLevels().lower);
-	m_AmmoBar.setLimit(m_Weapon1.getAmmoLevels().upper);
-
-	//Repositions, resizes and updates the weapon
-	m_Weapon1.setPosition(getPosition());
-	m_Weapon1.setSize(sf::Vector2f(getSize().x*(2.0f / 3.0f), getSize().y *(4.0f / 3.0f)));
-	m_Weapon1.setOrigin(sf::Vector2f(m_Weapon1.getSize().x / 2.0f, -getSize().y / 2.0f));
-	m_Weapon1.update();
-
-	switch (m_CurrentState)
+	//Updates any sound waves that are expanding
+	for (int i = 0; i < m_Waves.size(); i++)
 	{
-		case SEARCH_SWEEP:
+		if (m_Waves.at(i) != NULL)
 		{
-			float fCone = 30.0f; //Holds the breadth of the cone to turn between
-
-			//Sweeps between the cone extents
-			if (m_fAimingAngle > fCone)
+			m_Waves.at(i)->update();
+			if (m_Waves.at(i)->isDone()) //If the wave has finished delete it
 			{
-				m_fAimingAngle = fCone;
-				m_iAimingDirection *= -1;
+				delete m_Waves.at(i);
+				m_Waves.at(i) = NULL;
+				m_Waves.erase(m_Waves.begin() + i);
 			}
-			if (m_fAimingAngle < -fCone)
-			{
-				m_fAimingAngle = -fCone;
-				m_iAimingDirection *= -1;
-			}
-
-			//Aims at the new amgle
-			m_fAimingAngle += m_iAimingDirection;
-			lookAt(m_fMovementAngle + m_fAimingAngle);
-			break;
-		}
-		case AIM:
-		{
-			//If there is a target
-			if (m_CurrentTarget != NULL)
-			{
-				lookAt(m_CurrentTarget->getPosition()); //Aim at the target
-
-				//Aims the vision cone towards the new aiming direction
-				sf::Vector2f Vect = m_CurrentTarget->getPosition() - m_MainSprite.getPosition();
-				m_fAimingAngle = Util::getAngle(Vect) - m_fMovementAngle - 90; // Finding the angle of the vector for the sprite
-				m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
-
-				if (m_CurrentTarget->isDead()) //If the target is dead
-				{
-					m_CurrentTarget = NULL; //Clear the target
-				}
-				else
-				{
-					m_Weapon1.shoot(); //Shoots the weapon
-				}
-			}
-			else
-			{
-				m_CurrentState = SEARCH_SWEEP; //Switch states
-			}
-			break;
 		}
 	}
 
-	//If the characters health is empty
-	if (m_HealthLevels.lower <= 0)
+	if (!m_bDead)
 	{
-		//Kill the character and set up the death sprite
-		m_bDead = true;
-		m_DeathImage.setPosition(m_MainSprite.getPosition());
-		m_DeathImage.setSize(m_MainSprite.getSize());
-		m_DeathImage.setOrigin(m_DeathImage.getSize()/2.0f);
+		//Moves the player 
+		move();
+
+		if (stepTaken())
+		{
+			m_StepSound.play();
+			sf::Vector2u CharacterTile(((int)getPosition().x - getPosition().x) / (int)m_CurrentMap->getTileSize().x,
+				((int)getPosition().y - getPosition().y) / (int)m_CurrentMap->getTileSize().y);
+
+			//Changes the amount of sound footsteps make if the character treads on different materials
+			if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'B' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
+			{
+				m_Waves.push_back(new soundWave(150, 3.0f, 1.0f, getPosition()));
+			}
+			else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
+				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
+			{
+				m_Waves.push_back(new soundWave(300, 3.0f, 1.0f, getPosition()));
+			}
+			fDistanceSinceStep = 0;
+		}
+
+		//Repositions,resizes and updates the ammo and health UI
+		m_HealthBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
+		m_AmmoBar.setSize(sf::Vector2f(m_MainSprite.getSize().x * 2, m_MainSprite.getSize().y / 8));
+
+		m_HealthBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_HealthBar.getSize().x / 2, m_MainSprite.getPosition().y - m_MainSprite.getSize().y - m_AmmoBar.getSize().y - (m_AmmoBar.getSize().y / 2)));
+		m_AmmoBar.setPosition(sf::Vector2f(m_MainSprite.getPosition().x - m_AmmoBar.getSize().x / 2, m_MainSprite.getPosition().y - m_MainSprite.getSize().y));
+
+		m_HealthBar.setLevel(m_HealthLevels.lower);
+		m_HealthBar.setLimit(m_HealthLevels.upper);
+
+		m_AmmoBar.setLevel(m_Weapon1.getAmmoLevels().lower);
+		m_AmmoBar.setLimit(m_Weapon1.getAmmoLevels().upper);
+
+		//Repositions, resizes and updates the weapon
+		m_Weapon1.setPosition(getPosition());
+		m_Weapon1.setSize(sf::Vector2f(getSize().x*(2.0f / 3.0f), getSize().y *(4.0f / 3.0f)));
+		m_Weapon1.setOrigin(sf::Vector2f(m_Weapon1.getSize().x / 2.0f, -getSize().y / 2.0f));
+		m_Weapon1.update();
+
+		switch (m_CurrentState)
+			{
+			case SEARCH_SWEEP:
+			{
+				float fCone = 30.0f; //Holds the breadth of the cone to turn between
+
+				//Sweeps between the cone extents
+				if (m_fAimingAngle > fCone)
+				{
+					m_fAimingAngle = fCone;
+					m_iAimingDirection *= -1;
+				}
+				if (m_fAimingAngle < -fCone)
+				{
+					m_fAimingAngle = -fCone;
+					m_iAimingDirection *= -1;
+				}
+
+				//Aims at the new amgle
+				m_fAimingAngle += m_iAimingDirection;
+				lookAt(m_fMovementAngle + m_fAimingAngle);
+				break;
+			}
+			case AIM:
+			{
+				//If there is a target
+				if (m_CurrentTarget != NULL)
+				{
+					lookAt(m_CurrentTarget->getPosition()); //Aim at the target
+
+					if (m_CurrentTarget->isDead()) //If the target is dead
+					{
+						m_CurrentTarget = NULL; //Clear the target
+					}
+					else
+					{
+						m_Weapon1.shoot(); //Shoots the weapon
+						if (m_Weapon1.isShooting())
+						{
+							//Output a shooting wave from the end of the characters gun
+							m_Waves.push_back(new soundWave(m_Weapon1.getWeaponVolume(), 10.0f, 1.0f, m_Weapon1.getWeaponEnd()));
+						}
+					}
+				}
+				else
+				{
+					m_CurrentState = SEARCH_SWEEP; //Switch states
+				}
+				break;
+			}
+
+			case INVESTIGATING:
+			{
+				lookAt(m_InvestigationArea); //Aim at the target
+
+				if (Util::magnitude(getPosition() - m_InvestigationArea) < getSize().y)
+				{
+					m_CurrentState = SEARCH_SWEEP;
+				}
+			}
+		}
+
+		//If the characters health is empty
+		if (m_HealthLevels.lower <= 0)
+		{
+			//Kill the character and set up the death sprite
+			m_bDead = true;
+			m_DeathImage.setPosition(m_MainSprite.getPosition());
+			m_DeathImage.setSize(m_MainSprite.getSize());
+			m_DeathImage.setOrigin(m_DeathImage.getSize() / 2.0f);
+			m_DeathSound.play();
+		}
 	}
 }
 
@@ -271,6 +331,9 @@ void Character::lookAt(sf::Vector2f position)
 {
 	sf::Vector2f rotVect (position - m_MainSprite.getPosition()); //Finding the vector between the character's center and the mouse
 
+	m_fAimingAngle = Util::getAngle(rotVect) - m_fMovementAngle - 90; // Finding the angle of the vector for the sprite
+	m_fAimingAngle = Util::setWithinRange(m_fAimingAngle, 0.0f, 360.0f);
+
 	//Aims the weapon towards that position
 	m_Weapon1.aim(position);
 
@@ -321,8 +384,8 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		sf::Vector2f rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
 
 		//Adds the data to a temp Ray to be added to the ray vector.
-		tempRay.Vect = m_MainSprite.getPosition() + rayVect;
-		tempRay.OriginalVect = sf::Vector2f(fViewDistance, fViewDistance);
+		tempRay.vect = m_MainSprite.getPosition() + rayVect;
+		tempRay.originalVect = sf::Vector2f(fViewDistance, fViewDistance);
 		tempRay.angle = fRotAngle;
 		vRays.push_back(tempRay);
 	}
@@ -340,8 +403,8 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
 
 		//Adds the data to a temp Ray to be added to the ray vector.
-		tempRay.Vect = m_MainSprite.getPosition() + rayVect;
-		tempRay.OriginalVect = vEdges.at(i);
+		tempRay.vect = m_MainSprite.getPosition() + rayVect;
+		tempRay.originalVect = vEdges.at(i);
 		tempRay.angle = fRotAngle;
 		vRays.push_back(tempRay);
 	}
@@ -351,8 +414,8 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	for (int i = 0; i < 2; i++)
 	{
 		//Set the lowest intersect to the rays location
-		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).Vect };
-		vRays.at(i).Vect = Util::findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
+		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
+		vRays.at(i).vect = Util::findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
 		vFinalRays.push_back(vRays.at(i));
 	}
 
@@ -360,20 +423,20 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	for (int i = 2; i < vRays.size(); i++)
 	{
 		//Set the lowest intersect to the rays location
-		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).Vect };
-		vRays.at(i).Vect = Util::findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
+		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
+		vRays.at(i).vect = Util::findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
 
 																			  //If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
-		if (Util::magnitude(vRays.at(i).OriginalVect - m_MainSprite.getPosition()) < Util::magnitude(vRays.at(i).Vect - m_MainSprite.getPosition()))
+		if (Util::magnitude(vRays.at(i).originalVect - m_MainSprite.getPosition()) < Util::magnitude(vRays.at(i).vect - m_MainSprite.getPosition()))
 		{
-			tempRay.Vect = vRays.at(i).OriginalVect;
+			tempRay.vect = vRays.at(i).originalVect;
 			tempRay.angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
-			tempRay.OriginalVect = sf::Vector2f(fViewDistance, fViewDistance);
+			tempRay.originalVect = sf::Vector2f(fViewDistance, fViewDistance);
 			vRays.push_back(tempRay);
 		}
 
 		// Recalculates the angle and Pushes the vector of rays to the new vector
-		vRays.at(i).angle = atan2f(vRays.at(i).Vect.y - m_MainSprite.getPosition().y, vRays.at(i).Vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
+		vRays.at(i).angle = atan2f(vRays.at(i).vect.y - m_MainSprite.getPosition().y, vRays.at(i).vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
 		vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
 	}
 
@@ -437,7 +500,7 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	//For every ray create a triangle 
 	for (int i = 0; i < vFinalRays.size(); i++)
 	{
-		newVertex.position = vFinalRays.at(i).Vect;
+		newVertex.position = vFinalRays.at(i).vect;
 		m_VisionRays[i + 1] = newVertex;
 	}
 }
@@ -643,8 +706,6 @@ bool Character::stepTaken()
 	//If the distance taken is farther than the step distance then play a sound and restart the step
 	if (fDistanceSinceStep > fStepDist)
 	{
-		m_StepSound.play();
-		fDistanceSinceStep = 0;
 		return true;
 	}
 	else
@@ -656,6 +717,25 @@ bool Character::stepTaken()
 bool Character::isDead()
 {
 	return m_bDead;
+}
+
+bool Character::hearsSound(soundWave* soundArea)
+{
+	if (m_CurrentState == SEARCH_SWEEP)
+	{
+		if ((Util::magnitude(soundArea->getPosition() - getPosition()) < soundArea->getRadius() + getSize().y))
+		{
+			m_CurrentState = INVESTIGATING;
+			m_InvestigationArea = soundArea->getPosition();
+			return true;
+		}
+	}
+	return false;
+}
+
+std::vector<soundWave*>* Character::getSoundWaves()
+{
+	return &m_Waves;
 }
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -689,5 +769,16 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(m_DeathImage);
 	}
-	
+}
+
+Character::~Character()
+{
+	for (int i = 0; i < m_Waves.size(); i++)
+	{
+		if (m_Waves.at(i) != NULL)
+		{
+			delete m_Waves.at(i);
+			m_Waves.at(i) = NULL;
+		}
+	}
 }

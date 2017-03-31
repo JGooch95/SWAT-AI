@@ -309,7 +309,7 @@ void Weapon::setWeaponType(classType newClassType)
 			setAmmo(0);
 			setReloadTime(2.0f);
 			setAccuracy(0.7f);
-			setWeaponVolume(100);
+			setWeaponVolume(500);
 			setShotSound(1);
 			setReloadSound(6);
 			m_MainSprite.setTexture(m_Textures->getTexture(7));
@@ -323,7 +323,7 @@ void Weapon::setWeaponType(classType newClassType)
 			setAmmo(0);
 			setReloadTime(5.0f);
 			setAccuracy(0.3f);
-			setWeaponVolume(150);
+			setWeaponVolume(700);
 			setShotSound(0);
 			setReloadSound(6);
 			m_MainSprite.setTexture(m_Textures->getTexture(5));
@@ -337,7 +337,7 @@ void Weapon::setWeaponType(classType newClassType)
 			setAmmo(0);
 			setReloadTime(4.0f);
 			setAccuracy(0.8f);
-			setWeaponVolume(200);
+			setWeaponVolume(800);
 			setShotSound(2);
 			setReloadSound(9);
 			m_MainSprite.setTexture(m_Textures->getTexture(4));
@@ -351,7 +351,7 @@ void Weapon::setWeaponType(classType newClassType)
 			setAmmo(0);
 			setReloadTime(2.5f);
 			setAccuracy(0.5f);
-			setWeaponVolume(100);
+			setWeaponVolume(500);
 			setShotSound(3);
 			setReloadSound(8);
 			m_MainSprite.setTexture(m_Textures->getTexture(6));

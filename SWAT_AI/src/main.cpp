@@ -68,7 +68,8 @@ int main()
 		"Assets/Sounds/AssaultRifleReload.wav",			//6
 		"Assets/Sounds/loadout.wav",					//7
 		"Assets/Sounds/ShotgunReload.wav",				//8
-		"Assets/Sounds/SniperReload.wav"				//9
+		"Assets/Sounds/SniperReload.wav",				//9
+		"Assets/Sounds/Death.wav"						//10
 	});
 
 	//Loads the fonts
