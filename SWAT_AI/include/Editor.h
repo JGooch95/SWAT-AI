@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "Button.h"
 #include "TextureLoader.h"
+#include <iostream>
 
 enum buttonTypes {ObjectButton, ToolButton, FloorButton};
 enum EditTypes {CharacterEdit, FloorEdit, ObjectEdit};
@@ -31,6 +32,11 @@ class Editor : public sf::Drawable
 		std::vector<std::vector<Object*>> m_vItems; //Holds the item bits
 		std::vector<std::vector<Object*>> m_vFloorTiles; //Holds the floor bits
 
+		sf::Vector2i selectedEnemy;
+		sf::RectangleShape Selector;
+		sf::VertexArray PathLine;
+		std::vector<std::pair<sf::Vector2i, std::vector<sf::Vector2i>>> m_vEnemyPaths;
+		std::vector<std::pair<sf::Vector2i, std::vector<sf::CircleShape>>> m_vEnemyCircles;
 		EditTypes m_Editing; //States whether the floor is being altered
 
 		TextureLoader* m_Textures; //Contains all textures used in the game

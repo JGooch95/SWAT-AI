@@ -307,15 +307,7 @@ void Character::update()
 				if (m_AimingState != AIM)
 				{
 					m_AimingState = FOCUS;
-				}
-				if (Util::magnitude(getPosition() - m_InvestigationArea) < getSize().y)
-				{
-					m_MovementState = IDLE;
-				}
-
-				if (m_CurrentTarget != NULL)
-				{
-					if (Util::magnitude(m_CurrentTarget->getPosition() - getPosition()) < getSize().x * 3)
+					if (Util::magnitude(getPosition() - m_InvestigationArea) < getSize().y)
 					{
 						m_MovementState = IDLE;
 					}
@@ -375,10 +367,10 @@ void Character::move()
 			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
 																				//If the node has been reached then move to the next node
-			if (m_MainSprite.getPosition().x >= destination.x - 10 &&
-				m_MainSprite.getPosition().x <= destination.x + 10 &&
-				m_MainSprite.getPosition().y <= destination.y + 10 &&
-				m_MainSprite.getPosition().y >= destination.y - 10)
+			if (m_MainSprite.getPosition().x >= destination.x - 1 &&
+				m_MainSprite.getPosition().x <= destination.x + 1 &&
+				m_MainSprite.getPosition().y <= destination.y + 1 &&
+				m_MainSprite.getPosition().y >= destination.y - 1)
 			{
 				m_Path.pop_front();
 
@@ -413,15 +405,23 @@ void Character::move()
 			float fMagnitude = Util::magnitude(velocity);
 			if (fMagnitude == 0)
 			{
-				if (patrolNode == m_PatrolPath.size() - 1)
+				if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent == NULL)
 				{
 					patrolDirection = -1;
 				}
-				else if (patrolNode == 0)
+				else if (patrolNode == 0 && m_PatrolPath.at(0)->parent == NULL)
 				{
 					patrolDirection = 1;
 				}
-				patrolNode += patrolDirection;
+
+				if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent != NULL)
+				{
+					patrolNode = 0;
+				}
+				else
+				{
+					patrolNode += patrolDirection;
+				}
 			}
 			else
 			{
@@ -441,21 +441,29 @@ void Character::move()
 				fDistanceSinceStep += Util::magnitude(velocity);
 				m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
-																					//If the node has been reached then move to the next node
-				if (m_MainSprite.getPosition().x >= destination.x - 10 &&
-					m_MainSprite.getPosition().x <= destination.x + 10 &&
-					m_MainSprite.getPosition().y <= destination.y + 10 &&
-					m_MainSprite.getPosition().y >= destination.y - 10)
+				//If the node has been reached then move to the next node
+				if (m_MainSprite.getPosition().x >= destination.x - 1 &&
+					m_MainSprite.getPosition().x <= destination.x + 1 &&
+					m_MainSprite.getPosition().y <= destination.y + 1 &&
+					m_MainSprite.getPosition().y >= destination.y - 1)
 				{
-					if (patrolNode == m_PatrolPath.size() - 1)
+					if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent == NULL)
 					{
 						patrolDirection = -1;
 					}
-					else if (patrolNode == 0)
+					else if (patrolNode == 0 && m_PatrolPath.at(0)->parent == NULL)
 					{
 						patrolDirection = 1;
 					}
-					patrolNode += patrolDirection;
+
+					if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent != NULL)
+					{
+						patrolNode = 0;
+					}
+					else
+					{
+						patrolNode += patrolDirection;
+					}
 
 					//Sets up the path line ready to start drawing a new path
 					m_PathLine.clear();
@@ -673,56 +681,26 @@ bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 	}
 }
 
-void Character::loadPatrolPath(std::string sDir)
+void Character::setPatrolPath(std::vector<int> viPathNodes)
 {
-	std::ifstream pathFile;
-	pathFile.open(sDir); //Open the map file
-
-	if (pathFile.is_open()) //If the file opened correctly
+	for (int i = 0; i < viPathNodes.size(); i++)
 	{
-		//Initialise reading variables
-		std::string sLine;
-		std::string currentNum;
-		while (!pathFile.eof()) //while the end of file hasnt been reached
+		m_PatrolPath.push_back(new Node);
+		m_PatrolPath.at(m_PatrolPath.size() - 1)->index = viPathNodes.at(i);
+
+		if (i > 0)
 		{
-			getline(pathFile, sLine); //Get the next line
-			
-			for (int i = 3; i < sLine.length(); i++)
+			m_PatrolPath.at(i)->parent = m_PatrolPath.at(i - 1);
+		}
+
+		if (i == viPathNodes.size() - 1)
+		{
+			if (viPathNodes.at(i) == viPathNodes.at(0))
 			{
-				if (sLine.at(i) != ' ')
-				{
-					currentNum = currentNum + sLine.at(i);
-				}
-				else if (currentNum != "" ||  i == sLine.length() - 1)
-				{
-					m_PatrolPath.push_back(new Node);
-					m_PatrolPath.at(m_PatrolPath.size() - 1)->index = stoi(currentNum);
-					if (m_PatrolPath.size() > 1)
-					{
-						m_PatrolPath.at(m_PatrolPath.size() - 1)->parent = m_PatrolPath.at(m_PatrolPath.size() - 2);
-					}
-					currentNum = "";
-				}
-			}
-			if (currentNum != "")
-			{
-				m_PatrolPath.push_back(new Node);
-				m_PatrolPath.at(m_PatrolPath.size() - 1)->index = stoi(currentNum);
-				if (m_PatrolPath.size() > 1)
-				{
-					m_PatrolPath.at(m_PatrolPath.size() - 1)->parent = m_PatrolPath.at(m_PatrolPath.size() - 2);
-				}
-				currentNum = "";
+				m_PatrolPath.at(0)->parent = m_PatrolPath.at(i);
 			}
 		}
 	}
-	else
-	{
-		//Ouptut an error
-		std::cout << "Path File: " << sDir << " could not be opened." << "\n";
-	}
-
-	pathFile.close();
 }
 
 //Setters
@@ -925,7 +903,7 @@ bool Character::isDead()
 
 bool Character::hearsSound(soundWave* soundArea)
 {
-	if (m_AimingState != AIM)
+	if (m_AimingState != AIM && m_MovementState != INVESTIGATING)
 	{
 		if ((Util::magnitude(soundArea->getPosition() - getPosition()) < soundArea->getRadius() + getSize().y))
 		{

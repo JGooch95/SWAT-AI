@@ -50,5 +50,6 @@ class Game : public sf::Drawable
 		int clickLeft(sf::Vector2i mousePos); //Processes left click
 		void clickRight(sf::Vector2i mousePos); //Processes right click 
 		std::vector<sf::Vector2f> edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges); //Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
+		void loadPatrolPaths(std::string sDir);
 		~Game(); //Deconstructor
 };

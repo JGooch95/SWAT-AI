@@ -146,7 +146,6 @@ Game::Game(sf::Vector2u windowSize)
 					m_vEnemies.at(m_vEnemies.size() - 1)->setTexture(m_Textures->getTexture(2)); //Sets the unit texture
 					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault);
 					m_vCharacters.push_back(m_vEnemies.at(m_vEnemies.size() - 1));
-					m_vEnemies.at(m_vEnemies.size() - 1)->loadPatrolPath("Assets/Maps/CustomMapPaths.txt");
 				}
 
 				//Friendly units specifics
@@ -275,6 +274,8 @@ Game::Game(sf::Vector2u windowSize)
 	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
 	exitButton->setTexture(m_Textures->getTexture(20));
 	exitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
+
+	loadPatrolPaths("Assets/Maps/CustomMapPaths.txt");
 }
 
 void Game::update(sf::Vector2i mousePos)
@@ -680,6 +681,57 @@ std::vector<sf::Vector2f> Game::edgeReduction(std::vector<sf::Vector2f> vXEdges,
 	}
 
 	return vEdges; //Return the reduced edges
+}
+
+void Game::loadPatrolPaths(std::string sDir)
+{
+	std::ifstream pathFile;
+	pathFile.open(sDir); //Open the map file
+
+	if (pathFile.is_open()) //If the file opened correctly
+	{
+		//Initialise reading variables
+		std::string sLine;
+		std::string currentNum;
+		std::vector<int> viPathNodes;
+
+		float index = 0;
+		while (!pathFile.eof()) //while the end of file hasnt been reached
+		{
+			viPathNodes.clear();
+			currentNum = "";
+			getline(pathFile, sLine); //Get the next line
+
+			if (sLine != "")
+			{
+				for (int i = 3; i < sLine.length(); i++)
+				{
+					if (sLine.at(i) != ' ')
+					{
+						currentNum = currentNum + sLine.at(i);
+					}
+					else if (currentNum != "" || i == sLine.length() - 1)
+					{
+						viPathNodes.push_back(stoi(currentNum));
+						currentNum = "";
+					}
+				}
+				if (currentNum != "")
+				{
+					viPathNodes.push_back(stoi(currentNum));
+				}
+				m_vEnemies.at(index)->setPatrolPath(viPathNodes);
+				index++;
+			}
+		}
+	}
+	else
+	{
+		//Ouptut an error
+		std::cout << "Path File: " << sDir << " could not be opened." << "\n";
+	}
+
+	pathFile.close();
 }
 
 void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const

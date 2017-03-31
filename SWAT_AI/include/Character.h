@@ -77,7 +77,7 @@ class Character : public Object
 		void visionCalculation(std::vector<sf::Vector2f>vEdges); //Calculates the vision cone
 		float bulletChecks(std::vector<sf::Vector2f>vEdges); //Sends the edges to the gun to calculate bullet collisions
 		bool lazerChecks(std::vector<sf::Vector2f> vEdges); //Checks if the weapons lazer has collided
-		void loadPatrolPath(std::string sDir);
+		void setPatrolPath(std::vector<int> viPathNodes);
 
 		//Setters
 		void setHealth(float fLevel);

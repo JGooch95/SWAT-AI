@@ -161,6 +161,13 @@ Editor::Editor(sf::Vector2u windowSize)
 
 	//Starts the editing on the main objects
 	m_Editing = ObjectEdit;
+
+	Selector.setOutlineThickness(3);
+	Selector.setOutlineColor(sf::Color(0,255,0,255));
+	Selector.setFillColor(sf::Color(0, 255, 0, 0));
+	Selector.setSize(m_CurrentMap->getTileSize());
+
+	PathLine.setPrimitiveType(sf::LinesStrip);
 }
 
 void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std::vector<int> iTexIndex)
@@ -251,6 +258,30 @@ void Editor::update(sf::Vector2i mousePos)
 			}
 		}
 	}
+
+	if (m_Editing == CharacterEdit)
+	{
+		Selector.setSize(m_CurrentMap->getTileSize());
+		Selector.setPosition(m_CurrentMap->getPosition() + sf::Vector2f(selectedEnemy.x * m_CurrentMap->getTileSize().x, selectedEnemy.y * m_CurrentMap->getTileSize().y));
+		
+		PathLine.clear();
+		for (int i = 0; i < m_vEnemyCircles.size(); i++)
+		{
+			if (selectedEnemy == m_vEnemyCircles.at(i).first)
+			{
+				PathLine.resize(m_vEnemyCircles.at(i).second.size());
+				for (int j = 0; j < m_vEnemyCircles.at(i).second.size(); j++)
+				{
+					m_vEnemyCircles.at(i).second.at(j).setRadius(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) / 5.0f);
+					m_vEnemyCircles.at(i).second.at(j).setOrigin(m_vEnemyCircles.at(i).second.at(j).getRadius(), m_vEnemyCircles.at(i).second.at(j).getRadius());
+
+					m_vEnemyCircles.at(i).second.at(j).setPosition(m_CurrentMap->getPosition() + sf::Vector2f(m_vEnemyPaths.at(i).second.at(j).x * m_CurrentMap->getTileSize().x, m_vEnemyPaths.at(i).second.at(j).y * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize() / 2.0f));
+					PathLine[j].position = m_vEnemyCircles.at(i).second.at(j).getPosition();
+					PathLine[j].color = sf::Color::Green;
+				}
+			}
+		}
+	}
 }
 
 int Editor::clickLeft(sf::Vector2i mousePos)
@@ -304,6 +335,17 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		//Decrement the LevelBits vector
 		for (int i = 0; i < m_vcLevelBits.size(); i++)
 		{
+			if (m_vcLevelBits.at(i).at(m_vcLevelBits.at(i).size() - 1) == 'E')
+			{
+				for (int j = 0; j < m_vEnemyPaths.size(); j++)
+				{
+					if (sf::Vector2i(m_vcLevelBits.at(i).size() - 1, i) == m_vEnemyPaths.at(j).first)
+					{
+						m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
+						m_vEnemyCircles.erase(m_vEnemyCircles.begin() + j);
+					}
+				}
+			}
 			m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 
@@ -334,6 +376,21 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 			}
 			m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
+
+		for (int i = 0; i < m_vEnemyPaths.size(); i++)
+		{
+			if (selectedEnemy == m_vEnemyPaths.at(i).first)
+			{
+				for (int j = m_vEnemyPaths.at(i).second.size() - 1; j >= 0; j--)
+				{
+					if (m_vEnemyPaths.at(i).second.at(j).x >= m_CurrentMap->getGridDims().x)
+					{
+						m_vEnemyPaths.at(i).second.erase(m_vEnemyPaths.at(i).second.begin() + j);
+						m_vEnemyCircles.at(i).second.erase(m_vEnemyCircles.at(i).second.begin() + j);
+					}
+				}
+			}
+		}
 	}
 
 	//If the + Y Grid button is pressed
@@ -362,6 +419,21 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 	{
 		//Decrement the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y - 1));
+
+		for (int i = 0; i < m_vcLevelBits.size(); i++)
+		{
+			if (m_vcLevelBits.at(m_vcLevelBits.size() - 1).at(i) == 'E')
+			{
+				for (int j = 0; j < m_vEnemyPaths.size(); j++)
+				{
+					if (sf::Vector2i(i, m_vcLevelBits.size() - 1) == m_vEnemyPaths.at(j).first)
+					{
+						m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
+						m_vEnemyCircles.erase(m_vEnemyCircles.begin() + j);
+					}
+				}
+			}
+		}
 
 		//Decrement the levelBits vector
 		m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
@@ -394,6 +466,21 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		}
 		m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
 		m_vFloorTiles.at(m_vFloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
+
+		for (int i = 0; i < m_vEnemyPaths.size(); i++)
+		{
+			if (selectedEnemy == m_vEnemyPaths.at(i).first)
+			{
+				for (int j = m_vEnemyPaths.at(i).second.size() - 1; j >= 0; j--)
+				{
+					if (m_vEnemyPaths.at(i).second.at(j).y >= m_CurrentMap->getGridDims().y)
+					{
+						m_vEnemyPaths.at(i).second.erase(m_vEnemyPaths.at(i).second.begin() + j);
+						m_vEnemyCircles.at(i).second.erase(m_vEnemyCircles.at(i).second.begin() + j);
+					}
+				}
+			}
+		}
 	}
 	
 	//If the mouse is within the bounds of the grid
@@ -403,7 +490,7 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 	{
 		//Calculate the mouses position on the grid
-		sf::Vector2f gridPos(0,0);
+		sf::Vector2i gridPos(0,0);
 		gridPos.x = (mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x;
 		gridPos.y = (mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y;
 
@@ -414,9 +501,6 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 				if (m_cCurrentTool == 'W' || m_cCurrentTool == 'P' || m_cCurrentTool == 'E' ||
 					m_cCurrentTool == 'D' || m_cCurrentTool == 'B' || m_cCurrentTool == ' ')
 				{
-					//Set the main map bit to the current tool letter
-					m_vcLevelBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
-
 					//If there is an item currently in that location clear the pointer
 					if (m_vItems.at(gridPos.y).at(gridPos.x) != NULL)
 					{
@@ -439,6 +523,8 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 							break;
 						case 'E':
 							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(2));
+							m_vEnemyPaths.push_back(std::pair<sf::Vector2i, std::vector<sf::Vector2i>>(gridPos, std::vector<sf::Vector2i>()));
+							m_vEnemyCircles.push_back(std::pair<sf::Vector2i, std::vector<sf::CircleShape>>(gridPos, std::vector < sf::CircleShape>()));
 							break;
 						case 'D':
 							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
@@ -448,6 +534,22 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 							break;
 						}
 					}
+					else
+					{
+						if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
+						{
+							for (int i = 0; i < m_vEnemyPaths.size(); i++)
+							{
+								if (gridPos == m_vEnemyPaths.at(i).first)
+								{
+									m_vEnemyPaths.erase(m_vEnemyPaths.begin() + i);
+								}
+							}
+						}
+					}
+
+					//Set the main map bit to the current tool letter
+					m_vcLevelBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
 				}
 			break;
 
@@ -498,34 +600,57 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 				}
 			break;
 
-			//case CharacterEdit:
-				/*
+			case CharacterEdit:
 				switch (m_cCurrentTool)
 				{
-					int iPathPos = (gridPos.y * m_vcLevelBits.size()) + gridPos.x; //Position in proper grid
 					case ' ':
-						break;
-					case 'S':
-						int iCurrentPathPos = 0;
-						int iEnemyNumber = 0;
-
-						for (int i = 0; i < m_vcLevelBits.size(); i++)
+						for (int i = 0; i < m_vEnemyPaths.size(); i++)
 						{
-							for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+							if (selectedEnemy == m_vEnemyPaths.at(i).first)
 							{
-								iCurrentPathPos++;
-								if (m_vcLevelBits.at(i).at(j) == 'E')
+								for (int j = m_vEnemyPaths.at(i).second.size() - 1; j >= 0; j--)
 								{
-									iEnemyNumber++;
+									if (m_vEnemyPaths.at(i).second.at(j) == gridPos)
+									{
+										m_vEnemyPaths.at(i).second.erase(m_vEnemyPaths.at(i).second.begin() + j);
+										m_vEnemyCircles.at(i).second.erase(m_vEnemyCircles.at(i).second.begin() + j);
+										j = -1;
+									}
 								}
 							}
 						}
 						break;
+
+					case 'S':
+						if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
+						{
+							selectedEnemy = gridPos;
+						}
+						break;
+
 					case 'P':
-						//m_viPaths.at(0).push_back();
+						for (int i = 0; i < m_vEnemyPaths.size(); i++)
+						{
+							if (selectedEnemy == m_vEnemyPaths.at(i).first)
+							{
+								m_vEnemyPaths.at(i).second.push_back(gridPos);
+							}
+						}
+						for (int i = 0; i < m_vEnemyCircles.size(); i++)
+						{
+							if (selectedEnemy == m_vEnemyCircles.at(i).first)
+							{
+								sf::CircleShape newPoint;
+								newPoint.setFillColor(sf::Color::Red);
+								newPoint.setRadius(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) / 5.0f);
+								newPoint.setOrigin(newPoint.getRadius(), newPoint.getRadius());
+								newPoint.setPosition(m_CurrentMap->getPosition() + sf::Vector2f(gridPos.x * m_CurrentMap->getTileSize().x, gridPos.y * m_CurrentMap->getTileSize().y)+ (m_CurrentMap->getTileSize() / 2.0f));
+								m_vEnemyCircles.at(i).second.push_back(newPoint);
+							}
+						}
 						break;
 				}
-			break;*/
+			break;
 		}
 	}
 	
@@ -639,6 +764,37 @@ void Editor::saveMap()
 		}
 	}
 	File1.close();
+
+	//Saves the floor map 
+	File1.open("Assets/Maps/CustomMapPaths.txt", std::ios::out);
+	int enemiesSaved = 0;
+	for (int i = 0; i < m_vcLevelBits.size(); i++)
+	{
+		for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+		{
+			if (m_vcLevelBits.at(i).at(j) == 'E')
+			{
+				for (int k = 0; k < m_vEnemyPaths.size(); k++)
+				{
+					if (sf::Vector2i(j, i) == m_vEnemyPaths.at(k).first)
+					{
+						File1 << std::to_string(k) + ":";
+						for (int l = 0; l < m_vEnemyPaths.at(k).second.size(); l++)
+						{
+							int iPathPos = (m_vEnemyPaths.at(k).second.at(l).y * m_CurrentMap->getGridDims().x) + m_vEnemyPaths.at(k).second.at(l).x;
+							File1 << " " + std::to_string(iPathPos);
+						}
+						enemiesSaved++;
+						if (enemiesSaved != m_vEnemyPaths.size())
+						{
+							File1 << "\n";
+						}
+					}
+				}
+			}
+		}
+	}
+	File1.close();
 	
 }
 
@@ -668,6 +824,22 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 			if (m_vItems.at(i).at(j) != NULL)
 			{
 				target.draw(*m_vItems.at(i).at(j));
+			}
+		}
+	}
+
+	if (m_Editing == CharacterEdit)
+	{
+		target.draw(Selector);
+		target.draw(PathLine);
+		for (int i = 0; i < m_vEnemyCircles.size(); i++)
+		{
+			if (selectedEnemy == m_vEnemyCircles.at(i).first)
+			{
+				for (int j = 0; j < m_vEnemyCircles.at(i).second.size(); j++)
+				{
+					target.draw(m_vEnemyCircles.at(i).second.at(j));
+				}
 			}
 		}
 	}
