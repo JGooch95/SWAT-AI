@@ -146,6 +146,7 @@ Game::Game(sf::Vector2u windowSize)
 					m_vEnemies.at(m_vEnemies.size() - 1)->setTexture(m_Textures->getTexture(2)); //Sets the unit texture
 					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault);
 					m_vCharacters.push_back(m_vEnemies.at(m_vEnemies.size() - 1));
+					m_vEnemies.at(m_vEnemies.size() - 1)->loadPatrolPath("Assets/Maps/CustomMapPaths.txt");
 				}
 
 				//Friendly units specifics
@@ -274,9 +275,6 @@ Game::Game(sf::Vector2u windowSize)
 	exitButton->setPosition(sf::Vector2f(m_Toolbar.getPosition().x + m_Toolbar.getSize().x - exitButton->getSize().x, m_Toolbar.getPosition().y));
 	exitButton->setTexture(m_Textures->getTexture(20));
 	exitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
-
-	//Initialises the path finder
-	m_Pathfinder.setup();
 }
 
 void Game::update(sf::Vector2i mousePos)
@@ -401,8 +399,7 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 					{
 						if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
 						{
-							m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
-							vCharSet1.at(i)->setPath(m_Pathfinder.findPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition()));
+							vCharSet1.at(i)->setPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition());
 						}
 					}
 				}
@@ -489,10 +486,10 @@ int Game::clickLeft(sf::Vector2i mousePos)
 
 void Game::clickRight(sf::Vector2i mousePos)
 {
-	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
 	if (m_vUnits.size() > 0)
 	{
-		m_vUnits.at(0)->setPath(m_Pathfinder.findPath(m_vUnits.at(0)->getPosition(), (sf::Vector2f)mousePos)); //Sets a path towards the clicked area
+		m_vUnits.at(0)->setMovementState(MOVE_TO_SPOT);
+		m_vUnits.at(0)->setPath(m_vUnits.at(0)->getPosition(), (sf::Vector2f)mousePos); //Sets a path towards the clicked area
 	}
 }
 

@@ -53,7 +53,9 @@ int main()
 		"Assets/Sprites/RedCarpet.jpg",					//29
 		"Assets/Sprites/Bricks.jpg",					//30
 		"Assets/Sprites/Save.png",						//31
-		"Assets/Sprites/Dead.png"						//32
+		"Assets/Sprites/Dead.png",						//32
+		"Assets/Sprites/Select.png",					//33
+		"Assets/Sprites/PathMaker.png"					//34
 	});
 
 	//Loads the sounds

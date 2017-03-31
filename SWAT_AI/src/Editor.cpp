@@ -154,13 +154,13 @@ Editor::Editor(sf::Vector2u windowSize)
 
 	//Tools
 	m_vUIText.at(4).setPosition(m_vUIText.at(3).getPosition().x, m_vFloorButtons.at(m_vFloorButtons.size() - 1)->getPosition().y + m_vFloorButtons.at(m_vFloorButtons.size() - 1)->getSize().y + fContentGap);
-	createButtons(&m_vToolButtons, 4, std::vector<int>{23});
+	createButtons(&m_vToolButtons, 4, std::vector<int>{23, 33, 34});
 
 	//Sets the starting tool to the wooden wall tool
 	m_cCurrentTool = 'W';
 
 	//Starts the editing on the main objects
-	m_bEditingFloor = false;
+	m_Editing = ObjectEdit;
 }
 
 void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std::vector<int> iTexIndex)
@@ -407,157 +407,199 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		gridPos.x = (mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x;
 		gridPos.y = (mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y;
 
-		if (!m_bEditingFloor) //If the main map being edited
+		switch (m_Editing)
 		{
-			//If the tool is valid
-			if (m_cCurrentTool == 'W' || m_cCurrentTool == 'P' || m_cCurrentTool == 'E' || 
-				m_cCurrentTool == 'D' || m_cCurrentTool == 'B' || m_cCurrentTool == ' ')
-			{
-				//Set the main map bit to the current tool letter
-				m_vcLevelBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
-
-				//If there is an item currently in that location clear the pointer
-				if (m_vItems.at(gridPos.y).at(gridPos.x) != NULL)
+			case ObjectEdit:
+				//If the tool is valid
+				if (m_cCurrentTool == 'W' || m_cCurrentTool == 'P' || m_cCurrentTool == 'E' ||
+					m_cCurrentTool == 'D' || m_cCurrentTool == 'B' || m_cCurrentTool == ' ')
 				{
-					delete(m_vItems.at(gridPos.y).at(gridPos.x));
-					m_vItems.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-				//If the tool isnt an eraser create a new object
-				if (m_cCurrentTool != ' ')
-				{
-					m_vItems.at(gridPos.y).at(gridPos.x) = new Object();
+					//Set the main map bit to the current tool letter
+					m_vcLevelBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
 
-					//Give the object the following texture
-					switch (m_cCurrentTool)
+					//If there is an item currently in that location clear the pointer
+					if (m_vItems.at(gridPos.y).at(gridPos.x) != NULL)
 					{
-					case 'W':
-						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(0));
+						delete(m_vItems.at(gridPos.y).at(gridPos.x));
+						m_vItems.at(gridPos.y).at(gridPos.x) = NULL;
+					}
+					//If the tool isnt an eraser create a new object
+					if (m_cCurrentTool != ' ')
+					{
+						m_vItems.at(gridPos.y).at(gridPos.x) = new Object();
+
+						//Give the object the following texture
+						switch (m_cCurrentTool)
+						{
+						case 'W':
+							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(0));
+							break;
+						case 'P':
+							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(1));
+							break;
+						case 'E':
+							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(2));
+							break;
+						case 'D':
+							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
+							break;
+						case 'B':
+							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(30));
+							break;
+						}
+					}
+				}
+			break;
+
+			case FloorEdit:
+				//If the tool is valid
+				if (m_cCurrentTool == 'G' || m_cCurrentTool == 'F' || m_cCurrentTool == 'K' ||
+					m_cCurrentTool == 'C' || m_cCurrentTool == 'B' || m_cCurrentTool == 'R' ||
+					m_cCurrentTool == ' ')
+				{
+					//Set the floor map bit to the current tool letter
+					m_vcFloorBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
+
+					//If there is an item currently in that location clear the pointer
+					if (m_vFloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+					{
+						delete(m_vFloorTiles.at(gridPos.y).at(gridPos.x));
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+					}
+
+					//If the tool isnt an eraser create a new object
+					if (m_cCurrentTool != ' ')
+					{
+						m_vFloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
+
+						//Give the object the following texture
+						switch (m_cCurrentTool)
+						{
+						case 'G':
+							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(14));
+							break;
+						case 'F':
+							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(25));
+							break;
+						case 'K':
+							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(27));
+							break;
+						case 'C':
+							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
+							break;
+						case 'B':
+							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(28));
+							break;
+						case 'R':
+							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(29));
+							break;
+						}
+					}
+				}
+			break;
+
+			//case CharacterEdit:
+				/*
+				switch (m_cCurrentTool)
+				{
+					int iPathPos = (gridPos.y * m_vcLevelBits.size()) + gridPos.x; //Position in proper grid
+					case ' ':
+						break;
+					case 'S':
+						int iCurrentPathPos = 0;
+						int iEnemyNumber = 0;
+
+						for (int i = 0; i < m_vcLevelBits.size(); i++)
+						{
+							for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+							{
+								iCurrentPathPos++;
+								if (m_vcLevelBits.at(i).at(j) == 'E')
+								{
+									iEnemyNumber++;
+								}
+							}
+						}
 						break;
 					case 'P':
-						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(1));
+						//m_viPaths.at(0).push_back();
 						break;
-					case 'E':
-						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(2));
-						break;
-					case 'D':
-						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
-						break;
-					case 'B':
-						m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(30));
-						break;
-					}
 				}
-			}			
-		}
-		else
-		{
-			//If the tool is valid
-			if (m_cCurrentTool == 'G' || m_cCurrentTool == 'F' || m_cCurrentTool == 'K' ||
-				m_cCurrentTool == 'C' || m_cCurrentTool == 'B' || m_cCurrentTool == 'R' ||
-				m_cCurrentTool == ' ')
-			{
-				//Set the floor map bit to the current tool letter
-				m_vcFloorBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
-
-				//If there is an item currently in that location clear the pointer
-				if (m_vFloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
-				{
-					delete(m_vFloorTiles.at(gridPos.y).at(gridPos.x));
-					m_vFloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
-				}
-
-				//If the tool isnt an eraser create a new object
-				if (m_cCurrentTool != ' ')
-				{
-					m_vFloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-
-					//Give the object the following texture
-					switch (m_cCurrentTool)
-					{
-					case 'G':
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(14));
-						break;
-					case 'F':
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(25));
-						break;
-					case 'K':
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(27));
-						break;
-					case 'C':
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
-						break;
-					case 'B':
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(28));
-						break;
-					case 'R':
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(29));
-						break;
-					}
-				}
-			}
+			break;*/
 		}
 	}
+	
 	//If an object button is being hovered over set the tool to the value of the tool
 	if (m_vObjectButtons.at(0)->hovering(mousePos)) //Wooden Wall
 	{
 		m_cCurrentTool = 'W';
-		m_bEditingFloor = false;
+		m_Editing = ObjectEdit;
 	}
 	if (m_vObjectButtons.at(1)->hovering(mousePos)) //Friendly unit
 	{
 		m_cCurrentTool = 'P';
-		m_bEditingFloor = false;
+		m_Editing = ObjectEdit;
 	}
 	if (m_vObjectButtons.at(2)->hovering(mousePos)) //Enemy unit
 	{
 		m_cCurrentTool = 'E';
-		m_bEditingFloor = false;
+		m_Editing = ObjectEdit;
 	}
 	if (m_vObjectButtons.at(3)->hovering(mousePos)) //Door
 	{
 		m_cCurrentTool = 'D';
-		m_bEditingFloor = false;
+		m_Editing = ObjectEdit;
 	}
 	if (m_vObjectButtons.at(4)->hovering(mousePos)) //Brick wall
 	{
 		m_cCurrentTool = 'B';
-		m_bEditingFloor = false;
+		m_Editing = ObjectEdit;
 	}
 
 	if (m_vToolButtons.at(0)->hovering(mousePos)) //Eraser
 	{
 		m_cCurrentTool = ' ';
 	}
+	if (m_vToolButtons.at(1)->hovering(mousePos)) //Eraser
+	{
+		m_cCurrentTool = 'S';
+		m_Editing = CharacterEdit;
+	}
+	if (m_vToolButtons.at(2)->hovering(mousePos)) //Eraser
+	{
+		m_cCurrentTool = 'P';
+		m_Editing = CharacterEdit;
+	}
 
 	if (m_vFloorButtons.at(0)->hovering(mousePos)) //Grass
 	{
 		m_cCurrentTool = 'G';
-		m_bEditingFloor = true;
+		m_Editing = FloorEdit;
 	}
 	if (m_vFloorButtons.at(1)->hovering(mousePos)) //Wooden floor
 	{
 		m_cCurrentTool = 'F';
-		m_bEditingFloor = true;
+		m_Editing = FloorEdit;
 	}
 	if (m_vFloorButtons.at(2)->hovering(mousePos)) //Concrete
 	{
 		m_cCurrentTool = 'C';
-		m_bEditingFloor = true;
+		m_Editing = FloorEdit;
 	}
 	if (m_vFloorButtons.at(3)->hovering(mousePos)) //Kitchen tile
 	{
 		m_cCurrentTool = 'K';
-		m_bEditingFloor = true;
+		m_Editing = FloorEdit;
 	}
 	if (m_vFloorButtons.at(4)->hovering(mousePos)) //Blue carpet
 	{
 		m_cCurrentTool = 'B';
-		m_bEditingFloor = true;
+		m_Editing = FloorEdit;
 	}
 	if (m_vFloorButtons.at(5)->hovering(mousePos)) //Red carpet
 	{
 		m_cCurrentTool = 'R';
-		m_bEditingFloor = true;
+		m_Editing = FloorEdit;
 	}
 
 	return 0;

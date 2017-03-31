@@ -21,7 +21,6 @@ class Game : public sf::Drawable
 		std::vector<HUDWindow*> m_vUnitUI;
 		
 		//Tools
-		AStar m_Pathfinder;
 		Map* m_CurrentMap;
 		Settings* m_CurrentSettings;
 

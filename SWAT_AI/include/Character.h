@@ -11,6 +11,7 @@
 #include "SoundWave.h"
 
 enum loadoutItem {Lazer, Silencer, Scope, None};
+enum States { IDLE, SEARCH_SWEEP, FOCUS, AIM, INVESTIGATING, PATROL, STARTING_PATROL, MOVE_TO_SPOT };
 
 class Character : public Object
 {
@@ -35,11 +36,16 @@ class Character : public Object
 		std::vector<loadoutItem> m_vLoadout;
 
 		//AI
-		enum States { SEARCH_SWEEP, AIM, INVESTIGATING };
-		States m_CurrentState;
+		States m_AimingState;
+		States m_MovementState;
+		AStar m_Pathfinder;
+		sf::Vector2f focusPoint;
 		int m_iAimingDirection; //Holds the direction the character aims towards when doing a sweep search
 		std::deque<Node*> m_Path; //Holds the current movement path
+		std::deque<Node*> m_PatrolPath;
 		Character* m_CurrentTarget; //Holds the target the character is aiming towards
+		int patrolNode;
+		int patrolDirection;
 
 		//Debug lines
 		sf::VertexArray m_OrientationLine; //Shows the direction the unit is facing
@@ -57,7 +63,7 @@ class Character : public Object
 		bool m_bDrawVision; //States whether vision cones are drawn
 		bool m_bDead; //States whether the character is dead
 
-		sf::Vector2f m_InvestigationArea;
+		sf::Vector2f m_InvestigationArea; //States where the character is investigating
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
@@ -71,14 +77,16 @@ class Character : public Object
 		void visionCalculation(std::vector<sf::Vector2f>vEdges); //Calculates the vision cone
 		float bulletChecks(std::vector<sf::Vector2f>vEdges); //Sends the edges to the gun to calculate bullet collisions
 		bool lazerChecks(std::vector<sf::Vector2f> vEdges); //Checks if the weapons lazer has collided
-		
+		void loadPatrolPath(std::string sDir);
+
 		//Setters
 		void setHealth(float fLevel);
-		void setPath(std::deque<Node*> newPath); //Sets a new path to follow
+		void setPath(sf::Vector2f startPos, sf::Vector2f endPos); //Sets a new path to follow
 		void setVision(bool bState);
 		void setTarget(Character* newTarget);
 		void setClass(classType classType);
 		void setLoadoutItem(int iIndex, loadoutItem itemType);
+		void setMovementState(States newState);
 
 		//Getters
 		float getRotation();

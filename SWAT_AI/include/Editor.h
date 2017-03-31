@@ -6,6 +6,7 @@
 #include "TextureLoader.h"
 
 enum buttonTypes {ObjectButton, ToolButton, FloorButton};
+enum EditTypes {CharacterEdit, FloorEdit, ObjectEdit};
 
 class Editor : public sf::Drawable
 {
@@ -30,13 +31,14 @@ class Editor : public sf::Drawable
 		std::vector<std::vector<Object*>> m_vItems; //Holds the item bits
 		std::vector<std::vector<Object*>> m_vFloorTiles; //Holds the floor bits
 
-		bool m_bEditingFloor; //States whether the floor is being altered
+		EditTypes m_Editing; //States whether the floor is being altered
 
 		TextureLoader* m_Textures; //Contains all textures used in the game
 
 		char m_cCurrentTool; //Holds the character of the bit being placed
 		std::vector<std::vector<char>> m_vcLevelBits; //Holds the map layout loaded from the file
 		std::vector<std::vector<char>> m_vcFloorBits; //Holds the floor layout loaded from the file
+		std::vector<std::vector<int>> m_viPaths;
 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 

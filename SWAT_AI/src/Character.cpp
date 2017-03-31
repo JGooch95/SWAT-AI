@@ -119,7 +119,10 @@ Character::Character()
 	m_DeathImage.setTexture(m_Textures->getTexture(32));
 
 	//Sets the other variables
-	m_CurrentState = SEARCH_SWEEP;
+	m_MovementState = IDLE;
+	m_AimingState = SEARCH_SWEEP;
+	patrolNode = 0;
+	patrolDirection = 1;
 	m_iAimingDirection = 1;
 	m_CurrentTarget = NULL;
 	m_bDrawVision = false;
@@ -127,6 +130,9 @@ Character::Character()
 
 	//Sets up the seed for the randomiser
 	srand(time(NULL)); 
+
+	//Initialises the path finder
+	m_Pathfinder.setup();
 }
 
 void Character::update()
@@ -192,8 +198,8 @@ void Character::update()
 		m_Weapon1.setOrigin(sf::Vector2f(m_Weapon1.getSize().x / 2.0f, -getSize().y / 2.0f));
 		m_Weapon1.update();
 
-		switch (m_CurrentState)
-			{
+		switch (m_AimingState)
+		{
 			case SEARCH_SWEEP:
 			{
 				float fCone = 30.0f; //Holds the breadth of the cone to turn between
@@ -238,19 +244,83 @@ void Character::update()
 				}
 				else
 				{
-					m_CurrentState = SEARCH_SWEEP; //Switch states
+					m_AimingState = SEARCH_SWEEP; //Switch states
+
+					if (m_PatrolPath.size() > 0)
+					{
+						m_MovementState = PATROL;
+						sf::Vector2f destination((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+							(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+						setPath(getPosition(), destination);
+					}
+					else
+					{
+						m_MovementState = IDLE;
+					}
+				}
+				break;
+			}
+			case FOCUS:
+			{
+				lookAt(focusPoint);
+				if (m_MovementState != INVESTIGATING)
+				{
+					m_AimingState = SEARCH_SWEEP;
+				}
+				break;
+			}
+		}
+
+		switch (m_MovementState)
+		{
+			case IDLE:
+			{
+				if (m_AimingState == SEARCH_SWEEP)
+				{
+					if (m_Path.size() > 0)
+					{
+						m_MovementState = MOVE_TO_SPOT;
+					}
+					else if (m_PatrolPath.size() > 0)
+					{
+						m_MovementState = PATROL;
+						sf::Vector2f destination((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+							(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+						setPath(getPosition(), destination);
+					}
+				}
+				break;
+			}
+
+			case MOVE_TO_SPOT:
+			{
+				if (m_Path.empty())
+				{
+					m_MovementState = IDLE;
+					m_AimingState = SEARCH_SWEEP;
 				}
 				break;
 			}
 
 			case INVESTIGATING:
 			{
-				lookAt(m_InvestigationArea); //Aim at the target
-
+				if (m_AimingState != AIM)
+				{
+					m_AimingState = FOCUS;
+				}
 				if (Util::magnitude(getPosition() - m_InvestigationArea) < getSize().y)
 				{
-					m_CurrentState = SEARCH_SWEEP;
+					m_MovementState = IDLE;
 				}
+
+				if (m_CurrentTarget != NULL)
+				{
+					if (Util::magnitude(m_CurrentTarget->getPosition() - getPosition()) < getSize().x * 3)
+					{
+						m_MovementState = IDLE;
+					}
+				}
+				break;
 			}
 		}
 
@@ -273,14 +343,14 @@ void Character::move()
 	{
 		const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
 
-		//Sets the node to reach to be the next node in the path
+										//Sets the node to reach to be the next node in the path
 		sf::Vector2f destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-								 (((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+			(((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 		destination += m_CurrentMap->getPosition();
 
 		sf::Vector2f velocity(destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
 
-		//If the node has already been reached move to the next node
+																			//If the node has already been reached move to the next node
 		float fMagnitude = Util::magnitude(velocity);
 		if (fMagnitude == 0)
 		{
@@ -304,7 +374,7 @@ void Character::move()
 			fDistanceSinceStep += Util::magnitude(velocity);
 			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
-			//If the node has been reached then move to the next node
+																				//If the node has been reached then move to the next node
 			if (m_MainSprite.getPosition().x >= destination.x - 10 &&
 				m_MainSprite.getPosition().x <= destination.x + 10 &&
 				m_MainSprite.getPosition().y <= destination.y + 10 &&
@@ -321,6 +391,82 @@ void Character::move()
 						(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
 						(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
 						sf::Color(0, 255, 0, 255));
+				}
+			}
+		}
+	}
+
+	else if (m_MovementState == PATROL)
+	{
+		if (!m_PatrolPath.empty())
+		{
+			const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
+
+											//Sets the node to reach to be the next node in the path
+			sf::Vector2f destination((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+				(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+			destination += m_CurrentMap->getPosition();
+
+			sf::Vector2f velocity(destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
+
+																				//If the node has already been reached move to the next node
+			float fMagnitude = Util::magnitude(velocity);
+			if (fMagnitude == 0)
+			{
+				if (patrolNode == m_PatrolPath.size() - 1)
+				{
+					patrolDirection = -1;
+				}
+				else if (patrolNode == 0)
+				{
+					patrolDirection = 1;
+				}
+				patrolNode += patrolDirection;
+			}
+			else
+			{
+				//Finds the unit normal
+				velocity /= fMagnitude;
+
+				//Sets up the movement line
+				m_MovementLine[0].position = m_MainSprite.getPosition();
+				m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * getSize().y / 2.0f);
+
+				//Gets the angle the character is heading towards for later use
+				m_fMovementAngle = Util::getAngle(velocity) - 90;
+				m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
+
+				velocity *= kfMoveSpeed; //Multiplies the direction by the speed
+
+				fDistanceSinceStep += Util::magnitude(velocity);
+				m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
+
+																					//If the node has been reached then move to the next node
+				if (m_MainSprite.getPosition().x >= destination.x - 10 &&
+					m_MainSprite.getPosition().x <= destination.x + 10 &&
+					m_MainSprite.getPosition().y <= destination.y + 10 &&
+					m_MainSprite.getPosition().y >= destination.y - 10)
+				{
+					if (patrolNode == m_PatrolPath.size() - 1)
+					{
+						patrolDirection = -1;
+					}
+					else if (patrolNode == 0)
+					{
+						patrolDirection = 1;
+					}
+					patrolNode += patrolDirection;
+
+					//Sets up the path line ready to start drawing a new path
+					m_PathLine.clear();
+					m_PathLine.resize(m_PatrolPath.size());
+					for (int i = 0; i < m_PatrolPath.size(); i++)
+					{
+						m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
+							(((m_PatrolPath.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+							(((m_PatrolPath.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
+							sf::Color(0, 255, 0, 255));
+					}
 				}
 			}
 		}
@@ -527,6 +673,58 @@ bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
 	}
 }
 
+void Character::loadPatrolPath(std::string sDir)
+{
+	std::ifstream pathFile;
+	pathFile.open(sDir); //Open the map file
+
+	if (pathFile.is_open()) //If the file opened correctly
+	{
+		//Initialise reading variables
+		std::string sLine;
+		std::string currentNum;
+		while (!pathFile.eof()) //while the end of file hasnt been reached
+		{
+			getline(pathFile, sLine); //Get the next line
+			
+			for (int i = 3; i < sLine.length(); i++)
+			{
+				if (sLine.at(i) != ' ')
+				{
+					currentNum = currentNum + sLine.at(i);
+				}
+				else if (currentNum != "" ||  i == sLine.length() - 1)
+				{
+					m_PatrolPath.push_back(new Node);
+					m_PatrolPath.at(m_PatrolPath.size() - 1)->index = stoi(currentNum);
+					if (m_PatrolPath.size() > 1)
+					{
+						m_PatrolPath.at(m_PatrolPath.size() - 1)->parent = m_PatrolPath.at(m_PatrolPath.size() - 2);
+					}
+					currentNum = "";
+				}
+			}
+			if (currentNum != "")
+			{
+				m_PatrolPath.push_back(new Node);
+				m_PatrolPath.at(m_PatrolPath.size() - 1)->index = stoi(currentNum);
+				if (m_PatrolPath.size() > 1)
+				{
+					m_PatrolPath.at(m_PatrolPath.size() - 1)->parent = m_PatrolPath.at(m_PatrolPath.size() - 2);
+				}
+				currentNum = "";
+			}
+		}
+	}
+	else
+	{
+		//Ouptut an error
+		std::cout << "Path File: " << sDir << " could not be opened." << "\n";
+	}
+
+	pathFile.close();
+}
+
 //Setters
 void Character::setHealth(float fLevel)
 {
@@ -538,9 +736,10 @@ void Character::setHealth(float fLevel)
 	m_HealthBar.setLevel(fLevel);
 }
 
-void Character::setPath(std::deque<Node*> newPath)
+void Character::setPath(sf::Vector2f startPos, sf::Vector2f endPos)
 {
-	m_Path = newPath;
+	m_Pathfinder.setupLists(); //Sets up the pathfinder for a new path
+	m_Path = m_Pathfinder.findPath(startPos, endPos);
 }
 
 void Character::setVision(bool bState)
@@ -553,7 +752,7 @@ void Character::setTarget(Character* newTarget)
 	m_CurrentTarget = newTarget;
 	if (m_CurrentTarget != NULL) //If the target isnt empty then aim at the target
 	{
-		m_CurrentState = AIM;
+		m_AimingState = AIM;
 	}
 }
 
@@ -616,6 +815,11 @@ void Character::setLoadoutItem(int iIndex, loadoutItem itemType)
 				break;
 		}
 	}
+}
+
+void Character::setMovementState(States newState)
+{
+	m_MovementState = newState;
 }
 
 //Getters
@@ -721,11 +925,12 @@ bool Character::isDead()
 
 bool Character::hearsSound(soundWave* soundArea)
 {
-	if (m_CurrentState == SEARCH_SWEEP)
+	if (m_AimingState != AIM)
 	{
 		if ((Util::magnitude(soundArea->getPosition() - getPosition()) < soundArea->getRadius() + getSize().y))
 		{
-			m_CurrentState = INVESTIGATING;
+			m_MovementState = INVESTIGATING;
+			focusPoint = soundArea->getPosition();
 			m_InvestigationArea = soundArea->getPosition();
 			return true;
 		}
