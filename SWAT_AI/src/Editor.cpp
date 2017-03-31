@@ -420,7 +420,7 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		//Decrement the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y - 1));
 
-		for (int i = 0; i < m_vcLevelBits.size(); i++)
+		for (int i = 0; i < m_vcLevelBits.at(m_vcLevelBits.size() - 1).size(); i++)
 		{
 			if (m_vcLevelBits.at(m_vcLevelBits.size() - 1).at(i) == 'E')
 			{

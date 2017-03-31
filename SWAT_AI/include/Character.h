@@ -11,7 +11,7 @@
 #include "SoundWave.h"
 
 enum loadoutItem {Lazer, Silencer, Scope, None};
-enum States { IDLE, SEARCH_SWEEP, FOCUS, AIM, INVESTIGATING, PATROL, STARTING_PATROL, MOVE_TO_SPOT };
+enum States { IDLE, SEARCH_SWEEP, SEARCH_SPIN, FOCUS, AIM, INVESTIGATING, PATROL, STARTING_PATROL, MOVE_TO_SPOT };
 
 class Character : public Object
 {
@@ -46,6 +46,7 @@ class Character : public Object
 		Character* m_CurrentTarget; //Holds the target the character is aiming towards
 		int patrolNode;
 		int patrolDirection;
+		float spinAmount;
 
 		//Debug lines
 		sf::VertexArray m_OrientationLine; //Shows the direction the unit is facing
@@ -87,6 +88,7 @@ class Character : public Object
 		void setClass(classType classType);
 		void setLoadoutItem(int iIndex, loadoutItem itemType);
 		void setMovementState(States newState);
+		void setAimingState(States newState);
 
 		//Getters
 		float getRotation();
@@ -104,6 +106,7 @@ class Character : public Object
 		bool isDead();
 		bool hearsSound(soundWave* soundArea);
 		std::vector<soundWave*>* getSoundWaves();
+		States getAimingState();
 
 		~Character();
 };

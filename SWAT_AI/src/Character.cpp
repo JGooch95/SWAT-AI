@@ -127,6 +127,7 @@ Character::Character()
 	m_CurrentTarget = NULL;
 	m_bDrawVision = false;
 	m_bDead = false;
+	spinAmount = 0;
 
 	//Sets up the seed for the randomiser
 	srand(time(NULL)); 
@@ -221,6 +222,27 @@ void Character::update()
 				lookAt(m_fMovementAngle + m_fAimingAngle);
 				break;
 			}
+			case SEARCH_SPIN:
+			{
+				if (m_CurrentTarget == NULL)
+				{
+					spinAmount++;
+					if (spinAmount >= 360)
+					{
+						spinAmount = 0;
+						m_AimingState = SEARCH_SWEEP;
+					}
+
+					m_fAimingAngle = spinAmount;
+					lookAt(m_fMovementAngle + m_fAimingAngle);
+				}
+				else
+				{
+					spinAmount = 0;
+					m_AimingState = AIM;
+				}
+				break;
+			}
 			case AIM:
 			{
 				//If there is a target
@@ -251,6 +273,7 @@ void Character::update()
 						m_MovementState = PATROL;
 						sf::Vector2f destination((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
 							(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+						destination += m_CurrentMap->getPosition();
 						setPath(getPosition(), destination);
 					}
 					else
@@ -286,6 +309,7 @@ void Character::update()
 						m_MovementState = PATROL;
 						sf::Vector2f destination((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
 							(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+						destination += m_CurrentMap->getPosition();
 						setPath(getPosition(), destination);
 					}
 				}
@@ -800,6 +824,11 @@ void Character::setMovementState(States newState)
 	m_MovementState = newState;
 }
 
+void Character::setAimingState(States newState)
+{
+	m_AimingState = newState;
+}
+
 //Getters
 float Character::getRotation()
 {
@@ -921,6 +950,11 @@ std::vector<soundWave*>* Character::getSoundWaves()
 	return &m_Waves;
 }
 
+States Character::getAimingState()
+{
+	return m_AimingState;
+}
+
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	if (!m_bDead)
@@ -935,16 +969,15 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 	target.draw(m_MainSprite);
 
-	if (m_CurrentSettings->debugActive())
-	{
-		target.draw(m_OrientationLine);
-		target.draw(m_PathLine);
-		target.draw(m_MovementLine);
-		target.draw(m_CollisionLine);
-	}
-
 	if (!m_bDead)
 	{
+		if (m_CurrentSettings->debugActive())
+		{
+			target.draw(m_OrientationLine);
+			target.draw(m_PathLine);
+			target.draw(m_MovementLine);
+			target.draw(m_CollisionLine);
+		}
 		target.draw(m_AmmoBar);
 		target.draw(m_HealthBar);
 	}

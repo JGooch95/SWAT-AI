@@ -394,6 +394,10 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 						//Take health off if a bullet has been shot
 						vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(0),
 							vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation()).at(1) }));
+						if (vCharSet2.at(j)->getAimingState() != AIM)
+						{
+							vCharSet2.at(j)->setAimingState(SEARCH_SPIN);
+						}
 					}
 
 					for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
