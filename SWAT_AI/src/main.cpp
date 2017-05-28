@@ -6,6 +6,7 @@
 #include "../include/Editor.h"
 #include "../include/SoundManager.h"
 #include "../include/FontManager.h"
+#include "../include/MathUtils.h"
 
 int main()
 {

@@ -1,0 +1,1039 @@
+\hypertarget{class_character}{}\section{Character Class Reference}
+\label{class_character}\index{Character@{Character}}
+
+
+An AI character which performs the main actions within the game.  
+
+
+
+
+{\ttfamily \#include $<$Character.\+h$>$}
+
+Inheritance diagram for Character\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_character}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_character_adc27bdd255876169bad2ed0bae0cffb5}{Character} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_ab9168412ef9b2c8726b0de4dfb63e604}{update} ()
+\begin{DoxyCompactList}\small\item\em Updates the states of data. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a639f0dfe68079c01cb702073a6451659}{move} ()
+\begin{DoxyCompactList}\small\item\em Follows the path to the next node. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a141b0f98a619a88017eba5675268f3ab}{look\+At} (sf\+::\+Vector2f position)
+\begin{DoxyCompactList}\small\item\em Looks towards the position stated. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_ac8c9b33398ecc1fd527e4d392b68bb5e}{look\+At} (float f\+Angle)
+\begin{DoxyCompactList}\small\item\em Looks towards the angle given. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a9852ca921b44387636f6dc268afc95bb}{vision\+Calculation} (std\+::vector$<$ sf\+::\+Vector2f $>$v\+Edges)
+\begin{DoxyCompactList}\small\item\em Performs ray collisions with the edges given to produce a cone of vision. \end{DoxyCompactList}\item 
+float \hyperlink{class_character_a3f46233c0f715380c50469b9a875cb48}{bullet\+Checks} (std\+::vector$<$ sf\+::\+Vector2f $>$v\+Edges)
+\begin{DoxyCompactList}\small\item\em Sends the edges to the gun to calculate bullet collisions. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_ac40a807deb125f3c6da03ffeebe157f4}{lazer\+Checks} (std\+::vector$<$ sf\+::\+Vector2f $>$ v\+Edges)
+\begin{DoxyCompactList}\small\item\em Checks if the weapons lazer has collided. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a35bdf7823ddd768ac34ae91e3681165f}{set\+Patrol\+Path} (std\+::vector$<$ int $>$ vi\+Path\+Nodes)
+\begin{DoxyCompactList}\small\item\em Sets the patrol path to the nodes given. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a272568879408954cd2e6dc18520be441}{set\+Health} (float f\+Level)
+\begin{DoxyCompactList}\small\item\em Sets the health of the character. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a4135c75013813ae37fc4212a3000cabb}{set\+Path} (sf\+::\+Vector2f start\+Pos, sf\+::\+Vector2f end\+Pos)
+\begin{DoxyCompactList}\small\item\em Sets the path for the character to follow. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a360fa750198888b54a96f0c811de1893}{set\+Vision} (bool b\+State)
+\begin{DoxyCompactList}\small\item\em Sets the whether the vision is active. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a7a318c427231b03423bd65af5f257776}{set\+Target} (\hyperlink{class_character}{Character} $\ast$new\+Target)
+\begin{DoxyCompactList}\small\item\em Sets a target for the character. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a87ea11fe81e35a6efb7d465b01b10332}{set\+Class} (\hyperlink{_weapon_8h_ab84a9103ee8e782337e098ae19af7a29}{class\+Type} \hyperlink{_weapon_8h_ab84a9103ee8e782337e098ae19af7a29}{class\+Type})
+\begin{DoxyCompactList}\small\item\em Sets a new class for the character. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a6aafe288415f66eef9f244f72406415d}{set\+Loadout\+Item} (int i\+Index, \hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item} item\+Type)
+\begin{DoxyCompactList}\small\item\em Sets the loadout item of one item slot. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a8411872ea649afb42dea6f530af79704}{set\+Movement\+State} (\hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} new\+State)
+\begin{DoxyCompactList}\small\item\em Sets the movement state of the AI. \end{DoxyCompactList}\item 
+void \hyperlink{class_character_a4fdc243fc7681fa8fd8dec2cbed595fe}{set\+Aiming\+State} (\hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} new\+State)
+\begin{DoxyCompactList}\small\item\em Sets the aiming state of the AI. \end{DoxyCompactList}\item 
+float \hyperlink{class_character_ae60bb73ddd9c7175c78f61a8332ea8f4}{get\+Rotation} ()
+\begin{DoxyCompactList}\small\item\em Gets the rotation of the character. \end{DoxyCompactList}\item 
+int \hyperlink{class_character_a555596279fd74ebe904f2d54885abb55}{get\+Loadout\+Size} ()
+\begin{DoxyCompactList}\small\item\em Gets the amount of loadout slots available. \end{DoxyCompactList}\item 
+\hyperlink{struct_util_1_1_limits}{Util\+::\+Limits} \hyperlink{class_character_ac1985a83e63950e7ac87ce69ea28684f}{get\+Health\+Data} ()
+\begin{DoxyCompactList}\small\item\em Gets the health levels. \end{DoxyCompactList}\item 
+\hyperlink{struct_util_1_1_limits}{Util\+::\+Limits} \hyperlink{class_character_a72edf0df90187cc5f8628e46c4124eef}{get\+Ammo\+Data} ()
+\begin{DoxyCompactList}\small\item\em Gets the ammo levels. \end{DoxyCompactList}\item 
+std\+::vector$<$ sf\+::\+Vector2f $>$ \hyperlink{class_character_ac74c4792b54211057448be3e5de5c8cc}{get\+Collision\+Line} (float f\+Angle)
+\begin{DoxyCompactList}\small\item\em Gets the collision line for shooting collisions. \end{DoxyCompactList}\item 
+\hyperlink{_weapon_8h_ab84a9103ee8e782337e098ae19af7a29}{class\+Type} \hyperlink{class_character_ac007885afee1d0d6e91a4aabe57cda27}{get\+Class} ()
+\begin{DoxyCompactList}\small\item\em Gets the characters class type. \end{DoxyCompactList}\item 
+\hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item} \hyperlink{class_character_ac1ba1ec695a358e504aefdbd8b4b2552}{get\+Loadout\+Item} (int i\+Index)
+\begin{DoxyCompactList}\small\item\em Gets the loadout at the given index. \end{DoxyCompactList}\item 
+\hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item} \hyperlink{class_character_a2faad0be62bac6958cf6a9acab3f1f92}{get\+Next\+Loadout\+Item} (\hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item} item\+Type)
+\begin{DoxyCompactList}\small\item\em Gets the next loadout item in the cycle. \end{DoxyCompactList}\item 
+\hyperlink{class_weapon}{Weapon} $\ast$ \hyperlink{class_character_a46e4df688f2a4b6ec9368ada9445aa66}{get\+Weapon} ()
+\begin{DoxyCompactList}\small\item\em Gets the characters weapon. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_ad92a87727c942a1ff05e09cceaca1398}{reloading} ()
+\begin{DoxyCompactList}\small\item\em States if the character is reloading. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_ad0f38e40696e54180a5cd49622480afb}{is\+Shooting} ()
+\begin{DoxyCompactList}\small\item\em States if the character is shooting. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_a1e7a69d8500b81ad27e51923ec1b335b}{step\+Taken} ()
+\begin{DoxyCompactList}\small\item\em States if the character has taken a step. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_a16c884ce2071ab8f4a715de559b2f2fc}{is\+Dead} ()
+\begin{DoxyCompactList}\small\item\em States if the character is dead. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_a3bf37110e85ed79119ddb103fab670e4}{hears\+Sound} (\hyperlink{classsound_wave}{sound\+Wave} $\ast$sound\+Area)
+\begin{DoxyCompactList}\small\item\em States whether the sound given has been heard. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{classsound_wave}{sound\+Wave} $\ast$ $>$ $\ast$ \hyperlink{class_character_a66131b3b77693e6ceea53b498f90f949}{get\+Sound\+Waves} ()
+\begin{DoxyCompactList}\small\item\em Gets the characters emitted sound waves. \end{DoxyCompactList}\item 
+\hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} \hyperlink{class_character_aaa04388699d1b6cb0a48e1daed8eb63a}{get\+Aiming\+State} ()
+\begin{DoxyCompactList}\small\item\em Gets the state of the aiming state machine. \end{DoxyCompactList}\item 
+\hyperlink{class_character_a9e9be564d05ded80962b2045aa70b3fc}{$\sim$\+Character} ()
+\begin{DoxyCompactList}\small\item\em Default deconstructor. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_character_a3812c72bf1cf8090f67a3387b5d96753}{draw} (sf\+::\+Render\+Target \&target, sf\+::\+Render\+States states) const
+\begin{DoxyCompactList}\small\item\em Draws all of the characters\textquotesingle{}s entities to the screen. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_bar}{Bar} \hyperlink{class_character_ac04b03a0abdc6fe21f3326a98c788ecf}{m\+\_\+\+Health\+Bar}
+\begin{DoxyCompactList}\small\item\em The health bar. \end{DoxyCompactList}\item 
+\hyperlink{class_bar}{Bar} \hyperlink{class_character_a811000299dfe10b753c4065c7a7d16bb}{m\+\_\+\+Ammo\+Bar}
+\begin{DoxyCompactList}\small\item\em The ammo bar. \end{DoxyCompactList}\item 
+\hyperlink{class_object}{Object} \hyperlink{class_character_acf5fccc444e86f4c3d41557af8e2dd47}{m\+\_\+\+Death\+Image}
+\begin{DoxyCompactList}\small\item\em The image used when the character dies. \end{DoxyCompactList}\item 
+\hyperlink{class_texture_loader}{Texture\+Loader} $\ast$ \hyperlink{class_character_a8c925b6d9636faf2cf18b690b429e169}{m\+\_\+\+Textures}
+\begin{DoxyCompactList}\small\item\em Holds the location of all of the textures. \end{DoxyCompactList}\item 
+\hyperlink{class_sound_manager}{Sound\+Manager} $\ast$ \hyperlink{class_character_a531f612125a5fc1eb52cd0646d73fd75}{m\+\_\+\+Sound\+Manager}
+\begin{DoxyCompactList}\small\item\em Holds the location of all of the sounds. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{classsound_wave}{sound\+Wave} $\ast$ $>$ \hyperlink{class_character_a562e96e907ef9fca8684c2db67e1e738}{m\+\_\+\+Waves}
+\begin{DoxyCompactList}\small\item\em Holds soundwaves which are emitted. \end{DoxyCompactList}\item 
+sf\+::\+Sound \hyperlink{class_character_ae6e5a7edea1bbd417ca443ce981de5b5}{m\+\_\+\+Step\+Sound}
+\begin{DoxyCompactList}\small\item\em The sound played every step. \end{DoxyCompactList}\item 
+sf\+::\+Sound \hyperlink{class_character_a142f2e93b0aeee4501970a1bbe6050ed}{m\+\_\+\+Loadout\+Sound}
+\begin{DoxyCompactList}\small\item\em The loadout switching sound. \end{DoxyCompactList}\item 
+sf\+::\+Sound \hyperlink{class_character_ab3edae28957985578ed4c4ec5534c04c}{m\+\_\+\+Death\+Sound}
+\begin{DoxyCompactList}\small\item\em The dying sound. \end{DoxyCompactList}\item 
+\hyperlink{class_weapon}{Weapon} \hyperlink{class_character_aa5e5b12f44f1331e934b40435f258805}{m\+\_\+\+Weapon1}
+\begin{DoxyCompactList}\small\item\em The charcter\textquotesingle{}s weapon. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item} $>$ \hyperlink{class_character_a7e27911963e4a99b0dbaccae0c182537}{m\+\_\+v\+Loadout}
+\begin{DoxyCompactList}\small\item\em The equipment the character has equipped. \end{DoxyCompactList}\item 
+\hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} \hyperlink{class_character_a8f710841b6c872e84a9d6940c0123e4b}{m\+\_\+\+Aiming\+State}
+\begin{DoxyCompactList}\small\item\em The current state of the aiming state machine. \end{DoxyCompactList}\item 
+\hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} \hyperlink{class_character_a5c308b63279b8206e2c8014f15e660bc}{m\+\_\+\+Movement\+State}
+\begin{DoxyCompactList}\small\item\em The current state of the movement state machine. \end{DoxyCompactList}\item 
+\hyperlink{class_a_star}{A\+Star} \hyperlink{class_character_a83fbc0831e0d59f349a3eab305d74965}{m\+\_\+\+Pathfinder}
+\begin{DoxyCompactList}\small\item\em The pathfinder used for navigation. \end{DoxyCompactList}\item 
+sf\+::\+Vector2f \hyperlink{class_character_a7f43ba27a490f5e80f9103b8e7e00e20}{focus\+Point}
+\begin{DoxyCompactList}\small\item\em The focus point used when in the focus aiming state. \end{DoxyCompactList}\item 
+int \hyperlink{class_character_a829ad896de47ffa2fd74c942feb0d9fa}{m\+\_\+i\+Aiming\+Direction}
+\begin{DoxyCompactList}\small\item\em Holds the direction the character aims towards when doing a sweep search. \end{DoxyCompactList}\item 
+std\+::deque$<$ \hyperlink{struct_node}{Node} $\ast$ $>$ \hyperlink{class_character_a8aa67eb094307c8645c245e1c999cff8}{m\+\_\+\+Path}
+\begin{DoxyCompactList}\small\item\em Holds the current movement path. \end{DoxyCompactList}\item 
+std\+::deque$<$ \hyperlink{struct_node}{Node} $\ast$ $>$ \hyperlink{class_character_ad792c539b12f981bcb78f8b0e9c78eb5}{m\+\_\+\+Patrol\+Path}
+\begin{DoxyCompactList}\small\item\em The path used for enemy patrols. \end{DoxyCompactList}\item 
+\hyperlink{class_character}{Character} $\ast$ \hyperlink{class_character_ad9a0c6940df7fc13abd6ac2404b058b3}{m\+\_\+\+Current\+Target}
+\begin{DoxyCompactList}\small\item\em Holds the target the character is aiming towards. \end{DoxyCompactList}\item 
+int \hyperlink{class_character_ae7e67233ca5f5577676cd83f5d2a847f}{patrol\+Node}
+\begin{DoxyCompactList}\small\item\em The last patrol node reached. \end{DoxyCompactList}\item 
+int \hyperlink{class_character_a15115aab30dbd73eee49d3035a6bd94c}{patrol\+Direction}
+\begin{DoxyCompactList}\small\item\em The direction the patrol is followed in. \end{DoxyCompactList}\item 
+float \hyperlink{class_character_a0b30a626fb45ab6539d983ef51c19958}{spin\+Amount}
+\begin{DoxyCompactList}\small\item\em The amount the character has spinned in the search spin state. \end{DoxyCompactList}\item 
+sf\+::\+Vertex\+Array \hyperlink{class_character_a9444b4e76eb7cfebfb6f13b5c6af5535}{m\+\_\+\+Orientation\+Line}
+\begin{DoxyCompactList}\small\item\em Shows the direction the unit is facing. \end{DoxyCompactList}\item 
+sf\+::\+Vertex\+Array \hyperlink{class_character_aead9e4e92465865ad80eca79d222cddb}{m\+\_\+\+Movement\+Line}
+\begin{DoxyCompactList}\small\item\em Shows the direction the unit is facing. \end{DoxyCompactList}\item 
+sf\+::\+Vertex\+Array \hyperlink{class_character_af2a08c062ab2b12db31e36b15585e5ed}{m\+\_\+\+Path\+Line}
+\begin{DoxyCompactList}\small\item\em Shows the path the unit is following. \end{DoxyCompactList}\item 
+sf\+::\+Vertex\+Array \hyperlink{class_character_a0caf39910e976b37d664bf24cb620d12}{m\+\_\+\+Collision\+Line}
+\begin{DoxyCompactList}\small\item\em Shows the line used for shooting collisions. \end{DoxyCompactList}\item 
+sf\+::\+Vertex\+Array \hyperlink{class_character_a3ff2604a1ca7c2ebe4b07f378f4fc3fd}{m\+\_\+\+Vision\+Rays}
+\begin{DoxyCompactList}\small\item\em Holds the character\textquotesingle{}s vision cone. \end{DoxyCompactList}\item 
+\hyperlink{_weapon_8h_ab84a9103ee8e782337e098ae19af7a29}{class\+Type} \hyperlink{class_character_aa130143524b553ddf116e0d4077bcdec}{m\+\_\+\+Current\+Class}
+\begin{DoxyCompactList}\small\item\em Holds the class of the current unit. \end{DoxyCompactList}\item 
+\hyperlink{struct_util_1_1_limits}{Util\+::\+Limits} \hyperlink{class_character_a944cd240090634db000d5f64ce6345fe}{m\+\_\+\+Health\+Levels}
+\begin{DoxyCompactList}\small\item\em Holds the characters health data. \end{DoxyCompactList}\item 
+float \hyperlink{class_character_aeb540cb088fdd9d31874cd672d6da8a0}{m\+\_\+f\+Movement\+Angle}
+\begin{DoxyCompactList}\small\item\em Holds the angle at which the character is heading towards. \end{DoxyCompactList}\item 
+float \hyperlink{class_character_af087fbb16f032166f54f1b8c7d2ac579}{m\+\_\+f\+Aiming\+Angle}
+\begin{DoxyCompactList}\small\item\em Holds the angle the character is aiming towards. \end{DoxyCompactList}\item 
+float \hyperlink{class_character_af3fba210ee65a1e3792c6bf7388cd8c4}{f\+Distance\+Since\+Step}
+\begin{DoxyCompactList}\small\item\em Holds how many pixels the unit has moved in a step. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_a6e68bbc92908c098b35615e7b43ac0b2}{m\+\_\+b\+Draw\+Vision}
+\begin{DoxyCompactList}\small\item\em States whether vision cones are drawn. \end{DoxyCompactList}\item 
+bool \hyperlink{class_character_a910b476644d4a5c30355d36664b07b5f}{m\+\_\+b\+Dead}
+\begin{DoxyCompactList}\small\item\em States whether the character is dead. \end{DoxyCompactList}\item 
+sf\+::\+Vector2f \hyperlink{class_character_ae8bb360dd9c4e3cad619182c5baeb8f1}{m\+\_\+\+Investigation\+Area}
+\begin{DoxyCompactList}\small\item\em States where the character is investigating. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+An AI character which performs the main actions within the game. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_character_adc27bdd255876169bad2ed0bae0cffb5}\label{class_character_adc27bdd255876169bad2ed0bae0cffb5}} 
+\index{Character@{Character}!Character@{Character}}
+\index{Character@{Character}!Character@{Character}}
+\subsubsection{\texorpdfstring{Character()}{Character()}}
+{\footnotesize\ttfamily Character\+::\+Character (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default constructor. 
+
+\mbox{\Hypertarget{class_character_a9e9be564d05ded80962b2045aa70b3fc}\label{class_character_a9e9be564d05ded80962b2045aa70b3fc}} 
+\index{Character@{Character}!````~Character@{$\sim$\+Character}}
+\index{````~Character@{$\sim$\+Character}!Character@{Character}}
+\subsubsection{\texorpdfstring{$\sim$\+Character()}{~Character()}}
+{\footnotesize\ttfamily Character\+::$\sim$\+Character (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default deconstructor. 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_character_a3f46233c0f715380c50469b9a875cb48}\label{class_character_a3f46233c0f715380c50469b9a875cb48}} 
+\index{Character@{Character}!bullet\+Checks@{bullet\+Checks}}
+\index{bullet\+Checks@{bullet\+Checks}!Character@{Character}}
+\subsubsection{\texorpdfstring{bullet\+Checks()}{bulletChecks()}}
+{\footnotesize\ttfamily float Character\+::bullet\+Checks (\begin{DoxyParamCaption}\item[{std\+::vector$<$ sf\+::\+Vector2f $>$}]{v\+Edges }\end{DoxyParamCaption})}
+
+
+
+Sends the edges to the gun to calculate bullet collisions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v\+Edges} & The vector of edges being checked \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Retuns the damage dealt if the gun is shot 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a3812c72bf1cf8090f67a3387b5d96753}\label{class_character_a3812c72bf1cf8090f67a3387b5d96753}} 
+\index{Character@{Character}!draw@{draw}}
+\index{draw@{draw}!Character@{Character}}
+\subsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Character\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Target \&}]{target,  }\item[{sf\+::\+Render\+States}]{states }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Draws all of the characters\textquotesingle{}s entities to the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target} & Holds where to draw the entities to. \\
+\hline
+{\em states} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_aaa04388699d1b6cb0a48e1daed8eb63a}\label{class_character_aaa04388699d1b6cb0a48e1daed8eb63a}} 
+\index{Character@{Character}!get\+Aiming\+State@{get\+Aiming\+State}}
+\index{get\+Aiming\+State@{get\+Aiming\+State}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Aiming\+State()}{getAimingState()}}
+{\footnotesize\ttfamily \hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} Character\+::get\+Aiming\+State (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the state of the aiming state machine. 
+
+\begin{DoxyReturn}{Returns}
+returns the state of the aiming state machine 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a72edf0df90187cc5f8628e46c4124eef}\label{class_character_a72edf0df90187cc5f8628e46c4124eef}} 
+\index{Character@{Character}!get\+Ammo\+Data@{get\+Ammo\+Data}}
+\index{get\+Ammo\+Data@{get\+Ammo\+Data}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Ammo\+Data()}{getAmmoData()}}
+{\footnotesize\ttfamily \hyperlink{struct_util_1_1_limits}{Util\+::\+Limits} Character\+::get\+Ammo\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the ammo levels. 
+
+\begin{DoxyReturn}{Returns}
+returns the ammo levels 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ac007885afee1d0d6e91a4aabe57cda27}\label{class_character_ac007885afee1d0d6e91a4aabe57cda27}} 
+\index{Character@{Character}!get\+Class@{get\+Class}}
+\index{get\+Class@{get\+Class}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Class()}{getClass()}}
+{\footnotesize\ttfamily \hyperlink{_weapon_8h_ab84a9103ee8e782337e098ae19af7a29}{class\+Type} Character\+::get\+Class (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the characters class type. 
+
+\begin{DoxyReturn}{Returns}
+returns the characters class type 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ac74c4792b54211057448be3e5de5c8cc}\label{class_character_ac74c4792b54211057448be3e5de5c8cc}} 
+\index{Character@{Character}!get\+Collision\+Line@{get\+Collision\+Line}}
+\index{get\+Collision\+Line@{get\+Collision\+Line}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Collision\+Line()}{getCollisionLine()}}
+{\footnotesize\ttfamily std\+::vector$<$sf\+::\+Vector2f$>$ Character\+::get\+Collision\+Line (\begin{DoxyParamCaption}\item[{float}]{f\+Angle }\end{DoxyParamCaption})}
+
+
+
+Gets the collision line for shooting collisions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\+Angle} & The angle of the collision line \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+returns the collision line 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ac1985a83e63950e7ac87ce69ea28684f}\label{class_character_ac1985a83e63950e7ac87ce69ea28684f}} 
+\index{Character@{Character}!get\+Health\+Data@{get\+Health\+Data}}
+\index{get\+Health\+Data@{get\+Health\+Data}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Health\+Data()}{getHealthData()}}
+{\footnotesize\ttfamily \hyperlink{struct_util_1_1_limits}{Util\+::\+Limits} Character\+::get\+Health\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the health levels. 
+
+\begin{DoxyReturn}{Returns}
+returns the health levels 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ac1ba1ec695a358e504aefdbd8b4b2552}\label{class_character_ac1ba1ec695a358e504aefdbd8b4b2552}} 
+\index{Character@{Character}!get\+Loadout\+Item@{get\+Loadout\+Item}}
+\index{get\+Loadout\+Item@{get\+Loadout\+Item}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Loadout\+Item()}{getLoadoutItem()}}
+{\footnotesize\ttfamily \hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item} Character\+::get\+Loadout\+Item (\begin{DoxyParamCaption}\item[{int}]{i\+Index }\end{DoxyParamCaption})}
+
+
+
+Gets the loadout at the given index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+Index} & the index of the loadout slot \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+returns the loadout at the given index 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a555596279fd74ebe904f2d54885abb55}\label{class_character_a555596279fd74ebe904f2d54885abb55}} 
+\index{Character@{Character}!get\+Loadout\+Size@{get\+Loadout\+Size}}
+\index{get\+Loadout\+Size@{get\+Loadout\+Size}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Loadout\+Size()}{getLoadoutSize()}}
+{\footnotesize\ttfamily int Character\+::get\+Loadout\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the amount of loadout slots available. 
+
+\begin{DoxyReturn}{Returns}
+returns the amount of loadout slots available 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a2faad0be62bac6958cf6a9acab3f1f92}\label{class_character_a2faad0be62bac6958cf6a9acab3f1f92}} 
+\index{Character@{Character}!get\+Next\+Loadout\+Item@{get\+Next\+Loadout\+Item}}
+\index{get\+Next\+Loadout\+Item@{get\+Next\+Loadout\+Item}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Next\+Loadout\+Item()}{getNextLoadoutItem()}}
+{\footnotesize\ttfamily \hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item} Character\+::get\+Next\+Loadout\+Item (\begin{DoxyParamCaption}\item[{\hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item}}]{item\+Type }\end{DoxyParamCaption})}
+
+
+
+Gets the next loadout item in the cycle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item\+Type} & The current item\+Type \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+returns the new loadout item 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ae60bb73ddd9c7175c78f61a8332ea8f4}\label{class_character_ae60bb73ddd9c7175c78f61a8332ea8f4}} 
+\index{Character@{Character}!get\+Rotation@{get\+Rotation}}
+\index{get\+Rotation@{get\+Rotation}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Rotation()}{getRotation()}}
+{\footnotesize\ttfamily float Character\+::get\+Rotation (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the rotation of the character. 
+
+\begin{DoxyReturn}{Returns}
+returns the rotation of the character 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a66131b3b77693e6ceea53b498f90f949}\label{class_character_a66131b3b77693e6ceea53b498f90f949}} 
+\index{Character@{Character}!get\+Sound\+Waves@{get\+Sound\+Waves}}
+\index{get\+Sound\+Waves@{get\+Sound\+Waves}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Sound\+Waves()}{getSoundWaves()}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{classsound_wave}{sound\+Wave}$\ast$$>$$\ast$ Character\+::get\+Sound\+Waves (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the characters emitted sound waves. 
+
+\begin{DoxyReturn}{Returns}
+returns the characters emitted sound waves 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a46e4df688f2a4b6ec9368ada9445aa66}\label{class_character_a46e4df688f2a4b6ec9368ada9445aa66}} 
+\index{Character@{Character}!get\+Weapon@{get\+Weapon}}
+\index{get\+Weapon@{get\+Weapon}!Character@{Character}}
+\subsubsection{\texorpdfstring{get\+Weapon()}{getWeapon()}}
+{\footnotesize\ttfamily \hyperlink{class_weapon}{Weapon}$\ast$ Character\+::get\+Weapon (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the characters weapon. 
+
+\begin{DoxyReturn}{Returns}
+returns the characters weapon 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a3bf37110e85ed79119ddb103fab670e4}\label{class_character_a3bf37110e85ed79119ddb103fab670e4}} 
+\index{Character@{Character}!hears\+Sound@{hears\+Sound}}
+\index{hears\+Sound@{hears\+Sound}!Character@{Character}}
+\subsubsection{\texorpdfstring{hears\+Sound()}{hearsSound()}}
+{\footnotesize\ttfamily bool Character\+::hears\+Sound (\begin{DoxyParamCaption}\item[{\hyperlink{classsound_wave}{sound\+Wave} $\ast$}]{sound\+Area }\end{DoxyParamCaption})}
+
+
+
+States whether the sound given has been heard. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sound\+Area} & The sound being analysed \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+returns whether the sound given has been heard 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a16c884ce2071ab8f4a715de559b2f2fc}\label{class_character_a16c884ce2071ab8f4a715de559b2f2fc}} 
+\index{Character@{Character}!is\+Dead@{is\+Dead}}
+\index{is\+Dead@{is\+Dead}!Character@{Character}}
+\subsubsection{\texorpdfstring{is\+Dead()}{isDead()}}
+{\footnotesize\ttfamily bool Character\+::is\+Dead (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+States if the character is dead. 
+
+\begin{DoxyReturn}{Returns}
+returns if the character is dead 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ad0f38e40696e54180a5cd49622480afb}\label{class_character_ad0f38e40696e54180a5cd49622480afb}} 
+\index{Character@{Character}!is\+Shooting@{is\+Shooting}}
+\index{is\+Shooting@{is\+Shooting}!Character@{Character}}
+\subsubsection{\texorpdfstring{is\+Shooting()}{isShooting()}}
+{\footnotesize\ttfamily bool Character\+::is\+Shooting (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+States if the character is shooting. 
+
+\begin{DoxyReturn}{Returns}
+returns if the character is shooting 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ac40a807deb125f3c6da03ffeebe157f4}\label{class_character_ac40a807deb125f3c6da03ffeebe157f4}} 
+\index{Character@{Character}!lazer\+Checks@{lazer\+Checks}}
+\index{lazer\+Checks@{lazer\+Checks}!Character@{Character}}
+\subsubsection{\texorpdfstring{lazer\+Checks()}{lazerChecks()}}
+{\footnotesize\ttfamily bool Character\+::lazer\+Checks (\begin{DoxyParamCaption}\item[{std\+::vector$<$ sf\+::\+Vector2f $>$}]{v\+Edges }\end{DoxyParamCaption})}
+
+
+
+Checks if the weapons lazer has collided. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v\+Edges} & The vector of edges being checked \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Retuns if the lazer hit anything 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a141b0f98a619a88017eba5675268f3ab}\label{class_character_a141b0f98a619a88017eba5675268f3ab}} 
+\index{Character@{Character}!look\+At@{look\+At}}
+\index{look\+At@{look\+At}!Character@{Character}}
+\subsubsection{\texorpdfstring{look\+At()}{lookAt()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Character\+::look\+At (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{position }\end{DoxyParamCaption})}
+
+
+
+Looks towards the position stated. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & The position to look towards \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_ac8c9b33398ecc1fd527e4d392b68bb5e}\label{class_character_ac8c9b33398ecc1fd527e4d392b68bb5e}} 
+\index{Character@{Character}!look\+At@{look\+At}}
+\index{look\+At@{look\+At}!Character@{Character}}
+\subsubsection{\texorpdfstring{look\+At()}{lookAt()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Character\+::look\+At (\begin{DoxyParamCaption}\item[{float}]{f\+Angle }\end{DoxyParamCaption})}
+
+
+
+Looks towards the angle given. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\+Angle} & The angle to look towards \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a639f0dfe68079c01cb702073a6451659}\label{class_character_a639f0dfe68079c01cb702073a6451659}} 
+\index{Character@{Character}!move@{move}}
+\index{move@{move}!Character@{Character}}
+\subsubsection{\texorpdfstring{move()}{move()}}
+{\footnotesize\ttfamily void Character\+::move (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Follows the path to the next node. 
+
+\mbox{\Hypertarget{class_character_ad92a87727c942a1ff05e09cceaca1398}\label{class_character_ad92a87727c942a1ff05e09cceaca1398}} 
+\index{Character@{Character}!reloading@{reloading}}
+\index{reloading@{reloading}!Character@{Character}}
+\subsubsection{\texorpdfstring{reloading()}{reloading()}}
+{\footnotesize\ttfamily bool Character\+::reloading (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+States if the character is reloading. 
+
+\begin{DoxyReturn}{Returns}
+returns if the character is reloading 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_a4fdc243fc7681fa8fd8dec2cbed595fe}\label{class_character_a4fdc243fc7681fa8fd8dec2cbed595fe}} 
+\index{Character@{Character}!set\+Aiming\+State@{set\+Aiming\+State}}
+\index{set\+Aiming\+State@{set\+Aiming\+State}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Aiming\+State()}{setAimingState()}}
+{\footnotesize\ttfamily void Character\+::set\+Aiming\+State (\begin{DoxyParamCaption}\item[{\hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States}}]{new\+State }\end{DoxyParamCaption})}
+
+
+
+Sets the aiming state of the AI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em States} & The state to switch to \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a87ea11fe81e35a6efb7d465b01b10332}\label{class_character_a87ea11fe81e35a6efb7d465b01b10332}} 
+\index{Character@{Character}!set\+Class@{set\+Class}}
+\index{set\+Class@{set\+Class}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Class()}{setClass()}}
+{\footnotesize\ttfamily void Character\+::set\+Class (\begin{DoxyParamCaption}\item[{\hyperlink{_weapon_8h_ab84a9103ee8e782337e098ae19af7a29}{class\+Type}}]{class\+Type }\end{DoxyParamCaption})}
+
+
+
+Sets a new class for the character. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em class\+Type} & The new class for the character \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a272568879408954cd2e6dc18520be441}\label{class_character_a272568879408954cd2e6dc18520be441}} 
+\index{Character@{Character}!set\+Health@{set\+Health}}
+\index{set\+Health@{set\+Health}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Health()}{setHealth()}}
+{\footnotesize\ttfamily void Character\+::set\+Health (\begin{DoxyParamCaption}\item[{float}]{f\+Level }\end{DoxyParamCaption})}
+
+
+
+Sets the health of the character. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\+Level} & The amount of health \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a6aafe288415f66eef9f244f72406415d}\label{class_character_a6aafe288415f66eef9f244f72406415d}} 
+\index{Character@{Character}!set\+Loadout\+Item@{set\+Loadout\+Item}}
+\index{set\+Loadout\+Item@{set\+Loadout\+Item}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Loadout\+Item()}{setLoadoutItem()}}
+{\footnotesize\ttfamily void Character\+::set\+Loadout\+Item (\begin{DoxyParamCaption}\item[{int}]{i\+Index,  }\item[{\hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item}}]{item\+Type }\end{DoxyParamCaption})}
+
+
+
+Sets the loadout item of one item slot. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+Index} & The index of the loadout slot being changed \\
+\hline
+{\em item\+Type} & The item that is being switched to \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a8411872ea649afb42dea6f530af79704}\label{class_character_a8411872ea649afb42dea6f530af79704}} 
+\index{Character@{Character}!set\+Movement\+State@{set\+Movement\+State}}
+\index{set\+Movement\+State@{set\+Movement\+State}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Movement\+State()}{setMovementState()}}
+{\footnotesize\ttfamily void Character\+::set\+Movement\+State (\begin{DoxyParamCaption}\item[{\hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States}}]{new\+State }\end{DoxyParamCaption})}
+
+
+
+Sets the movement state of the AI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em States} & The state to switch to \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a4135c75013813ae37fc4212a3000cabb}\label{class_character_a4135c75013813ae37fc4212a3000cabb}} 
+\index{Character@{Character}!set\+Path@{set\+Path}}
+\index{set\+Path@{set\+Path}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Path()}{setPath()}}
+{\footnotesize\ttfamily void Character\+::set\+Path (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{start\+Pos,  }\item[{sf\+::\+Vector2f}]{end\+Pos }\end{DoxyParamCaption})}
+
+
+
+Sets the path for the character to follow. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start\+Pos} & The staring position of the path \\
+\hline
+{\em end\+Pos} & The end position of the path \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a35bdf7823ddd768ac34ae91e3681165f}\label{class_character_a35bdf7823ddd768ac34ae91e3681165f}} 
+\index{Character@{Character}!set\+Patrol\+Path@{set\+Patrol\+Path}}
+\index{set\+Patrol\+Path@{set\+Patrol\+Path}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Patrol\+Path()}{setPatrolPath()}}
+{\footnotesize\ttfamily void Character\+::set\+Patrol\+Path (\begin{DoxyParamCaption}\item[{std\+::vector$<$ int $>$}]{vi\+Path\+Nodes }\end{DoxyParamCaption})}
+
+
+
+Sets the patrol path to the nodes given. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vi\+Path\+Nodes} & Holds the indexes for the nodes to move to \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a7a318c427231b03423bd65af5f257776}\label{class_character_a7a318c427231b03423bd65af5f257776}} 
+\index{Character@{Character}!set\+Target@{set\+Target}}
+\index{set\+Target@{set\+Target}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Target()}{setTarget()}}
+{\footnotesize\ttfamily void Character\+::set\+Target (\begin{DoxyParamCaption}\item[{\hyperlink{class_character}{Character} $\ast$}]{new\+Target }\end{DoxyParamCaption})}
+
+
+
+Sets a target for the character. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Target} & The new target for the character \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a360fa750198888b54a96f0c811de1893}\label{class_character_a360fa750198888b54a96f0c811de1893}} 
+\index{Character@{Character}!set\+Vision@{set\+Vision}}
+\index{set\+Vision@{set\+Vision}!Character@{Character}}
+\subsubsection{\texorpdfstring{set\+Vision()}{setVision()}}
+{\footnotesize\ttfamily void Character\+::set\+Vision (\begin{DoxyParamCaption}\item[{bool}]{b\+State }\end{DoxyParamCaption})}
+
+
+
+Sets the whether the vision is active. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em b\+State} & The new state of the vision \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a1e7a69d8500b81ad27e51923ec1b335b}\label{class_character_a1e7a69d8500b81ad27e51923ec1b335b}} 
+\index{Character@{Character}!step\+Taken@{step\+Taken}}
+\index{step\+Taken@{step\+Taken}!Character@{Character}}
+\subsubsection{\texorpdfstring{step\+Taken()}{stepTaken()}}
+{\footnotesize\ttfamily bool Character\+::step\+Taken (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+States if the character has taken a step. 
+
+\begin{DoxyReturn}{Returns}
+returns if the character has taken a step 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_character_ab9168412ef9b2c8726b0de4dfb63e604}\label{class_character_ab9168412ef9b2c8726b0de4dfb63e604}} 
+\index{Character@{Character}!update@{update}}
+\index{update@{update}!Character@{Character}}
+\subsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void Character\+::update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Updates the states of data. 
+
+\mbox{\Hypertarget{class_character_a9852ca921b44387636f6dc268afc95bb}\label{class_character_a9852ca921b44387636f6dc268afc95bb}} 
+\index{Character@{Character}!vision\+Calculation@{vision\+Calculation}}
+\index{vision\+Calculation@{vision\+Calculation}!Character@{Character}}
+\subsubsection{\texorpdfstring{vision\+Calculation()}{visionCalculation()}}
+{\footnotesize\ttfamily void Character\+::vision\+Calculation (\begin{DoxyParamCaption}\item[{std\+::vector$<$ sf\+::\+Vector2f $>$}]{v\+Edges }\end{DoxyParamCaption})}
+
+
+
+Performs ray collisions with the edges given to produce a cone of vision. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v\+Edges} & The vector of edges being checked \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_character_af3fba210ee65a1e3792c6bf7388cd8c4}\label{class_character_af3fba210ee65a1e3792c6bf7388cd8c4}} 
+\index{Character@{Character}!f\+Distance\+Since\+Step@{f\+Distance\+Since\+Step}}
+\index{f\+Distance\+Since\+Step@{f\+Distance\+Since\+Step}!Character@{Character}}
+\subsubsection{\texorpdfstring{f\+Distance\+Since\+Step}{fDistanceSinceStep}}
+{\footnotesize\ttfamily float Character\+::f\+Distance\+Since\+Step\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds how many pixels the unit has moved in a step. 
+
+\mbox{\Hypertarget{class_character_a7f43ba27a490f5e80f9103b8e7e00e20}\label{class_character_a7f43ba27a490f5e80f9103b8e7e00e20}} 
+\index{Character@{Character}!focus\+Point@{focus\+Point}}
+\index{focus\+Point@{focus\+Point}!Character@{Character}}
+\subsubsection{\texorpdfstring{focus\+Point}{focusPoint}}
+{\footnotesize\ttfamily sf\+::\+Vector2f Character\+::focus\+Point\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The focus point used when in the focus aiming state. 
+
+\mbox{\Hypertarget{class_character_a8f710841b6c872e84a9d6940c0123e4b}\label{class_character_a8f710841b6c872e84a9d6940c0123e4b}} 
+\index{Character@{Character}!m\+\_\+\+Aiming\+State@{m\+\_\+\+Aiming\+State}}
+\index{m\+\_\+\+Aiming\+State@{m\+\_\+\+Aiming\+State}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Aiming\+State}{m\_AimingState}}
+{\footnotesize\ttfamily \hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} Character\+::m\+\_\+\+Aiming\+State\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The current state of the aiming state machine. 
+
+\mbox{\Hypertarget{class_character_a811000299dfe10b753c4065c7a7d16bb}\label{class_character_a811000299dfe10b753c4065c7a7d16bb}} 
+\index{Character@{Character}!m\+\_\+\+Ammo\+Bar@{m\+\_\+\+Ammo\+Bar}}
+\index{m\+\_\+\+Ammo\+Bar@{m\+\_\+\+Ammo\+Bar}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Ammo\+Bar}{m\_AmmoBar}}
+{\footnotesize\ttfamily \hyperlink{class_bar}{Bar} Character\+::m\+\_\+\+Ammo\+Bar\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The ammo bar. 
+
+\mbox{\Hypertarget{class_character_a910b476644d4a5c30355d36664b07b5f}\label{class_character_a910b476644d4a5c30355d36664b07b5f}} 
+\index{Character@{Character}!m\+\_\+b\+Dead@{m\+\_\+b\+Dead}}
+\index{m\+\_\+b\+Dead@{m\+\_\+b\+Dead}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+b\+Dead}{m\_bDead}}
+{\footnotesize\ttfamily bool Character\+::m\+\_\+b\+Dead\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+States whether the character is dead. 
+
+\mbox{\Hypertarget{class_character_a6e68bbc92908c098b35615e7b43ac0b2}\label{class_character_a6e68bbc92908c098b35615e7b43ac0b2}} 
+\index{Character@{Character}!m\+\_\+b\+Draw\+Vision@{m\+\_\+b\+Draw\+Vision}}
+\index{m\+\_\+b\+Draw\+Vision@{m\+\_\+b\+Draw\+Vision}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+b\+Draw\+Vision}{m\_bDrawVision}}
+{\footnotesize\ttfamily bool Character\+::m\+\_\+b\+Draw\+Vision\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+States whether vision cones are drawn. 
+
+\mbox{\Hypertarget{class_character_a0caf39910e976b37d664bf24cb620d12}\label{class_character_a0caf39910e976b37d664bf24cb620d12}} 
+\index{Character@{Character}!m\+\_\+\+Collision\+Line@{m\+\_\+\+Collision\+Line}}
+\index{m\+\_\+\+Collision\+Line@{m\+\_\+\+Collision\+Line}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Collision\+Line}{m\_CollisionLine}}
+{\footnotesize\ttfamily sf\+::\+Vertex\+Array Character\+::m\+\_\+\+Collision\+Line\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Shows the line used for shooting collisions. 
+
+\mbox{\Hypertarget{class_character_aa130143524b553ddf116e0d4077bcdec}\label{class_character_aa130143524b553ddf116e0d4077bcdec}} 
+\index{Character@{Character}!m\+\_\+\+Current\+Class@{m\+\_\+\+Current\+Class}}
+\index{m\+\_\+\+Current\+Class@{m\+\_\+\+Current\+Class}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Current\+Class}{m\_CurrentClass}}
+{\footnotesize\ttfamily \hyperlink{_weapon_8h_ab84a9103ee8e782337e098ae19af7a29}{class\+Type} Character\+::m\+\_\+\+Current\+Class\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the class of the current unit. 
+
+\mbox{\Hypertarget{class_character_ad9a0c6940df7fc13abd6ac2404b058b3}\label{class_character_ad9a0c6940df7fc13abd6ac2404b058b3}} 
+\index{Character@{Character}!m\+\_\+\+Current\+Target@{m\+\_\+\+Current\+Target}}
+\index{m\+\_\+\+Current\+Target@{m\+\_\+\+Current\+Target}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Current\+Target}{m\_CurrentTarget}}
+{\footnotesize\ttfamily \hyperlink{class_character}{Character}$\ast$ Character\+::m\+\_\+\+Current\+Target\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the target the character is aiming towards. 
+
+\mbox{\Hypertarget{class_character_acf5fccc444e86f4c3d41557af8e2dd47}\label{class_character_acf5fccc444e86f4c3d41557af8e2dd47}} 
+\index{Character@{Character}!m\+\_\+\+Death\+Image@{m\+\_\+\+Death\+Image}}
+\index{m\+\_\+\+Death\+Image@{m\+\_\+\+Death\+Image}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Death\+Image}{m\_DeathImage}}
+{\footnotesize\ttfamily \hyperlink{class_object}{Object} Character\+::m\+\_\+\+Death\+Image\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The image used when the character dies. 
+
+\mbox{\Hypertarget{class_character_ab3edae28957985578ed4c4ec5534c04c}\label{class_character_ab3edae28957985578ed4c4ec5534c04c}} 
+\index{Character@{Character}!m\+\_\+\+Death\+Sound@{m\+\_\+\+Death\+Sound}}
+\index{m\+\_\+\+Death\+Sound@{m\+\_\+\+Death\+Sound}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Death\+Sound}{m\_DeathSound}}
+{\footnotesize\ttfamily sf\+::\+Sound Character\+::m\+\_\+\+Death\+Sound\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The dying sound. 
+
+\mbox{\Hypertarget{class_character_af087fbb16f032166f54f1b8c7d2ac579}\label{class_character_af087fbb16f032166f54f1b8c7d2ac579}} 
+\index{Character@{Character}!m\+\_\+f\+Aiming\+Angle@{m\+\_\+f\+Aiming\+Angle}}
+\index{m\+\_\+f\+Aiming\+Angle@{m\+\_\+f\+Aiming\+Angle}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+f\+Aiming\+Angle}{m\_fAimingAngle}}
+{\footnotesize\ttfamily float Character\+::m\+\_\+f\+Aiming\+Angle\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the angle the character is aiming towards. 
+
+\mbox{\Hypertarget{class_character_aeb540cb088fdd9d31874cd672d6da8a0}\label{class_character_aeb540cb088fdd9d31874cd672d6da8a0}} 
+\index{Character@{Character}!m\+\_\+f\+Movement\+Angle@{m\+\_\+f\+Movement\+Angle}}
+\index{m\+\_\+f\+Movement\+Angle@{m\+\_\+f\+Movement\+Angle}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+f\+Movement\+Angle}{m\_fMovementAngle}}
+{\footnotesize\ttfamily float Character\+::m\+\_\+f\+Movement\+Angle\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the angle at which the character is heading towards. 
+
+\mbox{\Hypertarget{class_character_ac04b03a0abdc6fe21f3326a98c788ecf}\label{class_character_ac04b03a0abdc6fe21f3326a98c788ecf}} 
+\index{Character@{Character}!m\+\_\+\+Health\+Bar@{m\+\_\+\+Health\+Bar}}
+\index{m\+\_\+\+Health\+Bar@{m\+\_\+\+Health\+Bar}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Health\+Bar}{m\_HealthBar}}
+{\footnotesize\ttfamily \hyperlink{class_bar}{Bar} Character\+::m\+\_\+\+Health\+Bar\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The health bar. 
+
+\mbox{\Hypertarget{class_character_a944cd240090634db000d5f64ce6345fe}\label{class_character_a944cd240090634db000d5f64ce6345fe}} 
+\index{Character@{Character}!m\+\_\+\+Health\+Levels@{m\+\_\+\+Health\+Levels}}
+\index{m\+\_\+\+Health\+Levels@{m\+\_\+\+Health\+Levels}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Health\+Levels}{m\_HealthLevels}}
+{\footnotesize\ttfamily \hyperlink{struct_util_1_1_limits}{Util\+::\+Limits} Character\+::m\+\_\+\+Health\+Levels\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the characters health data. 
+
+\mbox{\Hypertarget{class_character_a829ad896de47ffa2fd74c942feb0d9fa}\label{class_character_a829ad896de47ffa2fd74c942feb0d9fa}} 
+\index{Character@{Character}!m\+\_\+i\+Aiming\+Direction@{m\+\_\+i\+Aiming\+Direction}}
+\index{m\+\_\+i\+Aiming\+Direction@{m\+\_\+i\+Aiming\+Direction}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+i\+Aiming\+Direction}{m\_iAimingDirection}}
+{\footnotesize\ttfamily int Character\+::m\+\_\+i\+Aiming\+Direction\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the direction the character aims towards when doing a sweep search. 
+
+\mbox{\Hypertarget{class_character_ae8bb360dd9c4e3cad619182c5baeb8f1}\label{class_character_ae8bb360dd9c4e3cad619182c5baeb8f1}} 
+\index{Character@{Character}!m\+\_\+\+Investigation\+Area@{m\+\_\+\+Investigation\+Area}}
+\index{m\+\_\+\+Investigation\+Area@{m\+\_\+\+Investigation\+Area}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Investigation\+Area}{m\_InvestigationArea}}
+{\footnotesize\ttfamily sf\+::\+Vector2f Character\+::m\+\_\+\+Investigation\+Area\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+States where the character is investigating. 
+
+\mbox{\Hypertarget{class_character_a142f2e93b0aeee4501970a1bbe6050ed}\label{class_character_a142f2e93b0aeee4501970a1bbe6050ed}} 
+\index{Character@{Character}!m\+\_\+\+Loadout\+Sound@{m\+\_\+\+Loadout\+Sound}}
+\index{m\+\_\+\+Loadout\+Sound@{m\+\_\+\+Loadout\+Sound}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Loadout\+Sound}{m\_LoadoutSound}}
+{\footnotesize\ttfamily sf\+::\+Sound Character\+::m\+\_\+\+Loadout\+Sound\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The loadout switching sound. 
+
+\mbox{\Hypertarget{class_character_aead9e4e92465865ad80eca79d222cddb}\label{class_character_aead9e4e92465865ad80eca79d222cddb}} 
+\index{Character@{Character}!m\+\_\+\+Movement\+Line@{m\+\_\+\+Movement\+Line}}
+\index{m\+\_\+\+Movement\+Line@{m\+\_\+\+Movement\+Line}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Movement\+Line}{m\_MovementLine}}
+{\footnotesize\ttfamily sf\+::\+Vertex\+Array Character\+::m\+\_\+\+Movement\+Line\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Shows the direction the unit is facing. 
+
+\mbox{\Hypertarget{class_character_a5c308b63279b8206e2c8014f15e660bc}\label{class_character_a5c308b63279b8206e2c8014f15e660bc}} 
+\index{Character@{Character}!m\+\_\+\+Movement\+State@{m\+\_\+\+Movement\+State}}
+\index{m\+\_\+\+Movement\+State@{m\+\_\+\+Movement\+State}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Movement\+State}{m\_MovementState}}
+{\footnotesize\ttfamily \hyperlink{_character_8h_a808e5cd4979462d3bbe3070d7d147444}{States} Character\+::m\+\_\+\+Movement\+State\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The current state of the movement state machine. 
+
+\mbox{\Hypertarget{class_character_a9444b4e76eb7cfebfb6f13b5c6af5535}\label{class_character_a9444b4e76eb7cfebfb6f13b5c6af5535}} 
+\index{Character@{Character}!m\+\_\+\+Orientation\+Line@{m\+\_\+\+Orientation\+Line}}
+\index{m\+\_\+\+Orientation\+Line@{m\+\_\+\+Orientation\+Line}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Orientation\+Line}{m\_OrientationLine}}
+{\footnotesize\ttfamily sf\+::\+Vertex\+Array Character\+::m\+\_\+\+Orientation\+Line\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Shows the direction the unit is facing. 
+
+\mbox{\Hypertarget{class_character_a8aa67eb094307c8645c245e1c999cff8}\label{class_character_a8aa67eb094307c8645c245e1c999cff8}} 
+\index{Character@{Character}!m\+\_\+\+Path@{m\+\_\+\+Path}}
+\index{m\+\_\+\+Path@{m\+\_\+\+Path}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Path}{m\_Path}}
+{\footnotesize\ttfamily std\+::deque$<$\hyperlink{struct_node}{Node}$\ast$$>$ Character\+::m\+\_\+\+Path\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the current movement path. 
+
+\mbox{\Hypertarget{class_character_a83fbc0831e0d59f349a3eab305d74965}\label{class_character_a83fbc0831e0d59f349a3eab305d74965}} 
+\index{Character@{Character}!m\+\_\+\+Pathfinder@{m\+\_\+\+Pathfinder}}
+\index{m\+\_\+\+Pathfinder@{m\+\_\+\+Pathfinder}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Pathfinder}{m\_Pathfinder}}
+{\footnotesize\ttfamily \hyperlink{class_a_star}{A\+Star} Character\+::m\+\_\+\+Pathfinder\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The pathfinder used for navigation. 
+
+\mbox{\Hypertarget{class_character_af2a08c062ab2b12db31e36b15585e5ed}\label{class_character_af2a08c062ab2b12db31e36b15585e5ed}} 
+\index{Character@{Character}!m\+\_\+\+Path\+Line@{m\+\_\+\+Path\+Line}}
+\index{m\+\_\+\+Path\+Line@{m\+\_\+\+Path\+Line}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Path\+Line}{m\_PathLine}}
+{\footnotesize\ttfamily sf\+::\+Vertex\+Array Character\+::m\+\_\+\+Path\+Line\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Shows the path the unit is following. 
+
+\mbox{\Hypertarget{class_character_ad792c539b12f981bcb78f8b0e9c78eb5}\label{class_character_ad792c539b12f981bcb78f8b0e9c78eb5}} 
+\index{Character@{Character}!m\+\_\+\+Patrol\+Path@{m\+\_\+\+Patrol\+Path}}
+\index{m\+\_\+\+Patrol\+Path@{m\+\_\+\+Patrol\+Path}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Patrol\+Path}{m\_PatrolPath}}
+{\footnotesize\ttfamily std\+::deque$<$\hyperlink{struct_node}{Node}$\ast$$>$ Character\+::m\+\_\+\+Patrol\+Path\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The path used for enemy patrols. 
+
+\mbox{\Hypertarget{class_character_a531f612125a5fc1eb52cd0646d73fd75}\label{class_character_a531f612125a5fc1eb52cd0646d73fd75}} 
+\index{Character@{Character}!m\+\_\+\+Sound\+Manager@{m\+\_\+\+Sound\+Manager}}
+\index{m\+\_\+\+Sound\+Manager@{m\+\_\+\+Sound\+Manager}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Sound\+Manager}{m\_SoundManager}}
+{\footnotesize\ttfamily \hyperlink{class_sound_manager}{Sound\+Manager}$\ast$ Character\+::m\+\_\+\+Sound\+Manager\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the location of all of the sounds. 
+
+\mbox{\Hypertarget{class_character_ae6e5a7edea1bbd417ca443ce981de5b5}\label{class_character_ae6e5a7edea1bbd417ca443ce981de5b5}} 
+\index{Character@{Character}!m\+\_\+\+Step\+Sound@{m\+\_\+\+Step\+Sound}}
+\index{m\+\_\+\+Step\+Sound@{m\+\_\+\+Step\+Sound}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Step\+Sound}{m\_StepSound}}
+{\footnotesize\ttfamily sf\+::\+Sound Character\+::m\+\_\+\+Step\+Sound\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The sound played every step. 
+
+\mbox{\Hypertarget{class_character_a8c925b6d9636faf2cf18b690b429e169}\label{class_character_a8c925b6d9636faf2cf18b690b429e169}} 
+\index{Character@{Character}!m\+\_\+\+Textures@{m\+\_\+\+Textures}}
+\index{m\+\_\+\+Textures@{m\+\_\+\+Textures}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Textures}{m\_Textures}}
+{\footnotesize\ttfamily \hyperlink{class_texture_loader}{Texture\+Loader}$\ast$ Character\+::m\+\_\+\+Textures\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the location of all of the textures. 
+
+\mbox{\Hypertarget{class_character_a3ff2604a1ca7c2ebe4b07f378f4fc3fd}\label{class_character_a3ff2604a1ca7c2ebe4b07f378f4fc3fd}} 
+\index{Character@{Character}!m\+\_\+\+Vision\+Rays@{m\+\_\+\+Vision\+Rays}}
+\index{m\+\_\+\+Vision\+Rays@{m\+\_\+\+Vision\+Rays}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Vision\+Rays}{m\_VisionRays}}
+{\footnotesize\ttfamily sf\+::\+Vertex\+Array Character\+::m\+\_\+\+Vision\+Rays\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the character\textquotesingle{}s vision cone. 
+
+\mbox{\Hypertarget{class_character_a7e27911963e4a99b0dbaccae0c182537}\label{class_character_a7e27911963e4a99b0dbaccae0c182537}} 
+\index{Character@{Character}!m\+\_\+v\+Loadout@{m\+\_\+v\+Loadout}}
+\index{m\+\_\+v\+Loadout@{m\+\_\+v\+Loadout}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Loadout}{m\_vLoadout}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{_character_8h_a00971beaa8e80879643e933973580d61}{loadout\+Item}$>$ Character\+::m\+\_\+v\+Loadout\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The equipment the character has equipped. 
+
+\mbox{\Hypertarget{class_character_a562e96e907ef9fca8684c2db67e1e738}\label{class_character_a562e96e907ef9fca8684c2db67e1e738}} 
+\index{Character@{Character}!m\+\_\+\+Waves@{m\+\_\+\+Waves}}
+\index{m\+\_\+\+Waves@{m\+\_\+\+Waves}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Waves}{m\_Waves}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{classsound_wave}{sound\+Wave}$\ast$$>$ Character\+::m\+\_\+\+Waves\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds soundwaves which are emitted. 
+
+\mbox{\Hypertarget{class_character_aa5e5b12f44f1331e934b40435f258805}\label{class_character_aa5e5b12f44f1331e934b40435f258805}} 
+\index{Character@{Character}!m\+\_\+\+Weapon1@{m\+\_\+\+Weapon1}}
+\index{m\+\_\+\+Weapon1@{m\+\_\+\+Weapon1}!Character@{Character}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Weapon1}{m\_Weapon1}}
+{\footnotesize\ttfamily \hyperlink{class_weapon}{Weapon} Character\+::m\+\_\+\+Weapon1\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The charcter\textquotesingle{}s weapon. 
+
+\mbox{\Hypertarget{class_character_a15115aab30dbd73eee49d3035a6bd94c}\label{class_character_a15115aab30dbd73eee49d3035a6bd94c}} 
+\index{Character@{Character}!patrol\+Direction@{patrol\+Direction}}
+\index{patrol\+Direction@{patrol\+Direction}!Character@{Character}}
+\subsubsection{\texorpdfstring{patrol\+Direction}{patrolDirection}}
+{\footnotesize\ttfamily int Character\+::patrol\+Direction\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The direction the patrol is followed in. 
+
+\mbox{\Hypertarget{class_character_ae7e67233ca5f5577676cd83f5d2a847f}\label{class_character_ae7e67233ca5f5577676cd83f5d2a847f}} 
+\index{Character@{Character}!patrol\+Node@{patrol\+Node}}
+\index{patrol\+Node@{patrol\+Node}!Character@{Character}}
+\subsubsection{\texorpdfstring{patrol\+Node}{patrolNode}}
+{\footnotesize\ttfamily int Character\+::patrol\+Node\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The last patrol node reached. 
+
+\mbox{\Hypertarget{class_character_a0b30a626fb45ab6539d983ef51c19958}\label{class_character_a0b30a626fb45ab6539d983ef51c19958}} 
+\index{Character@{Character}!spin\+Amount@{spin\+Amount}}
+\index{spin\+Amount@{spin\+Amount}!Character@{Character}}
+\subsubsection{\texorpdfstring{spin\+Amount}{spinAmount}}
+{\footnotesize\ttfamily float Character\+::spin\+Amount\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The amount the character has spinned in the search spin state. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\hyperlink{_character_8h}{Character.\+h}\end{DoxyCompactItemize}

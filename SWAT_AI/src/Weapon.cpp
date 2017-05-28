@@ -204,7 +204,7 @@ void Weapon::reload()
 	m_ReloadClock.restart();
 }
 
-float Weapon::bulletChecks(std::vector<sf::Vector2f>vEdges)
+float Weapon::bulletChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
 {
 	//Checks collisions between the given edges and the current bullet and returns a collision point
 	if (m_bShooting)
@@ -472,7 +472,7 @@ bool Weapon::isSilenced()
 
 void Weapon::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	if (m_bLazer)
+	if (m_bLazer || m_CurrentSettings->debugActive())
 	{
 		target.draw(m_AimLine);
 	}

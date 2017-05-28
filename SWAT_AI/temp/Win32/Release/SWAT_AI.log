@@ -1,114 +1,277 @@
 ﻿  AStar.cpp
-src\AStar.cpp(16): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\AStar.cpp(32): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(33): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(38): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(45): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(54): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(77): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(82): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(125): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(127): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(131): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\AStar.cpp(136): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(147): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\AStar.cpp(162): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-src\AStar.cpp(182): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(186): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(198): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(202): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(219): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(223): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(235): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(239): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(247): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(253): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(261): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(305): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(307): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(320): warning C4018: '<': signed/unsigned mismatch
-src\AStar.cpp(324): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(11): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(31): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(33): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(37): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\AStar.cpp(42): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(54): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(55): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(59): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(60): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(67): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(76): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(99): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(104): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(152): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+src\AStar.cpp(172): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(176): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(188): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(192): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(209): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(213): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(225): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(229): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(237): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(243): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\AStar.cpp(251): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(295): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(297): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(310): warning C4018: '<': signed/unsigned mismatch
+src\AStar.cpp(314): warning C4018: '<': signed/unsigned mismatch
   Bar.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Button.cpp
+src\Button.cpp(9): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
   Character.cpp
-src\Character.cpp(21): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(29): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(37): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(152): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(272): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(328): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(358): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(380): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(414): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(437): warning C4018: '<': signed/unsigned mismatch
-src\Character.cpp(448): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+src\Character.cpp(64): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(72): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(80): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(133): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+src\Character.cpp(142): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(165): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Character.cpp(404): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(495): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(572): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(601): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(622): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(656): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(679): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(710): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(779): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(799): warning C4018: '<': signed/unsigned mismatch
+src\Character.cpp(992): warning C4018: '<': signed/unsigned mismatch
+  Editor.cpp
+src\Editor.cpp(14): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(17): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(39): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(41): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(61): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(82): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(103): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(104): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(106): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(110): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(111): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(113): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(118): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(119): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(121): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(123): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(125): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(132): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(133): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(135): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(137): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(139): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(183): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(207): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(219): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(223): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(227): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(231): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(237): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(239): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(250): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(252): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(268): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(273): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(309): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(311): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(313): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(315): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(319): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(321): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(323): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(325): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(336): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(340): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(349): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(353): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(360): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(364): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(366): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(370): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(377): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(380): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(404): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(405): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(407): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(408): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(410): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(411): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(413): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(414): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(423): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(427): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(439): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(440): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(443): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(451): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(452): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(455): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(456): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(459): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(467): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(468): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Editor.cpp(470): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(494): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\Editor.cpp(495): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\Editor.cpp(541): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(607): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(632): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(639): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(738): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(740): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(754): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(756): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(771): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(773): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(777): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(782): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(784): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+src\Editor.cpp(809): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(811): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(820): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(822): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(835): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(839): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(847): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(851): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(855): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(859): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(864): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(876): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(882): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(887): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(892): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(897): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(899): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(909): warning C4018: '<': signed/unsigned mismatch
+src\Editor.cpp(911): warning C4018: '<': signed/unsigned mismatch
   Entrance.cpp
+  FontManager.cpp
+src\FontManager.cpp(22): warning C4018: '<': signed/unsigned mismatch
   Game.cpp
-src\Game.cpp(10): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Game.cpp(46): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(48): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(66): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(79): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(118): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(132): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(153): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(156): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Game.cpp(159): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
-src\Game.cpp(197): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+src\Game.cpp(8): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(16): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(25): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(27): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(81): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(83): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(109): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(128): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(184): warning C4018: '<': signed/unsigned mismatch
 src\Game.cpp(206): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(221): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(230): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(245): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(247): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(257): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(259): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(273): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(277): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(281): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(305): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(316): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(320): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(324): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(348): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(363): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(377): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(385): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(397): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(413): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(416): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(419): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\Game.cpp(440): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(444): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(492): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(496): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(500): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(505): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(509): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(513): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(522): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(527): warning C4018: '<': signed/unsigned mismatch
-src\Game.cpp(532): warning C4018: '<': signed/unsigned mismatch
-  main.cpp
+src\Game.cpp(232): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(235): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(239): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(266): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(286): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(294): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(310): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(314): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(319): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Game.cpp(335): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(369): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(373): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(403): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(425): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(510): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(519): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(534): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(543): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(563): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(565): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(576): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(578): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(593): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(598): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(604): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(630): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(641): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(645): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(651): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(677): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(711): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(727): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Game.cpp(744): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(758): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(760): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(770): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(776): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(782): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(793): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(805): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(812): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(819): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(825): warning C4018: '<': signed/unsigned mismatch
+src\Game.cpp(831): warning C4018: '<': signed/unsigned mismatch
+  HUDWindow.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+src\HUDWindow.cpp(18): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(36): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(119): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(139): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(170): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(175): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(181): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(186): warning C4018: '<': signed/unsigned mismatch
+src\HUDWindow.cpp(195): warning C4018: '<': signed/unsigned mismatch
   Map.cpp
-src\Map.cpp(11): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\Map.cpp(35): warning C4018: '>': signed/unsigned mismatch
-src\Map.cpp(41): warning C4018: '<': signed/unsigned mismatch
-src\Map.cpp(53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-src\Map.cpp(54): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
-src\Map.cpp(64): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
-src\Map.cpp(76): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
-src\Map.cpp(77): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+src\Map.cpp(29): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Map.cpp(69): warning C4018: '>': signed/unsigned mismatch
+src\Map.cpp(75): warning C4018: '<': signed/unsigned mismatch
+src\Map.cpp(90): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Map.cpp(90): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+src\Map.cpp(107): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+src\Map.cpp(120): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+src\Map.cpp(121): warning C4244: 'argument': conversion from 'float' to 'std::size_t', possible loss of data
+  Menu.cpp
+src\Menu.cpp(9): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Menu.cpp(29): warning C4018: '<': signed/unsigned mismatch
+src\Menu.cpp(62): warning C4018: '<': signed/unsigned mismatch
+src\Menu.cpp(71): warning C4018: '<': signed/unsigned mismatch
+src\Menu.cpp(88): warning C4018: '<': signed/unsigned mismatch
+src\Menu.cpp(96): warning C4018: '<': signed/unsigned mismatch
   Object.cpp
-src\Object.cpp(31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\Object.cpp(42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Settings.cpp
+  SoundManager.cpp
+src\SoundManager.cpp(22): warning C4018: '<': signed/unsigned mismatch
   TextureLoader.cpp
-src\TextureLoader.cpp(13): warning C4018: '<': signed/unsigned mismatch
+src\TextureLoader.cpp(24): warning C4018: '<': signed/unsigned mismatch
   Weapon.cpp
-src\Weapon.cpp(8): warning C4018: '<': signed/unsigned mismatch
-src\Weapon.cpp(47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+src\Weapon.cpp(12): warning C4018: '<': signed/unsigned mismatch
+src\Weapon.cpp(19): warning C4018: '<': signed/unsigned mismatch
+src\Weapon.cpp(185): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  main.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\MathUtils.h(97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  soundWave.cpp
+src\soundWave.cpp(25): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+src\soundWave.cpp(31): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
   Generating code
-  851 of 1843 functions (46.2%) were compiled, the rest were copied from previous compilation.
-    682 functions were new in current compilation
-    182 functions had inline decision re-evaluated but remain unchanged
+  9 of 2865 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    90 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\Win32\Release\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\Win32\Release\SWAT_AI.pdb (Full PDB)

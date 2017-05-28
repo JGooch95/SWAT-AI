@@ -1,0 +1,367 @@
+\hypertarget{class_game}{}\section{Game Class Reference}
+\label{class_game}\index{Game@{Game}}
+
+
+The main game screen.  
+
+
+
+
+{\ttfamily \#include $<$Game.\+h$>$}
+
+Inheritance diagram for Game\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_game}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_game_ae52380ebfe491f30627f4b334f516c77}{Game} (sf\+::\+Vector2u window\+Size)
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+void \hyperlink{class_game_a5cc8d82415814daa1dd4257c15c88215}{update} (sf\+::\+Vector2i mouse\+Pos)
+\begin{DoxyCompactList}\small\item\em Updates all objects in game. \end{DoxyCompactList}\item 
+void \hyperlink{class_game_a04c9d598d2fea43a079b95290e305c8f}{character\+Interactions} (std\+::vector$<$ \hyperlink{class_character}{Character} $\ast$$>$ char\+Set1, std\+::vector$<$ \hyperlink{class_character}{Character} $\ast$$>$ char\+Set2)
+\begin{DoxyCompactList}\small\item\em Processes interactions between 2 sets of characters. \end{DoxyCompactList}\item 
+int \hyperlink{class_game_a70f8b3b5e70a9b768c79e453a3c72642}{click\+Left} (sf\+::\+Vector2i mouse\+Pos)
+\begin{DoxyCompactList}\small\item\em Processes left click. \end{DoxyCompactList}\item 
+void \hyperlink{class_game_a716af68f70fa3a749663f135940bfa51}{click\+Right} (sf\+::\+Vector2i mouse\+Pos)
+\begin{DoxyCompactList}\small\item\em Processes right click. \end{DoxyCompactList}\item 
+std\+::vector$<$ sf\+::\+Vector2f $>$ \hyperlink{class_game_aee51d9b94ba43131c09490b7b79f68db}{edge\+Reduction} (std\+::vector$<$ sf\+::\+Vector2f $>$ v\+X\+Edges, std\+::vector$<$ sf\+::\+Vector2f $>$ v\+Y\+Edges)
+\begin{DoxyCompactList}\small\item\em Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges. \end{DoxyCompactList}\item 
+void \hyperlink{class_game_a0caffc2dae20f8c6679f2753c99bcae7}{load\+Patrol\+Paths} (std\+::string s\+Dir)
+\begin{DoxyCompactList}\small\item\em Loads patrol paths from the directory given. \end{DoxyCompactList}\item 
+\hyperlink{class_game_ae3d112ca6e0e55150d2fdbc704474530}{$\sim$\+Game} ()
+\begin{DoxyCompactList}\small\item\em Default deconstructor. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_game_a143d1a2f8a527db60f1fe47ab3d854a7}{draw} (sf\+::\+Render\+Target \&target, sf\+::\+Render\+States states) const
+\begin{DoxyCompactList}\small\item\em Draws all of the game\textquotesingle{}s entities to the screen. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+sf\+::\+Rectangle\+Shape \hyperlink{class_game_a7570ce885eabdfe6ce46270e0b748482}{m\+\_\+\+Toolbar}
+\begin{DoxyCompactList}\small\item\em Holds the toolbar across the top of the screen. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_h_u_d_window}{H\+U\+D\+Window} $\ast$ $>$ \hyperlink{class_game_ad86fdba05346c76590c923f9e6faeaa3}{m\+\_\+v\+Unit\+UI}
+\begin{DoxyCompactList}\small\item\em Holds the units UI boxes. \end{DoxyCompactList}\item 
+\hyperlink{class_map}{Map} $\ast$ \hyperlink{class_game_af94359689fff24b26c815bff70dac8d3}{m\+\_\+\+Current\+Map}
+\begin{DoxyCompactList}\small\item\em Holds the location of the map data. \end{DoxyCompactList}\item 
+\hyperlink{class_settings}{Settings} $\ast$ \hyperlink{class_game_a8c4d357ca59cf08c67f81c26808a61f7}{m\+\_\+\+Current\+Settings}
+\begin{DoxyCompactList}\small\item\em Holds the location of the settings. \end{DoxyCompactList}\item 
+\hyperlink{class_texture_loader}{Texture\+Loader} $\ast$ \hyperlink{class_game_a9e1e067209180aba519f41791fc991d7}{m\+\_\+\+Textures}
+\begin{DoxyCompactList}\small\item\em Contains all textures used in the game. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_character}{Character} $\ast$ $>$ \hyperlink{class_game_ade2bf1c1b86c07e6515a66ad36de90f4}{m\+\_\+v\+Characters}
+\begin{DoxyCompactList}\small\item\em Holds all of the characters. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_character}{Character} $\ast$ $>$ \hyperlink{class_game_aec7246808449949b669badf29d72d046}{m\+\_\+v\+Units}
+\begin{DoxyCompactList}\small\item\em Holds the friendly units. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_character}{Character} $\ast$ $>$ \hyperlink{class_game_a72a729d33e4e9b6b71268c0eb0213f08}{m\+\_\+v\+Enemies}
+\begin{DoxyCompactList}\small\item\em Holds the enemy units. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_object}{Object} $\ast$ $>$ \hyperlink{class_game_a8110aa194807a60497845a58c45cf61c}{m\+\_\+v\+Walls}
+\begin{DoxyCompactList}\small\item\em Holds the walls. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_entrance}{Entrance} $\ast$ $>$ \hyperlink{class_game_a6c2fd4a5ebeb11f1fd40e2e29c923241}{m\+\_\+v\+Doors}
+\begin{DoxyCompactList}\small\item\em Holds the doors. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_object}{Object} $\ast$ $>$ \hyperlink{class_game_a68c93d94e737a7275342677098716d30}{m\+\_\+\+Background}
+\item 
+std\+::vector$<$ sf\+::\+Vector2f $>$ \hyperlink{class_game_a7399cd144cc40c1de9c8cd3c7a83c5d8}{m\+\_\+v\+Edges}
+\begin{DoxyCompactList}\small\item\em Holds the wall edges. \end{DoxyCompactList}\item 
+\hyperlink{class_button}{Button} $\ast$ \hyperlink{class_game_ae44f63e1fe7763c689956acf2ea0c512}{exit\+Button}
+\begin{DoxyCompactList}\small\item\em Holds the button which exits to the menu. \end{DoxyCompactList}\item 
+sf\+::\+Vertex\+Array \hyperlink{class_game_a2b3db353c1e39c1950bf71a787a87992}{m\+\_\+\+Edge\+Lines}
+\begin{DoxyCompactList}\small\item\em Holds the debug lines for the edges of walls. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The main game screen. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_game_ae52380ebfe491f30627f4b334f516c77}\label{class_game_ae52380ebfe491f30627f4b334f516c77}} 
+\index{Game@{Game}!Game@{Game}}
+\index{Game@{Game}!Game@{Game}}
+\subsubsection{\texorpdfstring{Game()}{Game()}}
+{\footnotesize\ttfamily Game\+::\+Game (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2u}]{window\+Size }\end{DoxyParamCaption})}
+
+
+
+Default constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window\+Size} & The size of the current window in context \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_game_ae3d112ca6e0e55150d2fdbc704474530}\label{class_game_ae3d112ca6e0e55150d2fdbc704474530}} 
+\index{Game@{Game}!````~Game@{$\sim$\+Game}}
+\index{````~Game@{$\sim$\+Game}!Game@{Game}}
+\subsubsection{\texorpdfstring{$\sim$\+Game()}{~Game()}}
+{\footnotesize\ttfamily Game\+::$\sim$\+Game (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default deconstructor. 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_game_a04c9d598d2fea43a079b95290e305c8f}\label{class_game_a04c9d598d2fea43a079b95290e305c8f}} 
+\index{Game@{Game}!character\+Interactions@{character\+Interactions}}
+\index{character\+Interactions@{character\+Interactions}!Game@{Game}}
+\subsubsection{\texorpdfstring{character\+Interactions()}{characterInteractions()}}
+{\footnotesize\ttfamily void Game\+::character\+Interactions (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \hyperlink{class_character}{Character} $\ast$$>$}]{char\+Set1,  }\item[{std\+::vector$<$ \hyperlink{class_character}{Character} $\ast$$>$}]{char\+Set2 }\end{DoxyParamCaption})}
+
+
+
+Processes interactions between 2 sets of characters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em char\+Set1} & The first set of characters \\
+\hline
+{\em char\+Set1} & The second set of characters \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_game_a70f8b3b5e70a9b768c79e453a3c72642}\label{class_game_a70f8b3b5e70a9b768c79e453a3c72642}} 
+\index{Game@{Game}!click\+Left@{click\+Left}}
+\index{click\+Left@{click\+Left}!Game@{Game}}
+\subsubsection{\texorpdfstring{click\+Left()}{clickLeft()}}
+{\footnotesize\ttfamily int Game\+::click\+Left (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2i}]{mouse\+Pos }\end{DoxyParamCaption})}
+
+
+
+Processes left click. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mouse\+Pos} & The position of the mouse \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Retuns an action if required 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_game_a716af68f70fa3a749663f135940bfa51}\label{class_game_a716af68f70fa3a749663f135940bfa51}} 
+\index{Game@{Game}!click\+Right@{click\+Right}}
+\index{click\+Right@{click\+Right}!Game@{Game}}
+\subsubsection{\texorpdfstring{click\+Right()}{clickRight()}}
+{\footnotesize\ttfamily void Game\+::click\+Right (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2i}]{mouse\+Pos }\end{DoxyParamCaption})}
+
+
+
+Processes right click. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mouse\+Pos} & The position of the mouse \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_game_a143d1a2f8a527db60f1fe47ab3d854a7}\label{class_game_a143d1a2f8a527db60f1fe47ab3d854a7}} 
+\index{Game@{Game}!draw@{draw}}
+\index{draw@{draw}!Game@{Game}}
+\subsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Game\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Target \&}]{target,  }\item[{sf\+::\+Render\+States}]{states }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Draws all of the game\textquotesingle{}s entities to the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target} & Holds where to draw the entities to. \\
+\hline
+{\em states} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_game_aee51d9b94ba43131c09490b7b79f68db}\label{class_game_aee51d9b94ba43131c09490b7b79f68db}} 
+\index{Game@{Game}!edge\+Reduction@{edge\+Reduction}}
+\index{edge\+Reduction@{edge\+Reduction}!Game@{Game}}
+\subsubsection{\texorpdfstring{edge\+Reduction()}{edgeReduction()}}
+{\footnotesize\ttfamily std\+::vector$<$sf\+::\+Vector2f$>$ Game\+::edge\+Reduction (\begin{DoxyParamCaption}\item[{std\+::vector$<$ sf\+::\+Vector2f $>$}]{v\+X\+Edges,  }\item[{std\+::vector$<$ sf\+::\+Vector2f $>$}]{v\+Y\+Edges }\end{DoxyParamCaption})}
+
+
+
+Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v\+X\+Edges} & The edges in the going along the X axis \\
+\hline
+{\em v\+Y\+Edges} & The edges in the going along the Y axis \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns the reduced amount of edges 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_game_a0caffc2dae20f8c6679f2753c99bcae7}\label{class_game_a0caffc2dae20f8c6679f2753c99bcae7}} 
+\index{Game@{Game}!load\+Patrol\+Paths@{load\+Patrol\+Paths}}
+\index{load\+Patrol\+Paths@{load\+Patrol\+Paths}!Game@{Game}}
+\subsubsection{\texorpdfstring{load\+Patrol\+Paths()}{loadPatrolPaths()}}
+{\footnotesize\ttfamily void Game\+::load\+Patrol\+Paths (\begin{DoxyParamCaption}\item[{std\+::string}]{s\+Dir }\end{DoxyParamCaption})}
+
+
+
+Loads patrol paths from the directory given. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s\+Dir} & The directory containing the path \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_game_a5cc8d82415814daa1dd4257c15c88215}\label{class_game_a5cc8d82415814daa1dd4257c15c88215}} 
+\index{Game@{Game}!update@{update}}
+\index{update@{update}!Game@{Game}}
+\subsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void Game\+::update (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2i}]{mouse\+Pos }\end{DoxyParamCaption})}
+
+
+
+Updates all objects in game. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mouse\+Pos} & The position of the mouse \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_game_ae44f63e1fe7763c689956acf2ea0c512}\label{class_game_ae44f63e1fe7763c689956acf2ea0c512}} 
+\index{Game@{Game}!exit\+Button@{exit\+Button}}
+\index{exit\+Button@{exit\+Button}!Game@{Game}}
+\subsubsection{\texorpdfstring{exit\+Button}{exitButton}}
+{\footnotesize\ttfamily \hyperlink{class_button}{Button}$\ast$ Game\+::exit\+Button\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the button which exits to the menu. 
+
+\mbox{\Hypertarget{class_game_a68c93d94e737a7275342677098716d30}\label{class_game_a68c93d94e737a7275342677098716d30}} 
+\index{Game@{Game}!m\+\_\+\+Background@{m\+\_\+\+Background}}
+\index{m\+\_\+\+Background@{m\+\_\+\+Background}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Background}{m\_Background}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_object}{Object}$\ast$$>$ Game\+::m\+\_\+\+Background\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{class_game_af94359689fff24b26c815bff70dac8d3}\label{class_game_af94359689fff24b26c815bff70dac8d3}} 
+\index{Game@{Game}!m\+\_\+\+Current\+Map@{m\+\_\+\+Current\+Map}}
+\index{m\+\_\+\+Current\+Map@{m\+\_\+\+Current\+Map}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Current\+Map}{m\_CurrentMap}}
+{\footnotesize\ttfamily \hyperlink{class_map}{Map}$\ast$ Game\+::m\+\_\+\+Current\+Map\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the location of the map data. 
+
+\mbox{\Hypertarget{class_game_a8c4d357ca59cf08c67f81c26808a61f7}\label{class_game_a8c4d357ca59cf08c67f81c26808a61f7}} 
+\index{Game@{Game}!m\+\_\+\+Current\+Settings@{m\+\_\+\+Current\+Settings}}
+\index{m\+\_\+\+Current\+Settings@{m\+\_\+\+Current\+Settings}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Current\+Settings}{m\_CurrentSettings}}
+{\footnotesize\ttfamily \hyperlink{class_settings}{Settings}$\ast$ Game\+::m\+\_\+\+Current\+Settings\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the location of the settings. 
+
+\mbox{\Hypertarget{class_game_a2b3db353c1e39c1950bf71a787a87992}\label{class_game_a2b3db353c1e39c1950bf71a787a87992}} 
+\index{Game@{Game}!m\+\_\+\+Edge\+Lines@{m\+\_\+\+Edge\+Lines}}
+\index{m\+\_\+\+Edge\+Lines@{m\+\_\+\+Edge\+Lines}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Edge\+Lines}{m\_EdgeLines}}
+{\footnotesize\ttfamily sf\+::\+Vertex\+Array Game\+::m\+\_\+\+Edge\+Lines\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the debug lines for the edges of walls. 
+
+\mbox{\Hypertarget{class_game_a9e1e067209180aba519f41791fc991d7}\label{class_game_a9e1e067209180aba519f41791fc991d7}} 
+\index{Game@{Game}!m\+\_\+\+Textures@{m\+\_\+\+Textures}}
+\index{m\+\_\+\+Textures@{m\+\_\+\+Textures}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Textures}{m\_Textures}}
+{\footnotesize\ttfamily \hyperlink{class_texture_loader}{Texture\+Loader}$\ast$ Game\+::m\+\_\+\+Textures\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Contains all textures used in the game. 
+
+\mbox{\Hypertarget{class_game_a7570ce885eabdfe6ce46270e0b748482}\label{class_game_a7570ce885eabdfe6ce46270e0b748482}} 
+\index{Game@{Game}!m\+\_\+\+Toolbar@{m\+\_\+\+Toolbar}}
+\index{m\+\_\+\+Toolbar@{m\+\_\+\+Toolbar}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Toolbar}{m\_Toolbar}}
+{\footnotesize\ttfamily sf\+::\+Rectangle\+Shape Game\+::m\+\_\+\+Toolbar\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the toolbar across the top of the screen. 
+
+\mbox{\Hypertarget{class_game_ade2bf1c1b86c07e6515a66ad36de90f4}\label{class_game_ade2bf1c1b86c07e6515a66ad36de90f4}} 
+\index{Game@{Game}!m\+\_\+v\+Characters@{m\+\_\+v\+Characters}}
+\index{m\+\_\+v\+Characters@{m\+\_\+v\+Characters}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Characters}{m\_vCharacters}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_character}{Character}$\ast$$>$ Game\+::m\+\_\+v\+Characters\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds all of the characters. 
+
+\mbox{\Hypertarget{class_game_a6c2fd4a5ebeb11f1fd40e2e29c923241}\label{class_game_a6c2fd4a5ebeb11f1fd40e2e29c923241}} 
+\index{Game@{Game}!m\+\_\+v\+Doors@{m\+\_\+v\+Doors}}
+\index{m\+\_\+v\+Doors@{m\+\_\+v\+Doors}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Doors}{m\_vDoors}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_entrance}{Entrance}$\ast$$>$ Game\+::m\+\_\+v\+Doors\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the doors. 
+
+\mbox{\Hypertarget{class_game_a7399cd144cc40c1de9c8cd3c7a83c5d8}\label{class_game_a7399cd144cc40c1de9c8cd3c7a83c5d8}} 
+\index{Game@{Game}!m\+\_\+v\+Edges@{m\+\_\+v\+Edges}}
+\index{m\+\_\+v\+Edges@{m\+\_\+v\+Edges}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Edges}{m\_vEdges}}
+{\footnotesize\ttfamily std\+::vector$<$sf\+::\+Vector2f$>$ Game\+::m\+\_\+v\+Edges\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the wall edges. 
+
+\mbox{\Hypertarget{class_game_a72a729d33e4e9b6b71268c0eb0213f08}\label{class_game_a72a729d33e4e9b6b71268c0eb0213f08}} 
+\index{Game@{Game}!m\+\_\+v\+Enemies@{m\+\_\+v\+Enemies}}
+\index{m\+\_\+v\+Enemies@{m\+\_\+v\+Enemies}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Enemies}{m\_vEnemies}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_character}{Character}$\ast$$>$ Game\+::m\+\_\+v\+Enemies\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the enemy units. 
+
+\mbox{\Hypertarget{class_game_aec7246808449949b669badf29d72d046}\label{class_game_aec7246808449949b669badf29d72d046}} 
+\index{Game@{Game}!m\+\_\+v\+Units@{m\+\_\+v\+Units}}
+\index{m\+\_\+v\+Units@{m\+\_\+v\+Units}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Units}{m\_vUnits}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_character}{Character}$\ast$$>$ Game\+::m\+\_\+v\+Units\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the friendly units. 
+
+\mbox{\Hypertarget{class_game_ad86fdba05346c76590c923f9e6faeaa3}\label{class_game_ad86fdba05346c76590c923f9e6faeaa3}} 
+\index{Game@{Game}!m\+\_\+v\+Unit\+UI@{m\+\_\+v\+Unit\+UI}}
+\index{m\+\_\+v\+Unit\+UI@{m\+\_\+v\+Unit\+UI}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Unit\+UI}{m\_vUnitUI}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_h_u_d_window}{H\+U\+D\+Window}$\ast$$>$ Game\+::m\+\_\+v\+Unit\+UI\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the units UI boxes. 
+
+\mbox{\Hypertarget{class_game_a8110aa194807a60497845a58c45cf61c}\label{class_game_a8110aa194807a60497845a58c45cf61c}} 
+\index{Game@{Game}!m\+\_\+v\+Walls@{m\+\_\+v\+Walls}}
+\index{m\+\_\+v\+Walls@{m\+\_\+v\+Walls}!Game@{Game}}
+\subsubsection{\texorpdfstring{m\+\_\+v\+Walls}{m\_vWalls}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_object}{Object}$\ast$$>$ Game\+::m\+\_\+v\+Walls\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the walls. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\hyperlink{_game_8h}{Game.\+h}\end{DoxyCompactItemize}

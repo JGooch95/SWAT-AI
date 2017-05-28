@@ -1,0 +1,223 @@
+\hypertarget{class_entrance}{}\section{Entrance Class Reference}
+\label{class_entrance}\index{Entrance@{Entrance}}
+
+
+An openable object which allows entry when open.  
+
+
+
+
+{\ttfamily \#include $<$Entrance.\+h$>$}
+
+Inheritance diagram for Entrance\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_entrance}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_entrance_a88cd27875093371afa47ac0f321716d7}{Entrance} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+void \hyperlink{class_entrance_a7cb1816675301f172ac6be0b874e5889}{set\+Open} (bool b\+State)
+\begin{DoxyCompactList}\small\item\em Sets the door to be open or closed. \end{DoxyCompactList}\item 
+void \hyperlink{class_entrance_a47595d251715bcc6367b09d5d2d112cc}{set\+Orientation} (float f\+Angle)
+\begin{DoxyCompactList}\small\item\em Sets the orientaion of the door. \end{DoxyCompactList}\item 
+void \hyperlink{class_entrance_a22dad184287d5fde6c8f04315798b9e6}{set\+Direction} (int i\+Dir)
+\begin{DoxyCompactList}\small\item\em Sets the direction the door swings open. \end{DoxyCompactList}\item 
+void \hyperlink{class_entrance_a9136eb4f03ad8243c814a94f49b66c4a}{set\+Tile} (sf\+::\+Vector2u Tile)
+\begin{DoxyCompactList}\small\item\em Sets the Tiles the door is sitting on. \end{DoxyCompactList}\item 
+bool \hyperlink{class_entrance_a619bfbe5db84833a122667e3c3be288e}{is\+Open} ()
+\begin{DoxyCompactList}\small\item\em Gets whether the door is open. \end{DoxyCompactList}\item 
+sf\+::\+Vector2u \hyperlink{class_entrance_a7f37b8990cf2926bfbcb9b3db36a23a2}{get\+Tile} ()
+\begin{DoxyCompactList}\small\item\em Gets the tile the door is on. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_sound_manager}{Sound\+Manager} $\ast$ \hyperlink{class_entrance_aeef1bb9f20ecef276dddaaa2a9bc5938}{m\+\_\+\+Sound\+Manager}
+\begin{DoxyCompactList}\small\item\em A link to the sounds. \end{DoxyCompactList}\item 
+bool \hyperlink{class_entrance_af155609311931998d9d71fd899f49fe8}{m\+\_\+b\+Open}
+\begin{DoxyCompactList}\small\item\em States whether the door is open. \end{DoxyCompactList}\item 
+float \hyperlink{class_entrance_a78912e4f4ab6eddc3ebec5fb1c1a0a99}{m\+\_\+f\+Orientation}
+\begin{DoxyCompactList}\small\item\em Holds the current orientation. \end{DoxyCompactList}\item 
+int \hyperlink{class_entrance_a1b0e28653b1e9ad29e7783c60417a882}{m\+\_\+i\+Opening\+Direction}
+\begin{DoxyCompactList}\small\item\em Holds the direction at which the door rotates. \end{DoxyCompactList}\item 
+sf\+::\+Sound \hyperlink{class_entrance_a16a31a66ec5bc1e6f8c777749f06e03a}{m\+\_\+\+Opening\+Sound}
+\begin{DoxyCompactList}\small\item\em Holds the sound of the door opening. \end{DoxyCompactList}\item 
+sf\+::\+Vector2u \hyperlink{class_entrance_afdedd2f9348968422d822e544abaae98}{m\+\_\+\+Tile}
+\begin{DoxyCompactList}\small\item\em Holds the tile the door is sitting on. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+An openable object which allows entry when open. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_entrance_a88cd27875093371afa47ac0f321716d7}\label{class_entrance_a88cd27875093371afa47ac0f321716d7}} 
+\index{Entrance@{Entrance}!Entrance@{Entrance}}
+\index{Entrance@{Entrance}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{Entrance()}{Entrance()}}
+{\footnotesize\ttfamily Entrance\+::\+Entrance (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default constructor. 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_entrance_a7f37b8990cf2926bfbcb9b3db36a23a2}\label{class_entrance_a7f37b8990cf2926bfbcb9b3db36a23a2}} 
+\index{Entrance@{Entrance}!get\+Tile@{get\+Tile}}
+\index{get\+Tile@{get\+Tile}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{get\+Tile()}{getTile()}}
+{\footnotesize\ttfamily sf\+::\+Vector2u Entrance\+::get\+Tile (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the tile the door is on. 
+
+\begin{DoxyReturn}{Returns}
+returns the tile the door is on 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_entrance_a619bfbe5db84833a122667e3c3be288e}\label{class_entrance_a619bfbe5db84833a122667e3c3be288e}} 
+\index{Entrance@{Entrance}!is\+Open@{is\+Open}}
+\index{is\+Open@{is\+Open}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{is\+Open()}{isOpen()}}
+{\footnotesize\ttfamily bool Entrance\+::is\+Open (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets whether the door is open. 
+
+\begin{DoxyReturn}{Returns}
+returns whether the door is open 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_entrance_a22dad184287d5fde6c8f04315798b9e6}\label{class_entrance_a22dad184287d5fde6c8f04315798b9e6}} 
+\index{Entrance@{Entrance}!set\+Direction@{set\+Direction}}
+\index{set\+Direction@{set\+Direction}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{set\+Direction()}{setDirection()}}
+{\footnotesize\ttfamily void Entrance\+::set\+Direction (\begin{DoxyParamCaption}\item[{int}]{i\+Dir }\end{DoxyParamCaption})}
+
+
+
+Sets the direction the door swings open. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+Dir} & The direction the door swings \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_entrance_a7cb1816675301f172ac6be0b874e5889}\label{class_entrance_a7cb1816675301f172ac6be0b874e5889}} 
+\index{Entrance@{Entrance}!set\+Open@{set\+Open}}
+\index{set\+Open@{set\+Open}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{set\+Open()}{setOpen()}}
+{\footnotesize\ttfamily void Entrance\+::set\+Open (\begin{DoxyParamCaption}\item[{bool}]{b\+State }\end{DoxyParamCaption})}
+
+
+
+Sets the door to be open or closed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em b\+State} & States if the door is open or closed. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_entrance_a47595d251715bcc6367b09d5d2d112cc}\label{class_entrance_a47595d251715bcc6367b09d5d2d112cc}} 
+\index{Entrance@{Entrance}!set\+Orientation@{set\+Orientation}}
+\index{set\+Orientation@{set\+Orientation}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{set\+Orientation()}{setOrientation()}}
+{\footnotesize\ttfamily void Entrance\+::set\+Orientation (\begin{DoxyParamCaption}\item[{float}]{f\+Angle }\end{DoxyParamCaption})}
+
+
+
+Sets the orientaion of the door. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\+Angle} & The new angle of the door \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_entrance_a9136eb4f03ad8243c814a94f49b66c4a}\label{class_entrance_a9136eb4f03ad8243c814a94f49b66c4a}} 
+\index{Entrance@{Entrance}!set\+Tile@{set\+Tile}}
+\index{set\+Tile@{set\+Tile}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{set\+Tile()}{setTile()}}
+{\footnotesize\ttfamily void Entrance\+::set\+Tile (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2u}]{Tile }\end{DoxyParamCaption})}
+
+
+
+Sets the Tiles the door is sitting on. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Tile} & The tile being set \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_entrance_af155609311931998d9d71fd899f49fe8}\label{class_entrance_af155609311931998d9d71fd899f49fe8}} 
+\index{Entrance@{Entrance}!m\+\_\+b\+Open@{m\+\_\+b\+Open}}
+\index{m\+\_\+b\+Open@{m\+\_\+b\+Open}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{m\+\_\+b\+Open}{m\_bOpen}}
+{\footnotesize\ttfamily bool Entrance\+::m\+\_\+b\+Open\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+States whether the door is open. 
+
+\mbox{\Hypertarget{class_entrance_a78912e4f4ab6eddc3ebec5fb1c1a0a99}\label{class_entrance_a78912e4f4ab6eddc3ebec5fb1c1a0a99}} 
+\index{Entrance@{Entrance}!m\+\_\+f\+Orientation@{m\+\_\+f\+Orientation}}
+\index{m\+\_\+f\+Orientation@{m\+\_\+f\+Orientation}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{m\+\_\+f\+Orientation}{m\_fOrientation}}
+{\footnotesize\ttfamily float Entrance\+::m\+\_\+f\+Orientation\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the current orientation. 
+
+\mbox{\Hypertarget{class_entrance_a1b0e28653b1e9ad29e7783c60417a882}\label{class_entrance_a1b0e28653b1e9ad29e7783c60417a882}} 
+\index{Entrance@{Entrance}!m\+\_\+i\+Opening\+Direction@{m\+\_\+i\+Opening\+Direction}}
+\index{m\+\_\+i\+Opening\+Direction@{m\+\_\+i\+Opening\+Direction}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{m\+\_\+i\+Opening\+Direction}{m\_iOpeningDirection}}
+{\footnotesize\ttfamily int Entrance\+::m\+\_\+i\+Opening\+Direction\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the direction at which the door rotates. 
+
+\mbox{\Hypertarget{class_entrance_a16a31a66ec5bc1e6f8c777749f06e03a}\label{class_entrance_a16a31a66ec5bc1e6f8c777749f06e03a}} 
+\index{Entrance@{Entrance}!m\+\_\+\+Opening\+Sound@{m\+\_\+\+Opening\+Sound}}
+\index{m\+\_\+\+Opening\+Sound@{m\+\_\+\+Opening\+Sound}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Opening\+Sound}{m\_OpeningSound}}
+{\footnotesize\ttfamily sf\+::\+Sound Entrance\+::m\+\_\+\+Opening\+Sound\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the sound of the door opening. 
+
+\mbox{\Hypertarget{class_entrance_aeef1bb9f20ecef276dddaaa2a9bc5938}\label{class_entrance_aeef1bb9f20ecef276dddaaa2a9bc5938}} 
+\index{Entrance@{Entrance}!m\+\_\+\+Sound\+Manager@{m\+\_\+\+Sound\+Manager}}
+\index{m\+\_\+\+Sound\+Manager@{m\+\_\+\+Sound\+Manager}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Sound\+Manager}{m\_SoundManager}}
+{\footnotesize\ttfamily \hyperlink{class_sound_manager}{Sound\+Manager}$\ast$ Entrance\+::m\+\_\+\+Sound\+Manager\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+A link to the sounds. 
+
+\mbox{\Hypertarget{class_entrance_afdedd2f9348968422d822e544abaae98}\label{class_entrance_afdedd2f9348968422d822e544abaae98}} 
+\index{Entrance@{Entrance}!m\+\_\+\+Tile@{m\+\_\+\+Tile}}
+\index{m\+\_\+\+Tile@{m\+\_\+\+Tile}!Entrance@{Entrance}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Tile}{m\_Tile}}
+{\footnotesize\ttfamily sf\+::\+Vector2u Entrance\+::m\+\_\+\+Tile\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the tile the door is sitting on. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\hyperlink{_entrance_8h}{Entrance.\+h}\end{DoxyCompactItemize}

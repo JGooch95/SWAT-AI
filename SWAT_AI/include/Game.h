@@ -13,43 +13,76 @@
 #include "HUDWindow.h"
 #include "SoundWave.h"
 
+/// \brief The main game screen
 class Game : public sf::Drawable
 {
 	private:
 		//UI
-		sf::RectangleShape m_Toolbar;
-		std::vector<HUDWindow*> m_vUnitUI;
+		sf::RectangleShape m_Toolbar; //!< Holds the toolbar across the top of the screen
+		std::vector<HUDWindow*> m_vUnitUI; //!< Holds the units UI boxes
 		
 		//Tools
-		Map* m_CurrentMap;
-		Settings* m_CurrentSettings;
+		Map* m_CurrentMap;  //!< Holds the location of the map data
+		Settings* m_CurrentSettings;  //!< Holds the location of the settings
 
 		//RESOURCES
-		TextureLoader* m_Textures; //Contains all textures used in the game
+		TextureLoader* m_Textures; //!< Contains all textures used in the game
 
 		//Objects
-		std::vector<Character*> m_vCharacters; //Holds all of the characters
-		std::vector<Character*> m_vUnits; //Holds the friendly units
-		std::vector<Character*> m_vEnemies; //Holds the enemy units
-		std::vector<Object*> m_vWalls; //Holds the walls
-		std::vector<Entrance*> m_vDoors; //Holds the doors
+		std::vector<Character*> m_vCharacters; //!< Holds all of the characters
+		std::vector<Character*> m_vUnits; //!< Holds the friendly units
+		std::vector<Character*> m_vEnemies; //!< Holds the enemy units
+		std::vector<Object*> m_vWalls; //!< Holds the walls
+		std::vector<Entrance*> m_vDoors; //!< Holds the doors
 		std::vector<Object*> m_Background;
-		std::vector<sf::Vector2f> m_vEdges; //Holds the wall edges
+
+		std::vector<std::pair<sf::Vector2f, sf::Vector2f>> m_vEdges; //!< Holds the wall edges
+		//std::vector<sf::Vector2f> m_vCorners;						 //!< Holds the wall corners
 		
-		Button* exitButton; //Holds the button which exits to the menu
+		Button* exitButton; //!< Holds the button which exits to the menu
 
 		//DEBUGGING LINES
-		sf::VertexArray m_EdgeLines;
+		sf::VertexArray m_EdgeLines; //!< Holds the debug lines for the edges of walls
 
+		/// \brief Draws all of the game's entities to the screen.
+		/// \param target Holds where to draw the entities to.		   
+		///	\param states 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:
-		Game(sf::Vector2u windowSize); //Constructor
-		void update(sf::Vector2i mousePos); //Updates all objects in game
-		void characterInteractions(std::vector<Character*> charSet1, std::vector<Character*>  charSet2); //Processes interactions between 2 sets of characters
-		int clickLeft(sf::Vector2i mousePos); //Processes left click
-		void clickRight(sf::Vector2i mousePos); //Processes right click 
-		std::vector<sf::Vector2f> edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges); //Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
+		/// \brief Default constructor
+		/// \param windowSize The size of the current window in context
+		Game(sf::Vector2u windowSize);
+
+		/// \brief Updates all objects in game
+		/// \param mousePos The position of the mouse
+		void update(sf::Vector2i mousePos); 
+
+		/// \brief Processes interactions between 2 sets of characters
+		/// \param charSet1 The first set of characters
+		/// \param charSet1 The second set of characters
+		void characterInteractions(std::vector<Character*> charSet1, std::vector<Character*>  charSet2);
+
+		/// \brief Processes left click
+		/// \param mousePos The position of the mouse
+		/// \return Retuns an action if required
+		int clickLeft(sf::Vector2i mousePos); 
+
+		/// \brief Processes right click
+		/// \param mousePos The position of the mouse
+		void clickRight(sf::Vector2i mousePos);
+
+		/// \brief Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
+		/// \param vXEdges The edges in the going along the X axis
+		/// \param vYEdges The edges in the going along the Y axis
+		/// \return Returns the reduced amount of edges
+		std::vector<std::pair<sf::Vector2f, sf::Vector2f>> edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges);
+
+		/// \brief Loads patrol paths from the directory given
+		/// \param sDir The directory containing the path
 		void loadPatrolPaths(std::string sDir);
-		~Game(); //Deconstructor
+
+		//void addEdge(sf::Vector2f points[2]);
+		/// \brief Default deconstructor
+		~Game();
 };

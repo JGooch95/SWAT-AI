@@ -18,10 +18,10 @@ bool Button::hovering(sf::Vector2i pos)
 	m_Backdrop.setPosition(m_MainSprite.getPosition());
 
 	//If the position is within the bounds of the button return true and increase the background brightness
-	if (pos.x > m_MainSprite.getPosition().x &&
-		pos.x < m_MainSprite.getPosition().x + m_MainSprite.getSize().x &&
-		pos.y > m_MainSprite.getPosition().y &&
-		pos.y <  m_MainSprite.getPosition().y + m_MainSprite.getSize().y)
+	if (pos.x >= m_MainSprite.getPosition().x &&
+		pos.x <= m_MainSprite.getPosition().x + m_MainSprite.getSize().x &&
+		pos.y >= m_MainSprite.getPosition().y &&
+		pos.y <=  m_MainSprite.getPosition().y + m_MainSprite.getSize().y)
 	{
 		m_Backdrop.setFillColor(m_DefaultColor + sf::Color(30,30,30,255));
 		return true;

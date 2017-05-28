@@ -305,11 +305,6 @@ bool AStar::validVacinity(int iEndTile)
 	return false; //If all of the tests are false return false
 }
 
-void AStar::setInvalid(sf::Vector2f Node)
-{
-	m_vClosedList.push_back(&m_vGrid.at((Node.y *m_CurrentMap->getGridDims().x) + Node.x));
-}
-
 AStar::~AStar()
 {
 	for (int i = 0; i < m_vOpenList.size(); i++)

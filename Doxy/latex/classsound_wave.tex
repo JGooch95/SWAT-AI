@@ -1,0 +1,202 @@
+\hypertarget{classsound_wave}{}\section{sound\+Wave Class Reference}
+\label{classsound_wave}\index{sound\+Wave@{sound\+Wave}}
+
+
+A soundwave which emits from its center point location.  
+
+
+
+
+{\ttfamily \#include $<$Sound\+Wave.\+h$>$}
+
+Inheritance diagram for sound\+Wave\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classsound_wave}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classsound_wave_a4936f561d8cf68c073221d2bc4f2e55d}{sound\+Wave} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{classsound_wave_a00d78cdbf7cd9bcdfe82571e9dc8f56b}{sound\+Wave} (float f\+Radius, float f\+Increase\+Rate, float f\+Decrease\+Rate, sf\+::\+Vector2f position)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+void \hyperlink{classsound_wave_aafc6db924cda69359d9aa65ba75b28c6}{update} ()
+\begin{DoxyCompactList}\small\item\em Updates the waves data. \end{DoxyCompactList}\item 
+bool \hyperlink{classsound_wave_ae5709a35ac2c7772ddf41869ce2bb097}{is\+Done} ()
+\begin{DoxyCompactList}\small\item\em States whether the wave has reached the desired radius. \end{DoxyCompactList}\item 
+sf\+::\+Vector2f \hyperlink{classsound_wave_a46398f66c54a2868cf482b9a641e3770}{get\+Position} ()
+\begin{DoxyCompactList}\small\item\em Gets the position of the wave center. \end{DoxyCompactList}\item 
+float \hyperlink{classsound_wave_a1ef817617f2b8f7d69d0f2c2378a295a}{get\+Radius} ()
+\begin{DoxyCompactList}\small\item\em Gets the current radius of the soundwave. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classsound_wave_a902d890b915274312138a6d936be180a}{draw} (sf\+::\+Render\+Target \&target, sf\+::\+Render\+States states) const
+\begin{DoxyCompactList}\small\item\em Draws all of the \hyperlink{classsound_wave}{sound\+Wave}\textquotesingle{}s entities to the screen. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+sf\+::\+Circle\+Shape \hyperlink{classsound_wave_aeb2707ab18aac662ee8ce8eca9297378}{m\+\_\+\+Wave}
+\begin{DoxyCompactList}\small\item\em Holds the wave being emitted. \end{DoxyCompactList}\item 
+float \hyperlink{classsound_wave_ac9adfa989210e9baa9ac4aab9a31309a}{m\+\_\+f\+Desired\+Radius}
+\begin{DoxyCompactList}\small\item\em Holds the radius where the wave ends. \end{DoxyCompactList}\item 
+float \hyperlink{classsound_wave_a6fa457d0d462e86c6be2d36695f9270d}{m\+\_\+f\+Increase\+Rate}
+\begin{DoxyCompactList}\small\item\em Holds the rate at which the radius increases. \end{DoxyCompactList}\item 
+float \hyperlink{classsound_wave_ab32de1a5ff6f8f64a2ebf05f9707f3d9}{m\+\_\+f\+Decrease\+Rate}
+\begin{DoxyCompactList}\small\item\em Holds the rate at which the radius decreases. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A soundwave which emits from its center point location. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classsound_wave_a4936f561d8cf68c073221d2bc4f2e55d}\label{classsound_wave_a4936f561d8cf68c073221d2bc4f2e55d}} 
+\index{sound\+Wave@{sound\+Wave}!sound\+Wave@{sound\+Wave}}
+\index{sound\+Wave@{sound\+Wave}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{sound\+Wave()}{soundWave()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily sound\+Wave\+::sound\+Wave (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default constructor. 
+
+\mbox{\Hypertarget{classsound_wave_a00d78cdbf7cd9bcdfe82571e9dc8f56b}\label{classsound_wave_a00d78cdbf7cd9bcdfe82571e9dc8f56b}} 
+\index{sound\+Wave@{sound\+Wave}!sound\+Wave@{sound\+Wave}}
+\index{sound\+Wave@{sound\+Wave}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{sound\+Wave()}{soundWave()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily sound\+Wave\+::sound\+Wave (\begin{DoxyParamCaption}\item[{float}]{f\+Radius,  }\item[{float}]{f\+Increase\+Rate,  }\item[{float}]{f\+Decrease\+Rate,  }\item[{sf\+::\+Vector2f}]{position }\end{DoxyParamCaption})}
+
+
+
+Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\+Radius} & The desired radius of the sound wave \\
+\hline
+{\em f\+Increase\+Rate} & The rate at which the sound wave reaches its peak \\
+\hline
+{\em f\+Decrease\+Rate} & The rate at which the sound wave moves from its peak \\
+\hline
+{\em position} & The centerpoint of the wave \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classsound_wave_a902d890b915274312138a6d936be180a}\label{classsound_wave_a902d890b915274312138a6d936be180a}} 
+\index{sound\+Wave@{sound\+Wave}!draw@{draw}}
+\index{draw@{draw}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void sound\+Wave\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Target \&}]{target,  }\item[{sf\+::\+Render\+States}]{states }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Draws all of the \hyperlink{classsound_wave}{sound\+Wave}\textquotesingle{}s entities to the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target} & Holds where to draw the entities to. \\
+\hline
+{\em states} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classsound_wave_a46398f66c54a2868cf482b9a641e3770}\label{classsound_wave_a46398f66c54a2868cf482b9a641e3770}} 
+\index{sound\+Wave@{sound\+Wave}!get\+Position@{get\+Position}}
+\index{get\+Position@{get\+Position}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{get\+Position()}{getPosition()}}
+{\footnotesize\ttfamily sf\+::\+Vector2f sound\+Wave\+::get\+Position (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the position of the wave center. 
+
+\begin{DoxyReturn}{Returns}
+returns the position of the wave center 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsound_wave_a1ef817617f2b8f7d69d0f2c2378a295a}\label{classsound_wave_a1ef817617f2b8f7d69d0f2c2378a295a}} 
+\index{sound\+Wave@{sound\+Wave}!get\+Radius@{get\+Radius}}
+\index{get\+Radius@{get\+Radius}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{get\+Radius()}{getRadius()}}
+{\footnotesize\ttfamily float sound\+Wave\+::get\+Radius (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the current radius of the soundwave. 
+
+\begin{DoxyReturn}{Returns}
+Returns the current radius of the soundwave 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsound_wave_ae5709a35ac2c7772ddf41869ce2bb097}\label{classsound_wave_ae5709a35ac2c7772ddf41869ce2bb097}} 
+\index{sound\+Wave@{sound\+Wave}!is\+Done@{is\+Done}}
+\index{is\+Done@{is\+Done}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{is\+Done()}{isDone()}}
+{\footnotesize\ttfamily bool sound\+Wave\+::is\+Done (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+States whether the wave has reached the desired radius. 
+
+\begin{DoxyReturn}{Returns}
+returns whether the wave has reached the desired radius 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsound_wave_aafc6db924cda69359d9aa65ba75b28c6}\label{classsound_wave_aafc6db924cda69359d9aa65ba75b28c6}} 
+\index{sound\+Wave@{sound\+Wave}!update@{update}}
+\index{update@{update}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void sound\+Wave\+::update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Updates the waves data. 
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classsound_wave_ab32de1a5ff6f8f64a2ebf05f9707f3d9}\label{classsound_wave_ab32de1a5ff6f8f64a2ebf05f9707f3d9}} 
+\index{sound\+Wave@{sound\+Wave}!m\+\_\+f\+Decrease\+Rate@{m\+\_\+f\+Decrease\+Rate}}
+\index{m\+\_\+f\+Decrease\+Rate@{m\+\_\+f\+Decrease\+Rate}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{m\+\_\+f\+Decrease\+Rate}{m\_fDecreaseRate}}
+{\footnotesize\ttfamily float sound\+Wave\+::m\+\_\+f\+Decrease\+Rate\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the rate at which the radius decreases. 
+
+\mbox{\Hypertarget{classsound_wave_ac9adfa989210e9baa9ac4aab9a31309a}\label{classsound_wave_ac9adfa989210e9baa9ac4aab9a31309a}} 
+\index{sound\+Wave@{sound\+Wave}!m\+\_\+f\+Desired\+Radius@{m\+\_\+f\+Desired\+Radius}}
+\index{m\+\_\+f\+Desired\+Radius@{m\+\_\+f\+Desired\+Radius}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{m\+\_\+f\+Desired\+Radius}{m\_fDesiredRadius}}
+{\footnotesize\ttfamily float sound\+Wave\+::m\+\_\+f\+Desired\+Radius\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the radius where the wave ends. 
+
+\mbox{\Hypertarget{classsound_wave_a6fa457d0d462e86c6be2d36695f9270d}\label{classsound_wave_a6fa457d0d462e86c6be2d36695f9270d}} 
+\index{sound\+Wave@{sound\+Wave}!m\+\_\+f\+Increase\+Rate@{m\+\_\+f\+Increase\+Rate}}
+\index{m\+\_\+f\+Increase\+Rate@{m\+\_\+f\+Increase\+Rate}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{m\+\_\+f\+Increase\+Rate}{m\_fIncreaseRate}}
+{\footnotesize\ttfamily float sound\+Wave\+::m\+\_\+f\+Increase\+Rate\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the rate at which the radius increases. 
+
+\mbox{\Hypertarget{classsound_wave_aeb2707ab18aac662ee8ce8eca9297378}\label{classsound_wave_aeb2707ab18aac662ee8ce8eca9297378}} 
+\index{sound\+Wave@{sound\+Wave}!m\+\_\+\+Wave@{m\+\_\+\+Wave}}
+\index{m\+\_\+\+Wave@{m\+\_\+\+Wave}!sound\+Wave@{sound\+Wave}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Wave}{m\_Wave}}
+{\footnotesize\ttfamily sf\+::\+Circle\+Shape sound\+Wave\+::m\+\_\+\+Wave\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the wave being emitted. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\hyperlink{_sound_wave_8h}{Sound\+Wave.\+h}\end{DoxyCompactItemize}

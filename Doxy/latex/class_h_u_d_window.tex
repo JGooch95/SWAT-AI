@@ -1,0 +1,383 @@
+\hypertarget{class_h_u_d_window}{}\section{H\+U\+D\+Window Class Reference}
+\label{class_h_u_d_window}\index{H\+U\+D\+Window@{H\+U\+D\+Window}}
+
+
+A container of the Units UI.  
+
+
+
+
+{\ttfamily \#include $<$H\+U\+D\+Window.\+h$>$}
+
+Inheritance diagram for H\+U\+D\+Window\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_h_u_d_window}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_h_u_d_window_a0a3a8f276b89dfacaf2a65484a3b11c8}{H\+U\+D\+Window} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_af521ea9fc7357f71c0e1dbc9c23d64f7}{scale\+UI} ()
+\begin{DoxyCompactList}\small\item\em Scales the UI to be relative to the outside container. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_a764ef0d5ea029cdf09b62af0f59ef74f}{set\+Size} (sf\+::\+Vector2f size)
+\begin{DoxyCompactList}\small\item\em Sets the size of the H\+UD window. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_a3b77bee82174e05560ccb90d3b55135f}{set\+Position} (sf\+::\+Vector2f pos)
+\begin{DoxyCompactList}\small\item\em Sets the postion of the H\+UD window. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_a07c5e4b149710405c278d9465bf7b8e2}{set\+Class\+Texture} (sf\+::\+Texture $\ast$new\+Tex)
+\begin{DoxyCompactList}\small\item\em Sets the texture of the class button. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_a579e607782772cb41a7baf6160c14f40}{set\+Bar\+Levels} (\hyperlink{_h_u_d_window_8h_a3bf4c8f0af36af02aca4222b3672bc1d}{Bar\+Type} current\+Bar\+Type, \hyperlink{struct_util_1_1_limits}{Util\+::\+Limits} bar\+Settings)
+\begin{DoxyCompactList}\small\item\em Sets the levels of the bars. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_a2d6d9c28be865a87ec9ffbba9ea45977}{set\+Bar\+Icon} (\hyperlink{_h_u_d_window_8h_a3bf4c8f0af36af02aca4222b3672bc1d}{Bar\+Type} current\+Bar\+Type, sf\+::\+Texture $\ast$new\+Tex)
+\begin{DoxyCompactList}\small\item\em Sets the \hyperlink{class_bar}{Bar} Icon. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_ab23fc81f35b182ae23d3ee85fbc7104e}{set\+Bar\+Text} (\hyperlink{_h_u_d_window_8h_a3bf4c8f0af36af02aca4222b3672bc1d}{Bar\+Type} current\+Bar\+Type, std\+::string bar\+Text)
+\begin{DoxyCompactList}\small\item\em Sets the \hyperlink{class_bar}{Bar} Text. \end{DoxyCompactList}\item 
+void \hyperlink{class_h_u_d_window_ab89d2157a02b7092134cb2b58659c84f}{set\+Loadout\+Texture} (int i\+Index, sf\+::\+Texture $\ast$new\+Tex)
+\begin{DoxyCompactList}\small\item\em Sets the loadout button texture. \end{DoxyCompactList}\item 
+sf\+::\+Vector2f \hyperlink{class_h_u_d_window_a42beb8845c07df07ef5ef459b5d12bd0}{get\+Size} ()
+\begin{DoxyCompactList}\small\item\em Gets the dimensions of the HuD window. \end{DoxyCompactList}\item 
+\hyperlink{class_button}{Button} $\ast$ \hyperlink{class_h_u_d_window_aa4c9702e2f265e34560b9f2b77e468c4}{get\+Class\+Button} ()
+\begin{DoxyCompactList}\small\item\em Gets a pointer to the class button. \end{DoxyCompactList}\item 
+\hyperlink{class_button}{Button} $\ast$ \hyperlink{class_h_u_d_window_a06b79b305114538e82ea074378472d7a}{get\+Loadout\+Button} (int i\+Index)
+\begin{DoxyCompactList}\small\item\em Gets the loadout button at the index given. \end{DoxyCompactList}\item 
+\hyperlink{class_h_u_d_window_a6dfe3235d28ad412564f5bfe53a1b312}{$\sim$\+H\+U\+D\+Window} ()
+\begin{DoxyCompactList}\small\item\em Default deconstructor. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_h_u_d_window_aaffd8bce3d1cd1fde416a69fabd9f81a}{draw} (sf\+::\+Render\+Target \&target, sf\+::\+Render\+States states) const
+\begin{DoxyCompactList}\small\item\em Draws all of the \hyperlink{class_h_u_d_window}{H\+U\+D\+Window}\textquotesingle{}s entities to the screen. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_map}{Map} $\ast$ \hyperlink{class_h_u_d_window_a4f060daf799a5fb07fe243398360c650}{m\+\_\+\+Current\+Map}
+\begin{DoxyCompactList}\small\item\em Holds a pointer to the map. \end{DoxyCompactList}\item 
+\hyperlink{class_texture_loader}{Texture\+Loader} $\ast$ \hyperlink{class_h_u_d_window_ab920c7c56b7eb36e7aa2a515cccb0b40}{m\+\_\+\+Textures}
+\begin{DoxyCompactList}\small\item\em Holds the location of all of the textures. \end{DoxyCompactList}\item 
+\hyperlink{class_font_manager}{Font\+Manager} $\ast$ \hyperlink{class_h_u_d_window_a0126d31748ae1ba55ea12db31693a246}{m\+\_\+\+Fonts}
+\begin{DoxyCompactList}\small\item\em Holds the location of all of the fonts. \end{DoxyCompactList}\item 
+sf\+::\+Rectangle\+Shape \hyperlink{class_h_u_d_window_acac66ce4a62cd00c2b23045c7b195244}{m\+\_\+\+Back\+Drop}
+\begin{DoxyCompactList}\small\item\em A box to stand as a background for the button. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_bar}{Bar} $\ast$ $>$ \hyperlink{class_h_u_d_window_a6921a475707f3f79c8ed40d8dc3f84dc}{m\+\_\+\+U\+I\+Bars}
+\begin{DoxyCompactList}\small\item\em The health and ammo bars. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_object}{Object} $>$ \hyperlink{class_h_u_d_window_aa70ebf405fff3d3f1af0291d26532c51}{m\+\_\+\+Icons}
+\begin{DoxyCompactList}\small\item\em Holds the icons to go beside the bars. \end{DoxyCompactList}\item 
+std\+::vector$<$ sf\+::\+Text $\ast$ $>$ \hyperlink{class_h_u_d_window_a5343d0d3d11dfb0422e22f43a3b24e73}{m\+\_\+\+U\+I\+Text}
+\begin{DoxyCompactList}\small\item\em Holds the text to be put on the bars. \end{DoxyCompactList}\item 
+\hyperlink{class_button}{Button} \hyperlink{class_h_u_d_window_a6a019f798171deebfb65328d0fbad30c}{m\+\_\+\+Class\+Button}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_button}{Button} used for switching classes. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{class_button}{Button} $\ast$ $>$ \hyperlink{class_h_u_d_window_aa5f784c0fa464b7009574d64300c9279}{m\+\_\+\+Loadout\+Button}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_button}{Button} holding the current loadout slot of the unit. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A container of the Units UI. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_h_u_d_window_a0a3a8f276b89dfacaf2a65484a3b11c8}\label{class_h_u_d_window_a0a3a8f276b89dfacaf2a65484a3b11c8}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{H\+U\+D\+Window()}{HUDWindow()}}
+{\footnotesize\ttfamily H\+U\+D\+Window\+::\+H\+U\+D\+Window (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default constructor. 
+
+\mbox{\Hypertarget{class_h_u_d_window_a6dfe3235d28ad412564f5bfe53a1b312}\label{class_h_u_d_window_a6dfe3235d28ad412564f5bfe53a1b312}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!````~H\+U\+D\+Window@{$\sim$\+H\+U\+D\+Window}}
+\index{````~H\+U\+D\+Window@{$\sim$\+H\+U\+D\+Window}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{$\sim$\+H\+U\+D\+Window()}{~HUDWindow()}}
+{\footnotesize\ttfamily H\+U\+D\+Window\+::$\sim$\+H\+U\+D\+Window (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default deconstructor. 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_h_u_d_window_aaffd8bce3d1cd1fde416a69fabd9f81a}\label{class_h_u_d_window_aaffd8bce3d1cd1fde416a69fabd9f81a}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!draw@{draw}}
+\index{draw@{draw}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Target \&}]{target,  }\item[{sf\+::\+Render\+States}]{states }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Draws all of the \hyperlink{class_h_u_d_window}{H\+U\+D\+Window}\textquotesingle{}s entities to the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target} & Holds where to draw the entities to. \\
+\hline
+{\em states} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_h_u_d_window_aa4c9702e2f265e34560b9f2b77e468c4}\label{class_h_u_d_window_aa4c9702e2f265e34560b9f2b77e468c4}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!get\+Class\+Button@{get\+Class\+Button}}
+\index{get\+Class\+Button@{get\+Class\+Button}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{get\+Class\+Button()}{getClassButton()}}
+{\footnotesize\ttfamily \hyperlink{class_button}{Button}$\ast$ H\+U\+D\+Window\+::get\+Class\+Button (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets a pointer to the class button. 
+
+\begin{DoxyReturn}{Returns}
+returns a pointer to the class button 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_h_u_d_window_a06b79b305114538e82ea074378472d7a}\label{class_h_u_d_window_a06b79b305114538e82ea074378472d7a}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!get\+Loadout\+Button@{get\+Loadout\+Button}}
+\index{get\+Loadout\+Button@{get\+Loadout\+Button}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{get\+Loadout\+Button()}{getLoadoutButton()}}
+{\footnotesize\ttfamily \hyperlink{class_button}{Button}$\ast$ H\+U\+D\+Window\+::get\+Loadout\+Button (\begin{DoxyParamCaption}\item[{int}]{i\+Index }\end{DoxyParamCaption})}
+
+
+
+Gets the loadout button at the index given. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+Index} & Holds the index of the loadout button being retrieved \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+returns a pointer to the button 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_h_u_d_window_a42beb8845c07df07ef5ef459b5d12bd0}\label{class_h_u_d_window_a42beb8845c07df07ef5ef459b5d12bd0}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!get\+Size@{get\+Size}}
+\index{get\+Size@{get\+Size}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{get\+Size()}{getSize()}}
+{\footnotesize\ttfamily sf\+::\+Vector2f H\+U\+D\+Window\+::get\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Gets the dimensions of the HuD window. 
+
+\begin{DoxyReturn}{Returns}
+returns the dimensions of the window 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_h_u_d_window_af521ea9fc7357f71c0e1dbc9c23d64f7}\label{class_h_u_d_window_af521ea9fc7357f71c0e1dbc9c23d64f7}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!scale\+UI@{scale\+UI}}
+\index{scale\+UI@{scale\+UI}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{scale\+U\+I()}{scaleUI()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::scale\+UI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Scales the UI to be relative to the outside container. 
+
+\mbox{\Hypertarget{class_h_u_d_window_a2d6d9c28be865a87ec9ffbba9ea45977}\label{class_h_u_d_window_a2d6d9c28be865a87ec9ffbba9ea45977}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!set\+Bar\+Icon@{set\+Bar\+Icon}}
+\index{set\+Bar\+Icon@{set\+Bar\+Icon}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{set\+Bar\+Icon()}{setBarIcon()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::set\+Bar\+Icon (\begin{DoxyParamCaption}\item[{\hyperlink{_h_u_d_window_8h_a3bf4c8f0af36af02aca4222b3672bc1d}{Bar\+Type}}]{current\+Bar\+Type,  }\item[{sf\+::\+Texture $\ast$}]{new\+Tex }\end{DoxyParamCaption})}
+
+
+
+Sets the \hyperlink{class_bar}{Bar} Icon. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\+Bar\+Type} & States the type of bar being edited \\
+\hline
+{\em new\+Tex} & Holds a pointer to the new texture \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_h_u_d_window_a579e607782772cb41a7baf6160c14f40}\label{class_h_u_d_window_a579e607782772cb41a7baf6160c14f40}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!set\+Bar\+Levels@{set\+Bar\+Levels}}
+\index{set\+Bar\+Levels@{set\+Bar\+Levels}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{set\+Bar\+Levels()}{setBarLevels()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::set\+Bar\+Levels (\begin{DoxyParamCaption}\item[{\hyperlink{_h_u_d_window_8h_a3bf4c8f0af36af02aca4222b3672bc1d}{Bar\+Type}}]{current\+Bar\+Type,  }\item[{\hyperlink{struct_util_1_1_limits}{Util\+::\+Limits}}]{bar\+Settings }\end{DoxyParamCaption})}
+
+
+
+Sets the levels of the bars. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\+Bar\+Type} & States the type of bar being edited \\
+\hline
+{\em bar\+Settings} & Holds the new settings \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_h_u_d_window_ab23fc81f35b182ae23d3ee85fbc7104e}\label{class_h_u_d_window_ab23fc81f35b182ae23d3ee85fbc7104e}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!set\+Bar\+Text@{set\+Bar\+Text}}
+\index{set\+Bar\+Text@{set\+Bar\+Text}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{set\+Bar\+Text()}{setBarText()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::set\+Bar\+Text (\begin{DoxyParamCaption}\item[{\hyperlink{_h_u_d_window_8h_a3bf4c8f0af36af02aca4222b3672bc1d}{Bar\+Type}}]{current\+Bar\+Type,  }\item[{std\+::string}]{bar\+Text }\end{DoxyParamCaption})}
+
+
+
+Sets the \hyperlink{class_bar}{Bar} Text. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\+Bar\+Type} & States the type of bar being edited \\
+\hline
+{\em bar\+Text} & Holds the new text to be used \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_h_u_d_window_a07c5e4b149710405c278d9465bf7b8e2}\label{class_h_u_d_window_a07c5e4b149710405c278d9465bf7b8e2}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!set\+Class\+Texture@{set\+Class\+Texture}}
+\index{set\+Class\+Texture@{set\+Class\+Texture}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{set\+Class\+Texture()}{setClassTexture()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::set\+Class\+Texture (\begin{DoxyParamCaption}\item[{sf\+::\+Texture $\ast$}]{new\+Tex }\end{DoxyParamCaption})}
+
+
+
+Sets the texture of the class button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Tex} & Holds a pointer to the new texture \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_h_u_d_window_ab89d2157a02b7092134cb2b58659c84f}\label{class_h_u_d_window_ab89d2157a02b7092134cb2b58659c84f}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!set\+Loadout\+Texture@{set\+Loadout\+Texture}}
+\index{set\+Loadout\+Texture@{set\+Loadout\+Texture}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{set\+Loadout\+Texture()}{setLoadoutTexture()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::set\+Loadout\+Texture (\begin{DoxyParamCaption}\item[{int}]{i\+Index,  }\item[{sf\+::\+Texture $\ast$}]{new\+Tex }\end{DoxyParamCaption})}
+
+
+
+Sets the loadout button texture. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+Index} & Holds the index of the button \\
+\hline
+{\em new\+Tex} & Holds a pointer to the new texture \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_h_u_d_window_a3b77bee82174e05560ccb90d3b55135f}\label{class_h_u_d_window_a3b77bee82174e05560ccb90d3b55135f}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!set\+Position@{set\+Position}}
+\index{set\+Position@{set\+Position}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{set\+Position()}{setPosition()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::set\+Position (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{pos }\end{DoxyParamCaption})}
+
+
+
+Sets the postion of the H\+UD window. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & The new position of the H\+UD window \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_h_u_d_window_a764ef0d5ea029cdf09b62af0f59ef74f}\label{class_h_u_d_window_a764ef0d5ea029cdf09b62af0f59ef74f}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!set\+Size@{set\+Size}}
+\index{set\+Size@{set\+Size}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{set\+Size()}{setSize()}}
+{\footnotesize\ttfamily void H\+U\+D\+Window\+::set\+Size (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{size }\end{DoxyParamCaption})}
+
+
+
+Sets the size of the H\+UD window. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & The new dimensions of the H\+UD window \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_h_u_d_window_acac66ce4a62cd00c2b23045c7b195244}\label{class_h_u_d_window_acac66ce4a62cd00c2b23045c7b195244}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+Back\+Drop@{m\+\_\+\+Back\+Drop}}
+\index{m\+\_\+\+Back\+Drop@{m\+\_\+\+Back\+Drop}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Back\+Drop}{m\_BackDrop}}
+{\footnotesize\ttfamily sf\+::\+Rectangle\+Shape H\+U\+D\+Window\+::m\+\_\+\+Back\+Drop\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+A box to stand as a background for the button. 
+
+\mbox{\Hypertarget{class_h_u_d_window_a6a019f798171deebfb65328d0fbad30c}\label{class_h_u_d_window_a6a019f798171deebfb65328d0fbad30c}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+Class\+Button@{m\+\_\+\+Class\+Button}}
+\index{m\+\_\+\+Class\+Button@{m\+\_\+\+Class\+Button}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Class\+Button}{m\_ClassButton}}
+{\footnotesize\ttfamily \hyperlink{class_button}{Button} H\+U\+D\+Window\+::m\+\_\+\+Class\+Button\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\hyperlink{class_button}{Button} used for switching classes. 
+
+\mbox{\Hypertarget{class_h_u_d_window_a4f060daf799a5fb07fe243398360c650}\label{class_h_u_d_window_a4f060daf799a5fb07fe243398360c650}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+Current\+Map@{m\+\_\+\+Current\+Map}}
+\index{m\+\_\+\+Current\+Map@{m\+\_\+\+Current\+Map}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Current\+Map}{m\_CurrentMap}}
+{\footnotesize\ttfamily \hyperlink{class_map}{Map}$\ast$ H\+U\+D\+Window\+::m\+\_\+\+Current\+Map\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds a pointer to the map. 
+
+\mbox{\Hypertarget{class_h_u_d_window_a0126d31748ae1ba55ea12db31693a246}\label{class_h_u_d_window_a0126d31748ae1ba55ea12db31693a246}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+Fonts@{m\+\_\+\+Fonts}}
+\index{m\+\_\+\+Fonts@{m\+\_\+\+Fonts}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Fonts}{m\_Fonts}}
+{\footnotesize\ttfamily \hyperlink{class_font_manager}{Font\+Manager}$\ast$ H\+U\+D\+Window\+::m\+\_\+\+Fonts\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the location of all of the fonts. 
+
+\mbox{\Hypertarget{class_h_u_d_window_aa70ebf405fff3d3f1af0291d26532c51}\label{class_h_u_d_window_aa70ebf405fff3d3f1af0291d26532c51}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+Icons@{m\+\_\+\+Icons}}
+\index{m\+\_\+\+Icons@{m\+\_\+\+Icons}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Icons}{m\_Icons}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_object}{Object}$>$ H\+U\+D\+Window\+::m\+\_\+\+Icons\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the icons to go beside the bars. 
+
+\mbox{\Hypertarget{class_h_u_d_window_aa5f784c0fa464b7009574d64300c9279}\label{class_h_u_d_window_aa5f784c0fa464b7009574d64300c9279}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+Loadout\+Button@{m\+\_\+\+Loadout\+Button}}
+\index{m\+\_\+\+Loadout\+Button@{m\+\_\+\+Loadout\+Button}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Loadout\+Button}{m\_LoadoutButton}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_button}{Button}$\ast$$>$ H\+U\+D\+Window\+::m\+\_\+\+Loadout\+Button\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\hyperlink{class_button}{Button} holding the current loadout slot of the unit. 
+
+\mbox{\Hypertarget{class_h_u_d_window_ab920c7c56b7eb36e7aa2a515cccb0b40}\label{class_h_u_d_window_ab920c7c56b7eb36e7aa2a515cccb0b40}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+Textures@{m\+\_\+\+Textures}}
+\index{m\+\_\+\+Textures@{m\+\_\+\+Textures}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Textures}{m\_Textures}}
+{\footnotesize\ttfamily \hyperlink{class_texture_loader}{Texture\+Loader}$\ast$ H\+U\+D\+Window\+::m\+\_\+\+Textures\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the location of all of the textures. 
+
+\mbox{\Hypertarget{class_h_u_d_window_a6921a475707f3f79c8ed40d8dc3f84dc}\label{class_h_u_d_window_a6921a475707f3f79c8ed40d8dc3f84dc}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+U\+I\+Bars@{m\+\_\+\+U\+I\+Bars}}
+\index{m\+\_\+\+U\+I\+Bars@{m\+\_\+\+U\+I\+Bars}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+U\+I\+Bars}{m\_UIBars}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{class_bar}{Bar}$\ast$$>$ H\+U\+D\+Window\+::m\+\_\+\+U\+I\+Bars\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The health and ammo bars. 
+
+\mbox{\Hypertarget{class_h_u_d_window_a5343d0d3d11dfb0422e22f43a3b24e73}\label{class_h_u_d_window_a5343d0d3d11dfb0422e22f43a3b24e73}} 
+\index{H\+U\+D\+Window@{H\+U\+D\+Window}!m\+\_\+\+U\+I\+Text@{m\+\_\+\+U\+I\+Text}}
+\index{m\+\_\+\+U\+I\+Text@{m\+\_\+\+U\+I\+Text}!H\+U\+D\+Window@{H\+U\+D\+Window}}
+\subsubsection{\texorpdfstring{m\+\_\+\+U\+I\+Text}{m\_UIText}}
+{\footnotesize\ttfamily std\+::vector$<$sf\+::\+Text$\ast$$>$ H\+U\+D\+Window\+::m\+\_\+\+U\+I\+Text\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the text to be put on the bars. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\hyperlink{_h_u_d_window_8h}{H\+U\+D\+Window.\+h}\end{DoxyCompactItemize}

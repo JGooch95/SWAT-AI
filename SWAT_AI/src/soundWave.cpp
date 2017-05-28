@@ -37,7 +37,7 @@ void soundWave::update()
 
 bool soundWave::isDone()
 {
-	if (m_Wave.getRadius() > m_fDesiredRadius)
+	if (m_Wave.getRadius() >= m_fDesiredRadius)
 	{
 		return true;
 	}

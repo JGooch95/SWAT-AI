@@ -84,6 +84,7 @@ Character::Character()
 
 	//Sets up the vision cone
 	m_VisionRays.setPrimitiveType(sf::TrianglesFan);
+	m_VisionLines.setPrimitiveType(sf::Lines);
 
 	//Sets up the health bar
 	m_HealthLevels.lower = 100;
@@ -539,8 +540,9 @@ void Character::lookAt(float fAngle)
 	m_Weapon1.aim(fAngle);
 }
 
-void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
+void Character::visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
 {
+	
 	std::vector<Ray> vRays;
 	std::vector<Ray> vFinalRays;
 	Ray tempRay;
@@ -571,20 +573,66 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	//Generate the rays
 	for (int i = 0; i < vEdges.size(); i++)
 	{
+		sf::Vector2f EdgePoint;
+
 		//Create a ray pointing towards the corner given
-		sf::Vector2f rayVect = vEdges.at(i) - m_MainSprite.getPosition();
+		sf::Vector2f Point1 = vEdges.at(i).first - m_MainSprite.getPosition();
+		float fAnglePoint1 = Util::setWithinRange(Util::getAngle(Point1), 0.0f, 360.0f);
 
-		//Gets the angle of the vector
-		float fRotAngle = Util::getAngle(rayVect);
-		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+		sf::Vector2f Point2 = vEdges.at(i).second - m_MainSprite.getPosition();
+		float fAnglePoint2 = Util::setWithinRange(Util::getAngle(Point2), 0.0f, 360.0f);
 
-		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
+		for (int j = 0; j < 2; j++)
+		{
+			if (j == 0)
+			{
+				EdgePoint = vEdges.at(i).first;
+			}
+			else
+			{
+				EdgePoint = vEdges.at(i).second;
+			}
 
-		//Adds the data to a temp Ray to be added to the ray vector.
-		tempRay.vect = m_MainSprite.getPosition() + rayVect;
-		tempRay.originalVect = vEdges.at(i);
-		tempRay.angle = fRotAngle;
-		vRays.push_back(tempRay);
+			//Create a ray pointing towards the corner given
+			sf::Vector2f rayVect = (EdgePoint) - m_MainSprite.getPosition();
+
+			//Gets the angle of the vector
+			float fRotAngle = Util::getAngle(rayVect);
+			fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+
+			if (fAnglePoint1 < fAnglePoint2 )
+			{
+				if (j == 0)
+				{
+					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 - 0.1);
+				}
+				else
+				{
+					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 + 0.1);
+				}
+			}
+			else if (fAnglePoint1 > fAnglePoint2)
+			{
+				if (j == 0)
+				{
+					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 + 0.1);
+				}
+				else
+				{
+					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 - 0.1);
+				}
+			}
+			else
+			{
+				rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
+			}
+
+			//Adds the data to a temp Ray to be added to the ray vector.
+			tempRay.vect = m_MainSprite.getPosition() + rayVect;
+			tempRay.originalVect = EdgePoint;
+			tempRay.angle = fRotAngle;
+			vRays.push_back(tempRay);
+		}
 	}
 
 	//Check for ray collisions
@@ -604,7 +652,7 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
 		vRays.at(i).vect = Util::findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
 
-																			  //If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
+		//If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
 		if (Util::magnitude(vRays.at(i).originalVect - m_MainSprite.getPosition()) < Util::magnitude(vRays.at(i).vect - m_MainSprite.getPosition()))
 		{
 			tempRay.vect = vRays.at(i).originalVect;
@@ -618,44 +666,33 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 		vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
 	}
 
-	//For every ray position them in such a way that they are all within range
 	for (int i = 2; i < vRays.size(); i++)
 	{
-		//If the limits overlap the maximum angle
-		if ((vRays.at(0).angle >= 360 - fVisionCone && vRays.at(0).angle <= 360))
-		{
-			//If the ray lies within this zone
-			if (vRays.at(i).angle >= 360 - fVisionCone && vRays.at(i).angle <= 360)
-			{
-				vRays.at(i).angle -= 360; //Move the ray to the lower limit
-			}
-		}
-		//If the limits overlap the minimum angle
-		if (vRays.at(1).angle >= 0 && vRays.at(1).angle <= fVisionCone)
-		{
-			//If the ray lies within this zone
-			if (vRays.at(i).angle >= 0 && vRays.at(i).angle <= fVisionCone)
-			{
-				vRays.at(i).angle += 360; //Move the ray to the upper limit
-			}
-		}
+		vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0, 360);
 	}
 
-	//If the limits overlap the maximum angle
-	if (vFinalRays.at(0).angle >= 360 - fVisionCone && vFinalRays.at(0).angle <= 360)
+	for (int i =0; i < vFinalRays.size(); i++)
 	{
-		vFinalRays.at(0).angle -= 360; //Move the limit to the lower limit
-	}
-	//If the limits overlap the minimum angle
-	if (vFinalRays.at(1).angle >= 0 && vFinalRays.at(1).angle <= fVisionCone)
-	{
-		vFinalRays.at(1).angle += 360; //Move the limit to the upper limit
+		vFinalRays.at(i).angle = Util::setWithinRange(vFinalRays.at(i).angle, 0, 360);
 	}
 
-	//For every ray
+	//If the vision cone goes past the 0 / 360 crossover
+	if (vFinalRays.at(0).angle > vFinalRays.at(1).angle)
+	{
+		//Put the rays into a consecutive form
+		for (int i = 2; i < vRays.size(); i++)
+		{
+			if (vRays.at(i).angle > vFinalRays.at(0).angle)
+			{
+				vRays.at(i).angle -= 360;
+			}
+		}
+		vFinalRays.at(0).angle -= 360;
+	}
+
+	//Check if the rays lie within the range
 	for (int i = 2; i < vRays.size(); i++)
 	{
-		//If the ray is within the vision cone add the ray to the vector of rays
 		if (vRays.at(i).angle >= vFinalRays.at(0).angle && vRays.at(i).angle <= vFinalRays.at(1).angle)
 		{
 			vFinalRays.push_back(vRays.at(i));
@@ -669,8 +706,12 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	m_VisionRays.clear();
 	m_VisionRays.resize((vFinalRays.size() + 1));
 
+	m_VisionLines.clear();
+	m_VisionLines.resize((vFinalRays.size() + 1)*2);
+
 	//Center Point
 	sf::Vertex newVertex;
+	sf::Vertex newVertex2;
 	newVertex.color = sf::Color(255, 255, 255, 70);
 	newVertex.position = m_MainSprite.getPosition();
 	m_VisionRays[0] = newVertex;
@@ -680,15 +721,22 @@ void Character::visionCalculation(std::vector<sf::Vector2f>vEdges)
 	{
 		newVertex.position = vFinalRays.at(i).vect;
 		m_VisionRays[i + 1] = newVertex;
+
+		
+		newVertex2.position = getPosition();
+		newVertex2.color = sf::Color(0, 255, 255, 255);
+		m_VisionLines[(2 * i)] = newVertex2;
+		newVertex2.position = newVertex.position;
+		m_VisionLines[(2 * i) + 1] = newVertex2;
 	}
 }
 
-float Character::bulletChecks(std::vector<sf::Vector2f>vEdges)
+float Character::bulletChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
 {
 	return m_Weapon1.bulletChecks(vEdges); //Returns the damage the weapon deals if it hits
 }
 
-bool Character::lazerChecks(std::vector<sf::Vector2f>vEdges)
+bool Character::lazerChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
 {
 	//Finds where the lazer intersects and updates its position
 	std::vector<sf::Vector2f> lazerRay = { m_Weapon1.getPosition(), m_Weapon1.getIntersect() };
@@ -850,7 +898,7 @@ Util::Limits Character::getAmmoData()
 	return m_Weapon1.getAmmoLevels();
 }
 
-std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
+std::pair<sf::Vector2f, sf::Vector2f> Character::getCollisionLine(float fAngle)
 {
 	//Gets the radius and rotates it to the current orientation 
 	sf::Vector2f radiusLine = Util::rotateVect(sf::Vector2f(getSize().x / 2, getSize().x / 2), fAngle - 90);
@@ -859,7 +907,8 @@ std::vector<sf::Vector2f> Character::getCollisionLine(float fAngle)
 	std::vector<sf::Vector2f> vNewCollisionLine = { m_MainSprite.getPosition() - radiusLine , m_MainSprite.getPosition() + radiusLine };
 	m_CollisionLine[0].position = vNewCollisionLine[0];
 	m_CollisionLine[1].position = vNewCollisionLine[1];
-	return vNewCollisionLine;
+
+	return std::pair<sf::Vector2f, sf::Vector2f>(vNewCollisionLine[0], vNewCollisionLine[1]);
 }
 
 classType Character::getClass()
@@ -962,6 +1011,8 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		if (m_bDrawVision)
 		{
 			target.draw(m_VisionRays);
+			if(m_CurrentSettings->debugActive()) 
+				target.draw(m_VisionLines);
 		}
 
 		target.draw(m_Weapon1);

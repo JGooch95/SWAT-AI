@@ -51,7 +51,7 @@ void Object::setRotation(float fRot)
 //Getters
 sf::Vector2f Object::getPosition()
 {
-	return sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y);
+	return m_MainSprite.getPosition();
 }
 
 sf::Vector2f Object::getOrigin()
@@ -74,25 +74,26 @@ sf::Vector2f Object::getScale()
 	return m_MainSprite.getScale();
 }
 
-std::vector<sf::Vector2f> Object::getEdges()
+std::vector<std::pair<sf::Vector2f, sf::Vector2f>> Object::getEdges()
 {
-	std::vector<sf::Vector2f> vEdges; //Holds the edges of the object
+	std::vector<std::pair<sf::Vector2f, sf::Vector2f>> vEdges; //Holds the edges of the object
 	
 	//Top edge
-	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top));
-	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
+	vEdges.push_back(std::pair<sf::Vector2f, sf::Vector2f>(sf::Vector2f(getRect().left,  getRect().top), 
+														   sf::Vector2f(getRect().left + getRect().width, getRect().top)));
 	
 	//Right edge
-	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top));
-	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
+	vEdges.push_back(std::pair<sf::Vector2f, sf::Vector2f>(sf::Vector2f(getRect().left + getRect().width, getRect().top), 
+														   sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height)));
 	
 	//Bottom edge
-	vEdges.push_back(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height));
-	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
+	vEdges.push_back(std::pair<sf::Vector2f, sf::Vector2f>(sf::Vector2f(getRect().left + getRect().width, getRect().top + getRect().height), 
+														   sf::Vector2f(getRect().left, getRect().top + getRect().height)));
+	
 	
 	//Left edge
-	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top  + getRect().height));
-	vEdges.push_back(sf::Vector2f(getRect().left,  getRect().top));
+	vEdges.push_back(std::pair<sf::Vector2f, sf::Vector2f>(sf::Vector2f(getRect().left, getRect().top + getRect().height),
+														   sf::Vector2f(getRect().left, getRect().top)));
 	
 	return vEdges;
 }
