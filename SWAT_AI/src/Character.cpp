@@ -810,48 +810,20 @@ void Character::lazerEdgeChecks()
 	m_Weapon1.setIntersect(lowestIntersect);
 }
 
-void Character::bulletChecks(std::vector<Character*> vCharSet)
+int Character::rayChecks(std::vector<Character*> vCharSet, int iType)
 {
-	if (m_Weapon1.isShooting())
+	std::vector<sf::Vector2f> Ray;
+	if (iType == 0)
 	{
-		//Finds where the lazer intersects and updates its position
-		sf::Vector2f lowestIntersect(m_Weapon1.getBullet()[1].position);
-		std::vector<sf::Vector2f> bulletRay = { m_Weapon1.getPosition(), lowestIntersect };
-
-		int iOutput = -1;
-		for (int i = 0; i < vCharSet.size(); i++)
-		{
-			//Checks where the ray and the edge intersect
-			sf::Vector2f currentIntersect = Util::lineIntersect(vCharSet.at(i)->getCollisionLine(getRotation()).first,
-				vCharSet.at(i)->getCollisionLine(getRotation()).second,
-				bulletRay.at(0),
-				bulletRay.at(1));
-
-			//If the ray is shorter than the previous rays then set the ray to be the shortest ray
-			if (Util::magnitude(currentIntersect - getPosition()) < Util::magnitude(lowestIntersect - getPosition()))
-			{
-				iOutput = i;
-				lowestIntersect = currentIntersect;
-			}
-		}
-		if (iOutput != -1)
-		{
-			vCharSet.at(iOutput)->setHealth(vCharSet.at(iOutput)->getHealthData().lower - m_Weapon1.getDamage());
-
-			if (vCharSet.at(iOutput)->getAimingState() != AIM)
-			{
-				vCharSet.at(iOutput)->setAimingState(SEARCH_SPIN);
-			}
-		}
-		m_Weapon1.setBullet(lowestIntersect);
+		Ray = std::vector<sf::Vector2f>({ m_Weapon1.getPosition(), m_Weapon1.getBullet()[1].position });
 	}
-}
+	if (iType == 1)
+	{
+		Ray = std::vector<sf::Vector2f>({ m_Weapon1.getPosition(), m_Weapon1.getIntersect() });
+	}
 
-int Character::lazerChecks(std::vector<Character*> vCharSet)
-{
 	//Finds where the lazer intersects and updates its position
-	sf::Vector2f lowestIntersect(m_Weapon1.getIntersect());
-	std::vector<sf::Vector2f> lazerRay = { m_Weapon1.getPosition(), m_Weapon1.getIntersect() };
+	sf::Vector2f lowestIntersect(Ray.at(1));
 
 	int iOutput = -1;
 	for (int i = 0; i < vCharSet.size(); i++)
@@ -859,18 +831,25 @@ int Character::lazerChecks(std::vector<Character*> vCharSet)
 		//Checks where the ray and the edge intersect
 		sf::Vector2f currentIntersect = Util::lineIntersect(vCharSet.at(i)->getCollisionLine(getRotation()).first, 
 															vCharSet.at(i)->getCollisionLine(getRotation()).second, 
-															lazerRay.at(0),
-															lazerRay.at(1));
+															Ray.at(0),
+															Ray.at(1));
 
 		//If the ray is shorter than the previous rays then set the ray to be the shortest ray
-		if (Util::magnitude(currentIntersect - m_Weapon1.getPosition()) < Util::magnitude(lowestIntersect - m_Weapon1.getPosition()))
+		if (Util::magnitude(currentIntersect - Ray.at(0)) < Util::magnitude(lowestIntersect - Ray.at(0)))
 		{
 			iOutput = i;
 			lowestIntersect = currentIntersect;
 		}
 	}
 
-	m_Weapon1.setIntersect(lowestIntersect);
+	if (iType == 0)
+	{
+		m_Weapon1.setBullet(lowestIntersect);
+	}
+	if (iType == 1)
+	{
+		m_Weapon1.setIntersect(lowestIntersect);
+	}
 	return iOutput;
 }
 

@@ -401,7 +401,7 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 	for (int i = 0; i < vCharSet1.size(); i++)
 	{
 		//Check lazer collision
-		int iIntersector = vCharSet1.at(i)->lazerChecks(vCharSet2);
+		int iIntersector = vCharSet1.at(i)->rayChecks(vCharSet2, 1);
 
 		//If the lazer collided with a character
 		if (iIntersector != -1)
@@ -420,7 +420,17 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 		//If the character is shooting check if the bullet hit opposing characters
 		if (vCharSet1.at(i)->isShooting())
 		{
-			vCharSet1.at(i)->bulletChecks(vCharSet2);
+			int iShot = vCharSet1.at(i)->rayChecks(vCharSet2, 0);
+
+			if (iShot != -1)
+			{
+				vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet2.at(iShot)->getWeapon()->getDamage());
+
+				if (vCharSet2.at(iShot)->getAimingState() != AIM)
+				{
+					vCharSet2.at(iShot)->setAimingState(SEARCH_SPIN);
+				}
+			}
 		}
 
 		//Check against every character in the second container
