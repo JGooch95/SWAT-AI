@@ -258,15 +258,17 @@ Game::Game(sf::Vector2u windowSize)
 	}
 
 	//Removes unnecessary wall edges
-	m_vEdges = edgeReduction(vEdgesX, vEdgesY);
+	edgeReduction(vEdgesX, vEdgesY);
 
 	//Sets up the debug lines for the edges of the walls
-	m_EdgeLines.resize(m_vEdges.size()*2);
+	m_EdgeLines.resize(m_CurrentMap->m_vWallEdges.size()*2);
 	m_EdgeLines.setPrimitiveType(sf::Lines);
-	for (int i = 0; i < m_vEdges.size(); i++)
+	for (int i = 0; i < m_CurrentMap->m_vWallEdges.size(); i++)
 	{
-		m_EdgeLines[2 * i] = sf::Vertex(m_vEdges.at(i).first, sf::Color(255, 0, 0, 255));
-		m_EdgeLines[(2 * i) + 1] = sf::Vertex(m_vEdges.at(i).second, sf::Color(255, 0, 0, 255));
+		
+		m_EdgeLines[2 * i] = sf::Vertex(*m_CurrentMap->m_vWallEdges.at(i).first, sf::Color(255, 0, 0, 255));
+		m_EdgeLines[(2 * i) + 1] = sf::Vertex(*m_CurrentMap->m_vWallEdges.at(i).second, sf::Color(255, 0, 0, 255));
+		
 	}
 
 	//Sets up the exit button
@@ -280,16 +282,48 @@ Game::Game(sf::Vector2u windowSize)
 }
 
 void Game::update(sf::Vector2i mousePos)
-{
-	std::vector<std::pair<sf::Vector2f, sf::Vector2f>> vEdgesToCheck; //Holds all of the edges to be checked this frame
+{	
+	//Clears the temp edge data
+	m_CurrentMap->clearEdges(&m_CurrentMap->m_vTempEdges);
+	m_CurrentMap->clearCorners(&m_CurrentMap->m_vTempCorners);
 
 	//Adds all of the door edges to the checked edges.
 	for (int j = 0; j < m_vDoors.size(); j++)
 	{
 		std::vector<std::pair<sf::Vector2f, sf::Vector2f>> tempEdges = m_vDoors.at(j)->getEdges();
-		vEdgesToCheck.insert(std::end(vEdgesToCheck), std::begin(tempEdges), std::end(tempEdges));
+		for (int i = 0; i < 4; i++)
+		{
+			sf::Vector2f point[2] = { tempEdges.at(i).first, tempEdges.at(i).second };
+			addEdge(point, &m_CurrentMap->m_vTempCorners, &m_CurrentMap->m_vTempEdges);
+		}
 	}
-	vEdgesToCheck.insert(std::end(vEdgesToCheck), std::begin(m_vEdges), std::end(m_vEdges)); //Adds all of the wall edges to the end of the checked edges
+	
+	//Clears all of the corners and adds the new corners
+	m_CurrentMap->m_vCorners.clear();
+	m_CurrentMap->m_vCorners.insert(std::end(m_CurrentMap->m_vCorners), std::begin(m_CurrentMap->m_vWallCorners), std::end(m_CurrentMap->m_vWallCorners));
+	m_CurrentMap->m_vCorners.insert(std::end(m_CurrentMap->m_vCorners), std::begin(m_CurrentMap->m_vTempCorners), std::end(m_CurrentMap->m_vTempCorners));
+
+	//Clears all of the edges and adds the new edges
+	m_CurrentMap->clearEdges(&m_CurrentMap->m_vEdges);
+	m_CurrentMap->m_vEdges.insert(std::end(m_CurrentMap->m_vEdges), std::begin(m_CurrentMap->m_vWallEdges), std::end(m_CurrentMap->m_vWallEdges));
+	m_CurrentMap->m_vEdges.insert(std::end(m_CurrentMap->m_vEdges), std::begin(m_CurrentMap->m_vTempEdges), std::end(m_CurrentMap->m_vTempEdges)); //Adds all of the wall edges to the end of the checked edges
+
+	
+	if (m_CurrentSettings->debugActive())
+	{
+		//Sets up the debug lines for the edges of the walls
+		m_EdgeLines.clear();
+		if (m_CurrentSettings->debugActive())
+		{
+			m_EdgeLines.resize(m_CurrentMap->m_vEdges.size() * 2);
+			m_EdgeLines.setPrimitiveType(sf::Lines);
+			for (int i = 0; i < m_CurrentMap->m_vEdges.size(); i++)
+			{
+				m_EdgeLines[2 * i] = sf::Vertex(*m_CurrentMap->m_vEdges.at(i).first, sf::Color(255, 0, 0, 255));
+				m_EdgeLines[(2 * i) + 1] = sf::Vertex(*m_CurrentMap->m_vEdges.at(i).second, sf::Color(255, 0, 0, 255));
+			}
+		}
+	}
 
 	//Perform character checks
 	for (int i = 0; i < m_vCharacters.size(); i++)
@@ -297,9 +331,8 @@ void Game::update(sf::Vector2i mousePos)
 		m_vCharacters.at(i)->update(); //Update data and states
 		if (!m_vCharacters.at(i)->isDead())
 		{
-			m_vCharacters.at(i)->lazerChecks(vEdgesToCheck); //Perform checks for the aiming
-			m_vCharacters.at(i)->visionCalculation(vEdgesToCheck); //Perform checks for the vision cone
-			m_vCharacters.at(i)->bulletChecks(vEdgesToCheck); //Perform checks for any of the shot bullets
+			m_vCharacters.at(i)->lazerEdgeChecks(); //Perform checks for the aiming
+			m_vCharacters.at(i)->bulletEdgeChecks(); //Perform checks for any of the shot bullets
 		}
 	}
 
@@ -364,12 +397,32 @@ void Game::update(sf::Vector2i mousePos)
 
 void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<Character*>  vCharSet2)
 {
-	bool bSeenCharacter = false; //Holds whether a characters been seen by the current characters
-
 	//For every character in the first container
 	for (int i = 0; i < vCharSet1.size(); i++)
 	{
-		bSeenCharacter = false;
+		//Check lazer collision
+		int iIntersector = vCharSet1.at(i)->lazerChecks(vCharSet2);
+
+		//If the lazer collided with a character
+		if (iIntersector != -1)
+		{
+			//If a character is alive then set it to be a target
+			if (vCharSet2.at(iIntersector)->getHealthData().lower > 0)
+			{
+				vCharSet1.at(i)->setTarget(vCharSet2.at(iIntersector));
+			}
+		}
+		else //If no characters have been seen then set a Null target
+		{
+			vCharSet1.at(i)->setTarget(NULL);
+		}
+
+		//If the character is shooting check if the bullet hit opposing characters
+		if (vCharSet1.at(i)->isShooting())
+		{
+			vCharSet1.at(i)->bulletChecks(vCharSet2);
+		}
+
 		//Check against every character in the second container
 		for (int j = 0; j < vCharSet2.size(); j++)
 		{
@@ -378,27 +431,6 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 				//Dont allow checks on itself
 				if (!(vCharSet1 == vCharSet2 && i == j))
 				{
-					//Check lazer collision
-					if (vCharSet1.at(i)->lazerChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation())}))
-					{
-						//If a character is seem then set it to be a target
-						bSeenCharacter = true;
-						if (vCharSet2.at(j)->getHealthData().lower > 0)
-						{
-							vCharSet1.at(i)->setTarget(vCharSet2.at(j));
-						}
-					}
-
-					if (vCharSet1.at(i)->isShooting())
-					{
-						//Take health off if a bullet has been shot
-						vCharSet2.at(j)->setHealth(vCharSet2.at(j)->getHealthData().lower - vCharSet1.at(i)->bulletChecks({ vCharSet2.at(j)->getCollisionLine(vCharSet1.at(i)->getRotation())}));
-						if (vCharSet2.at(j)->getAimingState() != AIM)
-						{
-							vCharSet2.at(j)->setAimingState(SEARCH_SPIN);
-						}
-					}
-
 					for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
 					{
 						if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
@@ -408,12 +440,6 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 					}
 				}
 			}
-		}
-
-		//If no characters have been seen then set a Null target
-		if (bSeenCharacter == false)
-		{
-			vCharSet1.at(i)->setTarget(NULL);
 		}
 	}
 }
@@ -604,7 +630,7 @@ std::vector<std::pair<sf::Vector2f, sf::Vector2f>> Game::edgeReduction(std::vect
 				if (j + 2 < vComparissonVectsX.at(i).size())
 				{
 					//If the ys match move to the next set of edges
-					if (vComparissonVectsX.at(i).at(j + 1).y == vComparissonVectsX.at(i).at(j + 2).y)
+					if (abs(vComparissonVectsX.at(i).at(j + 1).y- vComparissonVectsX.at(i).at(j + 2).y) < 0.1f)
 					{
 						j += 2;
 					}
@@ -629,9 +655,8 @@ std::vector<std::pair<sf::Vector2f, sf::Vector2f>> Game::edgeReduction(std::vect
 			//If the end of the vector has been reached store the current edge
 			if (j < vComparissonVectsX.at(i).size() - 1)
 			{
-				newValue.first = vComparissonVectsX.at(i).at(iBegin);
-				newValue.second = vComparissonVectsX.at(i).at(iEnd);
-				vEdges.push_back(newValue);
+				sf::Vector2f newEdge[] { vComparissonVectsX.at(i).at(iBegin), vComparissonVectsX.at(i).at(iEnd) };
+				addEdge(newEdge, &m_CurrentMap->m_vWallCorners, &m_CurrentMap->m_vWallEdges);
 				iBegin = j + 1;
 			}
 			bCurrentlyEqual = true;
@@ -652,7 +677,7 @@ std::vector<std::pair<sf::Vector2f, sf::Vector2f>> Game::edgeReduction(std::vect
 				if (j + 2 < vComparissonVectsY.at(i).size())
 				{
 					//If the Xs match move to the next set of edges
-					if (vComparissonVectsY.at(i).at(j + 1).x == vComparissonVectsY.at(i).at(j + 2).x)
+					if (abs(vComparissonVectsY.at(i).at(j + 1).x - vComparissonVectsY.at(i).at(j + 2).x) < 0.1f)
 					{
 						j += 2;
 					}
@@ -677,9 +702,8 @@ std::vector<std::pair<sf::Vector2f, sf::Vector2f>> Game::edgeReduction(std::vect
 			//If the end of the vector has been reached store the current edge
 			if (j < vComparissonVectsY.at(i).size() - 1)
 			{
-				newValue.first = vComparissonVectsY.at(i).at(iBegin);
-				newValue.second = vComparissonVectsY.at(i).at(iEnd);
-				vEdges.push_back(newValue);
+				sf::Vector2f newEdge[] { vComparissonVectsY.at(i).at(iBegin), vComparissonVectsY.at(i).at(iEnd) };
+				addEdge(newEdge, &m_CurrentMap->m_vWallCorners, &m_CurrentMap->m_vWallEdges);
 				iBegin = j + 1;
 			}
 			bCurrentlyEqual = true;
@@ -802,30 +826,37 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(*exitButton);
 }
 
-/*void Game::addEdge(sf::Vector2f points[2])
+void Game::addEdge(sf::Vector2f points[2], std::vector<sf::Vector2f*>* CornerList, std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeList)
 {
-	int iPointIndices[2] { 0, 0 };
+	sf::Vector2f* iPointIndices[2] {NULL, NULL};
 	
 	bool bFound = false;
 
+	//For both points
 	for (int i = 0; i < 2; i++)
 	{
-		for (int j = 0; j < m_vCorners.size(); j++)
+		bFound = false;
+		for (int j = 0; j < CornerList->size(); j++) //Check the corner list
 		{
-			if (points[i] == m_vCorners.at(j))
+			//If the point exists on the corner list
+			if (abs(points[i].x - (*CornerList->at(j)).x) <  0.01f &&
+				abs(points[i].y - (*CornerList->at(j)).y) <  0.01f ) 
 			{
-				iPointIndices[i] = j;
+				iPointIndices[i] = CornerList->at(j); //Assign the corner to that address
 				bFound = true;
 			}
 		}
-		if (!bFound)
+		if (!bFound || m_CurrentMap->m_vCorners.size() == 0) //If the corner isnt in the list
 		{
-			m_vCorners.push_back(points[i]);
+			//Create a new corner
+			iPointIndices[i] = new sf::Vector2f(points[i]); 
+			CornerList->push_back(iPointIndices[i]);
 		}
 	}
 
-	m_vEdges.push_back(std::pair <int, int>( iPointIndices[0], iPointIndices[1]));
-}*/
+	//Add the edge to the list
+	EdgeList->push_back(std::pair <sf::Vector2f*, sf::Vector2f*>( iPointIndices[0], iPointIndices[1]));
+}
 
 Game::~Game()
 {
@@ -859,6 +890,11 @@ Game::~Game()
 	{
 		delete(m_vUnitUI.at(i));
 		m_vUnitUI.at(i) = NULL;
+	}
+
+	if (m_CurrentMap != NULL)
+	{
+		m_CurrentMap->clearAllEdgeData();
 	}
 
 	delete(exitButton);

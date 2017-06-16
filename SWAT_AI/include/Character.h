@@ -93,17 +93,19 @@ class Character : public Object
 
 		/// \brief Performs ray collisions with the edges given to produce a cone of vision
 		/// \param vEdges The vector of edges being checked
-		void visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges);
+		void visionCalculation();
 
 		/// \brief Sends the edges to the gun to calculate bullet collisions
 		/// \param vEdges The vector of edges being checked
 		/// \return Retuns the damage dealt if the gun is shot
-		float bulletChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges);
+		void bulletChecks(std::vector<Character*> vCharSet);
+		void bulletEdgeChecks();
 
 		/// \brief Checks if the weapons lazer has collided
 		/// \param vEdges The vector of edges being checked
 		/// \return Retuns if the lazer hit anything
-		bool lazerChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>> vEdges);
+		int lazerChecks(std::vector<Character*>  vCharSet);
+		void lazerEdgeChecks();
 
 		/// \brief Sets the patrol path to the nodes given
 		/// \param viPathNodes Holds the indexes for the nodes to move to

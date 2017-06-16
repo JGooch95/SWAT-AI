@@ -21,6 +21,9 @@ class Map : public sf::Drawable
 		std::vector<std::vector<char>> m_vcLevelBits; //!< Holds the map layout loaded from the file
 		std::vector<std::vector<char>> m_vcFloorBits; //!< Holds the floor layout loaded from the file
 
+		//std::vector<std::pair<sf::Vector2f, sf::Vector2f>> m_vEdges; //!< Holds the wall edges
+		//std::vector<sf::Vector2f> m_vCorners;						 //!< Holds the wall corners
+
 	    /// \brief Draws all of the Map's entities to the screen.
 	    /// \param target Holds where to draw the entities to.		   
 	    ///	\param states 
@@ -30,8 +33,13 @@ class Map : public sf::Drawable
 		/// \brief Default constructor
 		Map();
 
-		std::vector<sf::Vector2f> m_vCorners;
-		std::vector<std::pair<int, int>> m_vEdges;
+		std::vector<sf::Vector2f*> m_vWallCorners;
+		std::vector<sf::Vector2f*> m_vTempCorners;
+		std::vector<sf::Vector2f*> m_vCorners;
+
+		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vWallEdges;
+		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vTempEdges;
+		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vEdges;
 
 		/// \brief Gets a pointer to the singleton object and creates one if it doesnt exist.
 		/// \return returns the pointer to the object
@@ -91,4 +99,10 @@ class Map : public sf::Drawable
 		/// \brief Gets the position of the map
 		/// \return returns the position of the map
 		sf::Vector2f getPosition();
+
+		void clearEdges(std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeVector);
+		void clearCorners(std::vector<sf::Vector2f*>* CornerVector);
+		void clearAllEdgeData();
+
+		~Map();
 };

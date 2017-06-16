@@ -158,6 +158,7 @@ void Character::update()
 	{
 		//Moves the player 
 		move();
+		visionCalculation();//Perform checks for the vision cone
 
 		if (stepTaken())
 		{
@@ -356,79 +357,47 @@ void Character::update()
 
 void Character::move()
 {
+	std::deque<Node*>* usePath = NULL;
+	int iMoveType = 0;
+
 	if (!m_Path.empty()) //If there is a path to follow
 	{
-		const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
+		usePath = &m_Path;
+		iMoveType = 1;
+	}
+	else if (m_MovementState == PATROL) //Otherwise check for a patrol
+	{
+		if (!m_PatrolPath.empty())
+		{
+			usePath = &m_PatrolPath;
+			iMoveType = 2;
+		}
+	}
 
+	if (usePath != NULL)
+	{
+		const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
+		sf::Vector2f destination;
 										//Sets the node to reach to be the next node in the path
-		sf::Vector2f destination((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-			(((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+		if (iMoveType == 2)
+		{
+			destination = sf::Vector2f((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+				(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+		}
+		else
+		{
+			destination = sf::Vector2f((((m_Path.at(0)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+				(((m_Path.at(0)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+		}
 		destination += m_CurrentMap->getPosition();
 
 		sf::Vector2f velocity(destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
 
-																			//If the node has already been reached move to the next node
+																		 //If the node has already been reached move to the next node
 		float fMagnitude = Util::magnitude(velocity);
 		if (fMagnitude == 0)
 		{
-			m_Path.pop_front();
-		}
-		else
-		{
-			//Finds the unit normal
-			velocity /= fMagnitude;
-
-			//Sets up the movement line
-			m_MovementLine[0].position = m_MainSprite.getPosition();
-			m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * getSize().y / 2.0f);
-
-			//Gets the angle the character is heading towards for later use
-			m_fMovementAngle = Util::getAngle(velocity) - 90;
-			m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
-
-			velocity *= kfMoveSpeed; //Multiplies the direction by the speed
-
-			fDistanceSinceStep += Util::magnitude(velocity);
-			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
-
-																				//If the node has been reached then move to the next node
-			if (m_MainSprite.getPosition().x >= destination.x - 1 &&
-				m_MainSprite.getPosition().x <= destination.x + 1 &&
-				m_MainSprite.getPosition().y <= destination.y + 1 &&
-				m_MainSprite.getPosition().y >= destination.y - 1)
-			{
-				m_Path.pop_front();
-
-				//Sets up the path line ready to start drawing a new path
-				m_PathLine.clear();
-				m_PathLine.resize(m_Path.size());
-				for (int i = 0; i < m_Path.size(); i++)
-				{
-					m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
-						(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-						(((m_Path.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
-						sf::Color(0, 255, 0, 255));
-				}
-			}
-		}
-	}
-
-	else if (m_MovementState == PATROL)
-	{
-		if (!m_PatrolPath.empty())
-		{
-			const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
-
-											//Sets the node to reach to be the next node in the path
-			sf::Vector2f destination((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-				(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
-			destination += m_CurrentMap->getPosition();
-
-			sf::Vector2f velocity(destination - m_MainSprite.getPosition()); //Finds the distance between the next path node and the centre of the sprite
-
-																				//If the node has already been reached move to the next node
-			float fMagnitude = Util::magnitude(velocity);
-			if (fMagnitude == 0)
+			if (iMoveType == 2)
 			{
 				if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent == NULL)
 				{
@@ -450,27 +419,34 @@ void Character::move()
 			}
 			else
 			{
-				//Finds the unit normal
-				velocity /= fMagnitude;
+				m_Path.pop_front();
+			}
+		}
+		else
+		{
+			//Finds the unit normal
+			velocity /= fMagnitude;
 
-				//Sets up the movement line
-				m_MovementLine[0].position = m_MainSprite.getPosition();
-				m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * getSize().y / 2.0f);
+			//Sets up the movement line
+			m_MovementLine[0].position = m_MainSprite.getPosition();
+			m_MovementLine[1].position = m_MainSprite.getPosition() + (velocity * getSize().y / 2.0f);
 
-				//Gets the angle the character is heading towards for later use
-				m_fMovementAngle = Util::getAngle(velocity) - 90;
-				m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
+			//Gets the angle the character is heading towards for later use
+			m_fMovementAngle = Util::getAngle(velocity) - 90;
+			m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
 
-				velocity *= kfMoveSpeed; //Multiplies the direction by the speed
+			velocity *= kfMoveSpeed; //Multiplies the direction by the speed
 
-				fDistanceSinceStep += Util::magnitude(velocity);
-				m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
+			fDistanceSinceStep += Util::magnitude(velocity);
+			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
-				//If the node has been reached then move to the next node
-				if (m_MainSprite.getPosition().x >= destination.x - 1 &&
-					m_MainSprite.getPosition().x <= destination.x + 1 &&
-					m_MainSprite.getPosition().y <= destination.y + 1 &&
-					m_MainSprite.getPosition().y >= destination.y - 1)
+																			 //If the node has been reached then move to the next node
+			if (m_MainSprite.getPosition().x >= destination.x - 1 &&
+				m_MainSprite.getPosition().x <= destination.x + 1 &&
+				m_MainSprite.getPosition().y <= destination.y + 1 &&
+				m_MainSprite.getPosition().y >= destination.y - 1)
+			{
+				if (iMoveType == 2)
 				{
 					if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent == NULL)
 					{
@@ -489,15 +465,22 @@ void Character::move()
 					{
 						patrolNode += patrolDirection;
 					}
+				}
+				else
+				{
+					m_Path.pop_front();
+				}
 
-					//Sets up the path line ready to start drawing a new path
-					m_PathLine.clear();
-					m_PathLine.resize(m_PatrolPath.size());
-					for (int i = 0; i < m_PatrolPath.size(); i++)
+				//Sets up the path line ready to start drawing a new path
+				m_PathLine.clear();
+				if (m_CurrentSettings->debugActive())
+				{
+					m_PathLine.resize(usePath->size());
+					for (int i = 0; i < usePath->size(); i++)
 					{
 						m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
-							(((m_PatrolPath.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-							(((m_PatrolPath.at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
+							(((usePath->at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+							(((usePath->at(i)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2))),
 							sf::Color(0, 255, 0, 255));
 					}
 				}
@@ -521,9 +504,12 @@ void Character::lookAt(sf::Vector2f position)
 	m_MainSprite.setRotation(Util::getAngle(rotVect) + 90); //Rotates the sprite towards the target
 
 	//Updates the orientation line
-	rotVect *= (getSize().y / 2.0f); //Sets the size of the rotation for the orientation line
-	m_OrientationLine[0].position = m_MainSprite.getPosition();
-	m_OrientationLine[1].position = m_MainSprite.getPosition() + rotVect;
+	if (m_CurrentSettings->debugActive())
+	{
+		rotVect *= (getSize().y / 2.0f); //Sets the size of the rotation for the orientation line
+		m_OrientationLine[0].position = m_MainSprite.getPosition();
+		m_OrientationLine[1].position = m_MainSprite.getPosition() + rotVect;
+	}
 }
 
 void Character::lookAt(float fAngle)
@@ -540,8 +526,127 @@ void Character::lookAt(float fAngle)
 	m_Weapon1.aim(fAngle);
 }
 
-void Character::visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
+void Character::visionCalculation()
 {
+	/*
+	std::vector<Ray> vRays;
+	std::vector<Ray> vFinalRays;
+	Ray tempRay;
+	float fViewDistance = 2000.0f;
+	float fVisionCone = 45.0f;
+	int iCurrentEdge = -1;
+	int iPreviousEdge = -1;
+
+	for (int i = 0; i < m_CurrentMap->m_vCorners.size(); i++)
+	{
+		//Create a ray pointing towards the corner given
+		sf::Vector2f rayVect = (*m_CurrentMap->m_vCorners.at(i)) - m_MainSprite.getPosition();
+		rayVect /= Util::magnitude(rayVect);
+
+		//Gets the angle of the vector
+		float fRotAngle = Util::getAngle(rayVect);
+		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+		tempRay.angle = fRotAngle;
+
+		tempRay.originalVect = (*m_CurrentMap->m_vCorners.at(i));
+
+		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
+		tempRay.vect = m_MainSprite.getPosition() + rayVect;
+
+		vRays.push_back(tempRay);
+	}
+	QuickSort(vRays,0,vRays.size());
+
+	for (int i = 0; i < vRays.size(); i++)
+	{
+		//Set the lowest intersect to the rays location
+		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
+		Util::intersectData tempData = Util::findLowestIntersect2(&m_CurrentMap->m_vEdges, viewRay);
+		vRays.at(i).vect = tempData.collisionPoint; //Sets the new length of the ray
+
+		if (tempData.index != iCurrentEdge && tempData.index != -1)
+		{
+			if (i > 0 && iPreviousEdge != -1)
+			{
+				//float fRotAngle = Util::getAngle(vRays.at(i - 1).vect - m_MainSprite.getPosition());
+				//fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+				//vRays.at(i - 1).angle = fRotAngle; 
+				vFinalRays.push_back(tempRay);
+				tempRay.vect = tempRay.originalVect;
+
+				tempRay.vect = Util::lineIntersect(*m_CurrentMap->m_vEdges.at(iPreviousEdge).first, *m_CurrentMap->m_vEdges.at(iPreviousEdge).second, m_MainSprite.getPosition(), tempRay.vect); //Sets the new length of the ray
+
+				vFinalRays.push_back(tempRay);
+			}
+
+			iPreviousEdge = iCurrentEdge;
+			iCurrentEdge = tempData.index;
+			
+			float fRotAngle = Util::getAngle(vRays.at(i).vect - m_MainSprite.getPosition());
+			fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+			vRays.at(i).angle = fRotAngle;
+
+			tempRay = vRays.at(i);
+
+			vFinalRays.push_back(tempRay);
+		}
+		
+		//If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
+		if (Util::magnitude(tempRay.originalVect - m_MainSprite.getPosition()) < Util::magnitude(tempRay.vect - m_MainSprite.getPosition()))
+		{
+			tempRay.vect = vRays.at(i).originalVect;
+			tempRay.angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
+			tempRay.originalVect = sf::Vector2f(fViewDistance, fViewDistance);
+			vFinalRays.push_back(tempRay);
+		}
+		else
+		{
+
+		}
+
+		// Recalculates the angle and Pushes the vector of rays to the new vector
+		//vRays.at(i).angle = atan2f(vRays.at(i).vect.y - m_MainSprite.getPosition().y, vRays.at(i).vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
+		//vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
+
+		//vRays.push_back(tempRay);
+	}
+
+	for (int i = 0; i < vFinalRays.size(); i++)
+	{
+		vFinalRays.at(i).angle = atan2f(vFinalRays.at(i).vect.y - m_MainSprite.getPosition().y, vFinalRays.at(i).vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
+		vFinalRays.at(i).angle = Util::setWithinRange(vFinalRays.at(i).angle, 0.0f, 360.0f);
+	}
+
+	//Sort the rays into angle order
+	QuickSort(vFinalRays, 0, vFinalRays.size());
+
+	//Add the rays to the vertex array
+	m_VisionRays.clear();
+	m_VisionRays.resize((vFinalRays.size() + 1));
+
+	m_VisionLines.clear();
+	m_VisionLines.resize((vFinalRays.size() + 1) * 2);
+
+	//Center Point
+	sf::Vertex newVertex;
+	sf::Vertex newVertex2;
+	newVertex.color = sf::Color(255, 255, 255, 70);
+	newVertex.position = m_MainSprite.getPosition();
+	m_VisionRays[0] = newVertex;
+
+	//For every ray create a triangle 
+	for (int i = 0; i < vFinalRays.size(); i++)
+	{
+		newVertex.position = vFinalRays.at(i).vect;
+		m_VisionRays[i + 1] = newVertex;
+
+		newVertex2.position = getPosition();
+		newVertex2.color = sf::Color(0, 255, 255, 255);
+		m_VisionLines[(2 * i)] = newVertex2;
+		newVertex2.position = newVertex.position;
+		m_VisionLines[(2 * i) + 1] = newVertex2;
+	}*/
+
 	std::vector<Ray> vRays;
 	std::vector<Ray> vFinalRays;
 	Ray tempRay;
@@ -570,68 +675,32 @@ void Character::visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector
 	}
 
 	//Generate the rays
-	for (int i = 0; i < vEdges.size(); i++)
+	for (int i = 0; i < m_CurrentMap->m_vCorners.size(); i++)
 	{
-		sf::Vector2f EdgePoint;
-
 		//Create a ray pointing towards the corner given
-		sf::Vector2f Point1 = vEdges.at(i).first - m_MainSprite.getPosition();
-		float fAnglePoint1 = Util::setWithinRange(Util::getAngle(Point1), 0.0f, 360.0f);
+		sf::Vector2f rayVect = (*m_CurrentMap->m_vCorners.at(i)) - m_MainSprite.getPosition();
 
-		sf::Vector2f Point2 = vEdges.at(i).second - m_MainSprite.getPosition();
-		float fAnglePoint2 = Util::setWithinRange(Util::getAngle(Point2), 0.0f, 360.0f);
+		//Gets the angle of the vector
+		float fRotAngle = Util::getAngle(rayVect);
+		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+		tempRay.angle = fRotAngle;
 
-		for (int j = 0; j < 2; j++)
-		{
-			if (j == 0)
-			{
-				EdgePoint = vEdges.at(i).first;
-			}
-			else
-			{
-				EdgePoint = vEdges.at(i).second;
-			}
+		tempRay.originalVect = (*m_CurrentMap->m_vCorners.at(i));
 
-			//Create a ray pointing towards the corner given
-			sf::Vector2f rayVect = (EdgePoint) - m_MainSprite.getPosition();
+		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
+		tempRay.vect = m_MainSprite.getPosition() + rayVect;
 
-			//Gets the angle of the vector
-			float fRotAngle = Util::getAngle(rayVect);
-			fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
+		vRays.push_back(tempRay);
 
-			if (fAnglePoint1 < fAnglePoint2 )
-			{
-				if (j == 0)
-				{
-					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 - 0.1);
-				}
-				else
-				{
-					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 + 0.1);
-				}
-			}
-			else if (fAnglePoint1 > fAnglePoint2)
-			{
-				if (j == 0)
-				{
-					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 + 0.1);
-				}
-				else
-				{
-					rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90 - 0.1);
-				}
-			}
-			else
-			{
-				rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
-			}
+		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90.1);
+		tempRay.vect = m_MainSprite.getPosition() + rayVect;
 
-			//Adds the data to a temp Ray to be added to the ray vector.
-			tempRay.vect = m_MainSprite.getPosition() + rayVect;
-			tempRay.originalVect = EdgePoint;
-			tempRay.angle = fRotAngle;
-			vRays.push_back(tempRay);
-		}
+		vRays.push_back(tempRay);
+
+		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 89.9);
+		tempRay.vect = m_MainSprite.getPosition() + rayVect;
+
+		vRays.push_back(tempRay);
 	}
 
 	//Check for ray collisions
@@ -640,7 +709,7 @@ void Character::visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector
 	{
 		//Set the lowest intersect to the rays location
 		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
-		vRays.at(i).vect = Util::findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
+		vRays.at(i).vect = Util::findLowestIntersect(&m_CurrentMap->m_vEdges, viewRay); //Sets the new length of the ray
 		vFinalRays.push_back(vRays.at(i));
 	}
 
@@ -649,16 +718,7 @@ void Character::visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector
 	{
 		//Set the lowest intersect to the rays location
 		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
-		vRays.at(i).vect = Util::findLowestIntersect(vEdges, viewRay).second; //Sets the new length of the ray
-
-		//If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
-		if (Util::magnitude(vRays.at(i).originalVect - m_MainSprite.getPosition()) < Util::magnitude(vRays.at(i).vect - m_MainSprite.getPosition()))
-		{
-			tempRay.vect = vRays.at(i).originalVect;
-			tempRay.angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
-			tempRay.originalVect = sf::Vector2f(fViewDistance, fViewDistance);
-			vRays.push_back(tempRay);
-		}
+		vRays.at(i).vect = Util::findLowestIntersect(&m_CurrentMap->m_vEdges, viewRay); //Sets the new length of the ray
 
 		// Recalculates the angle and Pushes the vector of rays to the new vector
 		vRays.at(i).angle = atan2f(vRays.at(i).vect.y - m_MainSprite.getPosition().y, vRays.at(i).vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
@@ -720,36 +780,98 @@ void Character::visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector
 	{
 		newVertex.position = vFinalRays.at(i).vect;
 		m_VisionRays[i + 1] = newVertex;
-
 		
-		newVertex2.position = getPosition();
-		newVertex2.color = sf::Color(0, 255, 255, 255);
-		m_VisionLines[(2 * i)] = newVertex2;
-		newVertex2.position = newVertex.position;
-		m_VisionLines[(2 * i) + 1] = newVertex2;
+		if (m_CurrentSettings->debugActive())
+		{
+			newVertex2.position = getPosition();
+			newVertex2.color = sf::Color(0, 255, 255, 255);
+			m_VisionLines[(2 * i)] = newVertex2;
+			newVertex2.position = newVertex.position;
+			m_VisionLines[(2 * i) + 1] = newVertex2;
+		}
 	}
 }
 
-float Character::bulletChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
+void Character::bulletEdgeChecks()
 {
-	return m_Weapon1.bulletChecks(vEdges); //Returns the damage the weapon deals if it hits
+	if (m_Weapon1.isShooting())
+	{
+		//Finds where the lazer intersects and updates its position
+		std::vector<sf::Vector2f> bulletRay = { m_Weapon1.getBullet()[0].position, m_Weapon1.getBullet()[1].position };
+		sf::Vector2f lowestIntersect = Util::findLowestIntersect(&m_CurrentMap->m_vEdges, bulletRay);
+		m_Weapon1.setBullet(lowestIntersect);
+	}
 }
 
-bool Character::lazerChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
+void Character::lazerEdgeChecks()
+{
+	std::vector<sf::Vector2f> lazerRay = { m_Weapon1.getPosition(), m_Weapon1.getIntersect() };
+	sf::Vector2f lowestIntersect = Util::findLowestIntersect(&m_CurrentMap->m_vEdges, lazerRay);
+	m_Weapon1.setIntersect(lowestIntersect);
+}
+
+void Character::bulletChecks(std::vector<Character*> vCharSet)
+{
+	if (m_Weapon1.isShooting())
+	{
+		//Finds where the lazer intersects and updates its position
+		sf::Vector2f lowestIntersect(m_Weapon1.getBullet()[1].position);
+		std::vector<sf::Vector2f> bulletRay = { m_Weapon1.getPosition(), lowestIntersect };
+
+		int iOutput = -1;
+		for (int i = 0; i < vCharSet.size(); i++)
+		{
+			//Checks where the ray and the edge intersect
+			sf::Vector2f currentIntersect = Util::lineIntersect(vCharSet.at(i)->getCollisionLine(getRotation()).first,
+				vCharSet.at(i)->getCollisionLine(getRotation()).second,
+				bulletRay.at(0),
+				bulletRay.at(1));
+
+			//If the ray is shorter than the previous rays then set the ray to be the shortest ray
+			if (Util::magnitude(currentIntersect - getPosition()) < Util::magnitude(lowestIntersect - getPosition()))
+			{
+				iOutput = i;
+				lowestIntersect = currentIntersect;
+			}
+		}
+		if (iOutput != -1)
+		{
+			vCharSet.at(iOutput)->setHealth(vCharSet.at(iOutput)->getHealthData().lower - m_Weapon1.getDamage());
+
+			if (vCharSet.at(iOutput)->getAimingState() != AIM)
+			{
+				vCharSet.at(iOutput)->setAimingState(SEARCH_SPIN);
+			}
+		}
+		m_Weapon1.setBullet(lowestIntersect);
+	}
+}
+
+int Character::lazerChecks(std::vector<Character*> vCharSet)
 {
 	//Finds where the lazer intersects and updates its position
+	sf::Vector2f lowestIntersect(m_Weapon1.getIntersect());
 	std::vector<sf::Vector2f> lazerRay = { m_Weapon1.getPosition(), m_Weapon1.getIntersect() };
-	std::pair<bool, sf::Vector2f> lowestIntersect = Util::findLowestIntersect(vEdges, lazerRay);
 
-	if (lowestIntersect.first)
+	int iOutput = -1;
+	for (int i = 0; i < vCharSet.size(); i++)
 	{
-		m_Weapon1.setIntersect(lowestIntersect.second);
-		return true;
+		//Checks where the ray and the edge intersect
+		sf::Vector2f currentIntersect = Util::lineIntersect(vCharSet.at(i)->getCollisionLine(getRotation()).first, 
+															vCharSet.at(i)->getCollisionLine(getRotation()).second, 
+															lazerRay.at(0),
+															lazerRay.at(1));
+
+		//If the ray is shorter than the previous rays then set the ray to be the shortest ray
+		if (Util::magnitude(currentIntersect - m_Weapon1.getPosition()) < Util::magnitude(lowestIntersect - m_Weapon1.getPosition()))
+		{
+			iOutput = i;
+			lowestIntersect = currentIntersect;
+		}
 	}
-	else
-	{
-		return false;
-	}
+
+	m_Weapon1.setIntersect(lowestIntersect);
+	return iOutput;
 }
 
 void Character::setPatrolPath(std::vector<int> viPathNodes)

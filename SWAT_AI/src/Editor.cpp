@@ -660,22 +660,22 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		m_cCurrentTool = 'W';
 		m_Editing = ObjectEdit;
 	}
-	if (m_vObjectButtons.at(1)->hovering(mousePos)) //Friendly unit
+	else if (m_vObjectButtons.at(1)->hovering(mousePos)) //Friendly unit
 	{
 		m_cCurrentTool = 'P';
 		m_Editing = ObjectEdit;
 	}
-	if (m_vObjectButtons.at(2)->hovering(mousePos)) //Enemy unit
+	else if (m_vObjectButtons.at(2)->hovering(mousePos)) //Enemy unit
 	{
 		m_cCurrentTool = 'E';
 		m_Editing = ObjectEdit;
 	}
-	if (m_vObjectButtons.at(3)->hovering(mousePos)) //Door
+	else if (m_vObjectButtons.at(3)->hovering(mousePos)) //Door
 	{
 		m_cCurrentTool = 'D';
 		m_Editing = ObjectEdit;
 	}
-	if (m_vObjectButtons.at(4)->hovering(mousePos)) //Brick wall
+	else if (m_vObjectButtons.at(4)->hovering(mousePos)) //Brick wall
 	{
 		m_cCurrentTool = 'B';
 		m_Editing = ObjectEdit;
@@ -685,12 +685,12 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 	{
 		m_cCurrentTool = ' ';
 	}
-	if (m_vToolButtons.at(1)->hovering(mousePos)) //Eraser
+	else if (m_vToolButtons.at(1)->hovering(mousePos)) //Eraser
 	{
 		m_cCurrentTool = 'S';
 		m_Editing = CharacterEdit;
 	}
-	if (m_vToolButtons.at(2)->hovering(mousePos)) //Eraser
+	else if (m_vToolButtons.at(2)->hovering(mousePos)) //Eraser
 	{
 		m_cCurrentTool = 'P';
 		m_Editing = CharacterEdit;
@@ -701,27 +701,27 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		m_cCurrentTool = 'G';
 		m_Editing = FloorEdit;
 	}
-	if (m_vFloorButtons.at(1)->hovering(mousePos)) //Wooden floor
+	else if (m_vFloorButtons.at(1)->hovering(mousePos)) //Wooden floor
 	{
 		m_cCurrentTool = 'F';
 		m_Editing = FloorEdit;
 	}
-	if (m_vFloorButtons.at(2)->hovering(mousePos)) //Concrete
+	else if (m_vFloorButtons.at(2)->hovering(mousePos)) //Concrete
 	{
 		m_cCurrentTool = 'C';
 		m_Editing = FloorEdit;
 	}
-	if (m_vFloorButtons.at(3)->hovering(mousePos)) //Kitchen tile
+	else if (m_vFloorButtons.at(3)->hovering(mousePos)) //Kitchen tile
 	{
 		m_cCurrentTool = 'K';
 		m_Editing = FloorEdit;
 	}
-	if (m_vFloorButtons.at(4)->hovering(mousePos)) //Blue carpet
+	else if (m_vFloorButtons.at(4)->hovering(mousePos)) //Blue carpet
 	{
 		m_cCurrentTool = 'B';
 		m_Editing = FloorEdit;
 	}
-	if (m_vFloorButtons.at(5)->hovering(mousePos)) //Red carpet
+	else if (m_vFloorButtons.at(5)->hovering(mousePos)) //Red carpet
 	{
 		m_cCurrentTool = 'R';
 		m_Editing = FloorEdit;

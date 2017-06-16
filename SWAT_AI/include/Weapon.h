@@ -63,7 +63,7 @@ class Weapon : public Object
 		void update(); //Updates the states of data
 		void shoot(); //Shoots a bullet out of the weapon if the gun can shoot
 		void reload(); //Refills the gun ammo after the reload period has finished
-		float bulletChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges); //Checks collision for the bullets
+		//void bulletChecks(std::vector<Character*> vCharSet, float rotation); //Checks collision for the bullets
 
 		//Setters
 		/// \brief Sets the fire rate of the weapon
@@ -126,6 +126,9 @@ class Weapon : public Object
 		/// \param newClassType The type of weapon being switched to.
 		void setWeaponType(classType newClassType);
 
+
+		void setBullet(sf::Vector2f point);
+
 		//Getters
 		/// \brief Gets the damage of the weapon
 		/// \return returns the damage of the weapon
@@ -170,4 +173,6 @@ class Weapon : public Object
 		/// \brief Gets whether the weapon is using a silencer
 		/// \return returns whether the weapon is using a silencer
 		bool isSilenced();
+
+		sf::VertexArray getBullet();
 };

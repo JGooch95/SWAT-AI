@@ -204,21 +204,48 @@ void Weapon::reload()
 	m_ReloadClock.restart();
 }
 
-float Weapon::bulletChecks(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
+/*
+void Weapon::bulletChecks(std::vector<Character*>  vCharSet, float rotation)
 {
 	//Checks collisions between the given edges and the current bullet and returns a collision point
 	if (m_bShooting)
 	{
-		std::pair<bool, sf::Vector2f> lowestIntersect = Util::findLowestIntersect(vEdges, std::vector<sf::Vector2f>{ m_BulletRays[0].position, m_BulletRays[1].position});
+		/*std::pair<bool, sf::Vector2f> lowestIntersect = Util::findLowestIntersect(&m_CurrentMap->m_vEdges, std::vector<sf::Vector2f>{ m_BulletRays[0].position, m_BulletRays[1].position});
 
 		m_BulletRays[1].position = lowestIntersect.second;
 		if (lowestIntersect.first)
 		{
 			return getDamage();
 		}
+
+		//Finds where the lazer intersects and updates its position
+		std::pair<bool, sf::Vector2f> lowestIntersect = Util::findLowestIntersect(&m_CurrentMap->m_vEdges, std::vector<sf::Vector2f>{ m_BulletRays[0].position, m_BulletRays[1].position });
+		std::vector<sf::Vector2f> bulletRay = { m_Weapon1.getPosition(), lowestIntersect.second };
+
+		int output = -1;
+		for (int i = 0; i < vCharSet.size(); i++)
+		{
+			//Checks where the ray and the edge intersect
+			sf::Vector2f currentIntersect = Util::lineIntersect(vCharSet.at(i)->getCollisionLine(rotation).first,
+				vCharSet.at(i)->getCollisionLine(rotation).second,
+				bulletRay.at(0),
+				bulletRay.at(1));
+
+			//If the ray is shorter than the previous rays then set the ray to be the shortest ray
+			if (Util::magnitude(currentIntersect - getPosition()) < Util::magnitude(lowestIntersect.second - getPosition()))
+			{
+				output = i;
+				lowestIntersect.second = currentIntersect;
+			}
+		}
+		if (output != -1)
+		{
+			vCharSet.at(output)->setHealth(vCharSet.at(output)->getHealthData().lower - getDamage());
+		}
+		m_BulletRays[1].position = lowestIntersect.second;
+		//setIntersect(lowestIntersect.second);
 	}
-	return 0;
-}
+}*/
 
 //Setters
 void Weapon::setFireRate(float fVal)
@@ -468,6 +495,16 @@ bool Weapon::isShooting()
 bool Weapon::isSilenced()
 {
 	return m_bSilencer;
+}
+
+sf::VertexArray Weapon::getBullet()
+{
+	return m_BulletRays;
+}
+
+void Weapon::setBullet(sf::Vector2f point)
+{
+	m_BulletRays[1] = point;
 }
 
 void Weapon::draw(sf::RenderTarget &target, sf::RenderStates states) const

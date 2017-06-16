@@ -63,25 +63,23 @@ namespace Util
 	}
 
 	/// \brief Finds the closest point at which a ray intersects with a set of edges
-	static std::pair<bool, sf::Vector2f> findLowestIntersect(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges, std::vector<sf::Vector2f> newRay)
+	static sf::Vector2f findLowestIntersect(std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* vEdges, std::vector<sf::Vector2f> newRay)
 	{
 		sf::Vector2f lowestIntersect = newRay.at(1); //Sets the lowest intersect to be the original length of the ray
-		bool bIntersected = false; //Holds whether an intersection has been found
 
 		//For every edge
-		for (int j = 0; j < vEdges.size(); j ++)
+		for (int j = 0; j < (*vEdges).size(); j ++)
 		{
 			//Checks where the ray and the edge intersect
-			sf::Vector2f currentIntersect = Util::lineIntersect(vEdges.at(j).first, vEdges.at(j).second, newRay.at(0), newRay.at(1));
+			sf::Vector2f currentIntersect = Util::lineIntersect(*(*vEdges).at(j).first, *(*vEdges).at(j).second, newRay.at(0), newRay.at(1));
 
 			//If the ray is shorter than the previous rays then set the ray to be the shortest ray
 			if (Util::magnitude(currentIntersect - newRay.at(0)) < Util::magnitude(lowestIntersect - newRay.at(0)))
 			{
 				lowestIntersect = currentIntersect;
-				bIntersected = true;
 			}
 		}
-		return std::pair<bool, sf::Vector2f>{ bIntersected, lowestIntersect };
+		return lowestIntersect ;
 	}
 
 	/// \brief Gets the angle a vector is pointing towards

@@ -181,7 +181,64 @@ sf::Vector2f Map::getPosition()
 	return m_Position;
 }
 
+void Map::clearEdges(std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeVector)
+{
+	//Clears the pointers for each point of an edge
+	for (int i = 0; i < EdgeVector->size(); i++)
+	{
+		if (EdgeVector->at(i).first != NULL)
+		{
+			EdgeVector->at(i).first = NULL;
+		}
+
+		if (EdgeVector->at(i).second != NULL)
+		{
+			EdgeVector->at(i).second = NULL;
+		}
+	}
+	EdgeVector->clear();
+}
+
+void Map::clearCorners(std::vector<sf::Vector2f*>* CornerVector)
+{
+	//Clears the pointer of each corner
+	for (int i = 0; i < CornerVector->size(); i++)
+	{
+		if (CornerVector->at(i) != NULL)
+		{
+			delete(CornerVector->at(i));
+			CornerVector->at(i) = NULL;
+		}
+	}
+	CornerVector->clear();
+}
+
+void Map::clearAllEdgeData()
+{
+	clearCorners(&m_vTempCorners);
+	clearCorners(&m_vWallCorners);
+
+	//Sets the pointers to null as all edges are sorted
+	for (int i = 0; i < m_vCorners.size(); i++)
+	{
+		if (m_vCorners.at(i) != NULL)
+		{
+			m_vCorners.at(i) = NULL;
+		}
+	}
+	m_vCorners.clear();
+
+	clearEdges(&m_vTempEdges);
+	clearEdges(&m_vWallEdges);
+	clearEdges(&m_vEdges);
+}
+
 void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_Grid);
+}
+
+Map::~Map()
+{
+	clearAllEdgeData();
 }

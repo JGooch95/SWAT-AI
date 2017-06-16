@@ -35,9 +35,6 @@ class Game : public sf::Drawable
 		std::vector<Object*> m_vWalls; //!< Holds the walls
 		std::vector<Entrance*> m_vDoors; //!< Holds the doors
 		std::vector<Object*> m_Background;
-
-		std::vector<std::pair<sf::Vector2f, sf::Vector2f>> m_vEdges; //!< Holds the wall edges
-		//std::vector<sf::Vector2f> m_vCorners;						 //!< Holds the wall corners
 		
 		Button* exitButton; //!< Holds the button which exits to the menu
 
@@ -82,7 +79,8 @@ class Game : public sf::Drawable
 		/// \param sDir The directory containing the path
 		void loadPatrolPaths(std::string sDir);
 
-		//void addEdge(sf::Vector2f points[2]);
+		void addEdge(sf::Vector2f points[2], std::vector<sf::Vector2f*>* CornerList, std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeList);
+
 		/// \brief Default deconstructor
 		~Game();
 };
