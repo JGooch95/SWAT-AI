@@ -542,7 +542,6 @@ void Character::lookAt(float fAngle)
 
 void Character::visionCalculation(std::vector<std::pair<sf::Vector2f, sf::Vector2f>>vEdges)
 {
-	
 	std::vector<Ray> vRays;
 	std::vector<Ray> vFinalRays;
 	Ray tempRay;

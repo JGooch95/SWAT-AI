@@ -265,8 +265,8 @@ Game::Game(sf::Vector2u windowSize)
 	m_EdgeLines.setPrimitiveType(sf::Lines);
 	for (int i = 0; i < m_vEdges.size(); i++)
 	{
-		m_EdgeLines[2*i] = sf::Vertex(m_vEdges.at(i).first, sf::Color(255,0,0,255));
-		m_EdgeLines[(2*i)+1] = sf::Vertex(m_vEdges.at(i).second, sf::Color(255, 0, 0, 255));
+		m_EdgeLines[2 * i] = sf::Vertex(m_vEdges.at(i).first, sf::Color(255, 0, 0, 255));
+		m_EdgeLines[(2 * i) + 1] = sf::Vertex(m_vEdges.at(i).second, sf::Color(255, 0, 0, 255));
 	}
 
 	//Sets up the exit button
@@ -632,8 +632,6 @@ std::vector<std::pair<sf::Vector2f, sf::Vector2f>> Game::edgeReduction(std::vect
 				newValue.first = vComparissonVectsX.at(i).at(iBegin);
 				newValue.second = vComparissonVectsX.at(i).at(iEnd);
 				vEdges.push_back(newValue);
-				//vEdges.push_back(vComparissonVectsX.at(i).at(iBegin));
-				//vEdges.push_back(vComparissonVectsX.at(i).at(iEnd));
 				iBegin = j + 1;
 			}
 			bCurrentlyEqual = true;
