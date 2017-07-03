@@ -116,6 +116,10 @@ Character::Character()
 	m_LoadoutSound.setBuffer(*m_SoundManager->getSound(7));
 	m_DeathSound.setBuffer(*m_SoundManager->getSound(10));
 
+	m_StepSound.setVolume(m_CurrentSettings->getVolume());
+	m_LoadoutSound.setVolume(m_CurrentSettings->getVolume());
+	m_DeathSound.setVolume(m_CurrentSettings->getVolume());
+
 	//Sets up the textures
 	m_DeathImage.setTexture(m_Textures->getTexture(32));
 
@@ -171,13 +175,13 @@ void Character::update()
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
 			{
-				m_Waves.push_back(new soundWave(150, 3.0f, 1.0f, getPosition()));
+				m_Waves.push_back(new soundWave((getSize().x * 3), 3.0f, 1.0f, getPosition()));
 			}
 			else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
 			{
-				m_Waves.push_back(new soundWave(300, 3.0f, 1.0f, getPosition()));
+				m_Waves.push_back(new soundWave((getSize().x * 3) * 2, 3.0f, 1.0f, getPosition()));
 			}
 			fDistanceSinceStep = 0;
 		}
@@ -262,7 +266,7 @@ void Character::update()
 						if (m_Weapon1.isShooting())
 						{
 							//Output a shooting wave from the end of the characters gun
-							m_Waves.push_back(new soundWave(m_Weapon1.getWeaponVolume(), 10.0f, 1.0f, m_Weapon1.getWeaponEnd()));
+							m_Waves.push_back(new soundWave((m_Weapon1.getWeaponVolume()/50)* getSize().x, 10.0f, 1.0f, m_Weapon1.getWeaponEnd()));
 						}
 					}
 				}
@@ -376,7 +380,7 @@ void Character::move()
 
 	if (usePath != NULL)
 	{
-		const float kfMoveSpeed = 1.0f; //The amount of pixels the character moves per frame
+		const float kfMoveSpeed = (Util::magnitude(getSize()) / 2.0f)/25.0f; //The amount of pixels the character moves per frame
 		sf::Vector2f destination;
 										//Sets the node to reach to be the next node in the path
 		if (iMoveType == 2)
@@ -437,7 +441,7 @@ void Character::move()
 
 			velocity *= kfMoveSpeed; //Multiplies the direction by the speed
 
-			fDistanceSinceStep += Util::magnitude(velocity);
+			fDistanceSinceStep += kfMoveSpeed;
 			m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite
 
 																			 //If the node has been reached then move to the next node
@@ -1061,7 +1065,7 @@ bool Character::isShooting()
 
 bool Character::stepTaken()
 {
-	float fStepDist = getSize().x / 2.0f;
+	float fStepDist = Util::magnitude(getSize())/2.0f;
 
 	//If the distance taken is farther than the step distance then play a sound and restart the step
 	if (fDistanceSinceStep > fStepDist)

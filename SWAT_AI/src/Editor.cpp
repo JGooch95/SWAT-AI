@@ -214,23 +214,23 @@ void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std:
 void Editor::update(sf::Vector2i mousePos)
 {
 	//Performs hover checks for all of the buttons for highlighting
-	m_ExitButton->hovering(mousePos);
-	m_SaveButton->hovering(mousePos);
+	m_ExitButton->update(mousePos);
+	m_SaveButton->update(mousePos);
 	for (int i = 0; i < m_vGridButtons.size(); i++)
 	{
-		m_vGridButtons.at(i)->hovering(mousePos);
+		m_vGridButtons.at(i)->update(mousePos);
 	}
 	for (int i = 0; i < m_vObjectButtons.size(); i++)
 	{
-		m_vObjectButtons.at(i)->hovering(mousePos);
+		m_vObjectButtons.at(i)->update(mousePos);
 	}
 	for (int i = 0; i < m_vToolButtons.size(); i++)
 	{
-		m_vToolButtons.at(i)->hovering(mousePos);
+		m_vToolButtons.at(i)->update(mousePos);
 	}
 	for (int i = 0; i < m_vFloorButtons.size(); i++)
 	{
-		m_vFloorButtons.at(i)->hovering(mousePos);
+		m_vFloorButtons.at(i)->update(mousePos);
 	}
 
 	//Positions all items that exist within the world objects at their respective grid space
@@ -630,7 +630,7 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 
 					case 'P':
 						for (int i = 0; i < m_vEnemyPaths.size(); i++)
-						{
+						{	
 							if (selectedEnemy == m_vEnemyPaths.at(i).first)
 							{
 								m_vEnemyPaths.at(i).second.push_back(gridPos);

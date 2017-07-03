@@ -3,6 +3,7 @@
 #include <SFML\Graphics.hpp>
 #include "Map.h"
 #include "Settings.h"
+#include "TextureLoader.h"
 
 /// \brief A generic game object
 class Object : public sf::Drawable
@@ -10,7 +11,7 @@ class Object : public sf::Drawable
 	protected:
 		Map* m_CurrentMap; //!< Holds the data for the map
 		Settings* m_CurrentSettings; //!< Holds the current settings
-
+		TextureLoader* m_Textures;
 		sf::RectangleShape m_MainSprite; //!< Holds the sprite
 		const sf::Texture* m_CurrentTexture; //!< Holds a pointer to the texture
 		/// \brief Draws all of the object's entities to the screen.
@@ -29,15 +30,15 @@ class Object : public sf::Drawable
 
 		/// \brief Sets the position of the object
 		/// \param pos Contains the new position
-		void setPosition(sf::Vector2f pos);
+		virtual void setPosition(sf::Vector2f pos);
 
 		/// \brief Sets the origin of the object
 		/// \param pos Contains the new origin
-		void setOrigin(sf::Vector2f pos);
+		virtual void setOrigin(sf::Vector2f pos);
 
 		/// \brief Sets the size of the object
 		/// \param dims Contains the new size
-		void setSize(sf::Vector2f dims);
+		virtual void setSize(sf::Vector2f dims);
 
 		/// \brief Sets an area of repeatable textures on the object
 		/// \param dims Contains the new size

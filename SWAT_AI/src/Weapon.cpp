@@ -47,6 +47,10 @@ Weapon::Weapon()
 	m_SilencedShotSound.setBuffer(*m_SoundManager->getSound(0));
 	m_ReloadSound.setBuffer(*m_SoundManager->getSound(6));
 
+	m_ShotSound.setVolume(m_CurrentSettings->getVolume());
+	m_SilencedShotSound.setVolume(m_CurrentSettings->getVolume());
+	m_ReloadSound.setVolume(m_CurrentSettings->getVolume());
+
 	//Restarts the timers
 	m_ReloadClock.restart();
 	m_FireRateClock.restart();
@@ -261,8 +265,8 @@ void Weapon::setDamage(sf::Vector2f Val)
 
 void Weapon::setRange(sf::Vector2f Val)
 {
-	m_RangeLimits.lower = Val.x;
-	m_RangeLimits.upper = Val.y;
+	m_RangeLimits.lower = (Val.x / 50) * m_CurrentMap->getTileSize().x;
+	m_RangeLimits.upper = (Val.y / 50) * m_CurrentMap->getTileSize().x;
 }
 
 void Weapon::setIntersect(sf::Vector2f vect)

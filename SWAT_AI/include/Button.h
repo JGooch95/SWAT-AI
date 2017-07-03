@@ -6,9 +6,10 @@
 class Button : public Object
 {
 	private:
-		sf::Text m_ButtonText; //!< Holds the text on the button
 		FontManager* m_FontManager; //!< Holds the font used
+		sf::Text m_ButtonText; //!< Holds the text on the button
 		sf::RectangleShape m_Backdrop; //!< Holds the background
+		sf::FloatRect m_CollisionBox;
 		sf::Color m_DefaultColor; //!< Holds the base color of the background
 
 		/// \brief Draws all of the button's entities to the screen.
@@ -19,6 +20,8 @@ class Button : public Object
 	public:
 		/// \brief Default constructor
 		Button();
+
+		virtual void update(sf::Vector2i mousePos);
 
 		/// \brief Gets whether the mouse is on the button
 		/// \param pos The position of the mouse
@@ -33,4 +36,5 @@ class Button : public Object
 		/// \brief Sets the background color of the button
 		/// \param newColor The new color
 		void setBackgroundColor(sf::Color newColor);
+		void setCollisionBox(sf::FloatRect newArea);
 };

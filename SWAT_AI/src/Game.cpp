@@ -384,15 +384,13 @@ void Game::update(sf::Vector2i mousePos)
 		}
 
 		//Check if the mouse is above the buttons for highlighting
-		m_vUnitUI.at(i)->getClassButton()->hovering(mousePos);
+		m_vUnitUI.at(i)->getClassButton()->update(mousePos);
 		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
 		{
-			m_vUnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos);
+			m_vUnitUI.at(i)->getLoadoutButton(j)->update(mousePos);
 		}
+		exitButton->update(mousePos);
 	}
-
-	//Check if the mouse is above the exit button for highlighting
-	exitButton->hovering(mousePos);
 }
 
 void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<Character*>  vCharSet2)
@@ -424,7 +422,7 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 
 			if (iShot != -1)
 			{
-				vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet2.at(iShot)->getWeapon()->getDamage());
+				vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet1.at(i)->getWeapon()->getDamage());
 
 				if (vCharSet2.at(iShot)->getAimingState() != AIM)
 				{
@@ -735,7 +733,7 @@ void Game::loadPatrolPaths(std::string sDir)
 		std::string currentNum;
 		std::vector<int> viPathNodes;
 
-		float index = 0;
+		int iIndex = 0;
 		while (!pathFile.eof()) //while the end of file hasnt been reached
 		{
 			viPathNodes.clear();
@@ -760,8 +758,8 @@ void Game::loadPatrolPaths(std::string sDir)
 				{
 					viPathNodes.push_back(stoi(currentNum));
 				}
-				m_vEnemies.at(index)->setPatrolPath(viPathNodes);
-				index++;
+				m_vEnemies.at(iIndex)->setPatrolPath(viPathNodes);
+				iIndex++;
 			}
 		}
 	}

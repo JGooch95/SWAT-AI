@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML\Graphics.hpp>
 
 class Settings
 {
@@ -6,6 +7,8 @@ class Settings
 		static bool m_bInstanceFlag; //!< Holds whether the Settings have been created
 		static Settings* m_SettingsLocation; //!< Holds the memory location of the object
 		bool m_bDebug; //!< Holds whether the system is in debug mode or not
+		sf::Vector2f gameResolution;
+		float fVolume;
 
 	public:
 		/// \brief Default constructor
@@ -22,4 +25,11 @@ class Settings
 		/// \brief Gets whether debug mode is active
 		/// \return returns whether debug is active
 		bool debugActive();
+
+		sf::Vector2f getResolution();
+		float getVolume();
+
+		void setResolution(sf::Vector2f);
+
+		void setVolume(float fNewVolume);
 };

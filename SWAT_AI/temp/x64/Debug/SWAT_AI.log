@@ -1,9 +1,5 @@
-﻿  Character.cpp
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\mathutils.h(97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(134): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(166): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(568): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(942): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(998): warning C4715: 'Character::getNextLoadoutItem': not all control paths return a value
-  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.exe
-  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.pdb (Partial PDB)
+﻿  main.cpp
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\mathutils.h(95): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\main.cpp(17): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  SWAT_AI.vcxproj -> C:\Users\Jonny Gooch\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.exe
+  SWAT_AI.vcxproj -> C:\Users\Jonny Gooch\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.pdb (Partial PDB)

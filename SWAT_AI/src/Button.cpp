@@ -9,25 +9,44 @@ Button::Button()
 	m_ButtonText.setCharacterSize(100.0f);
 
 	setBackgroundColor(sf::Color(100, 100, 100, 255));
+
+	setCollisionBox(sf::FloatRect(getPosition().x,
+		getPosition().y,
+		getSize().x,
+		getSize().y));
+}
+
+void Button::update(sf::Vector2i mousePos)
+{
+	m_Backdrop.setSize(m_MainSprite.getSize());
+	m_Backdrop.setPosition(m_MainSprite.getPosition());
+
+	setCollisionBox(sf::FloatRect(getPosition().x,
+		getPosition().y,
+		getSize().x,
+		getSize().y));
+
+	if (hovering(mousePos))
+	{
+		m_Backdrop.setFillColor(m_DefaultColor + sf::Color(30, 30, 30, m_Backdrop.getFillColor().a));
+	}
+	else
+	{
+		m_Backdrop.setFillColor(m_DefaultColor);
+	}
 }
 
 bool Button::hovering(sf::Vector2i pos)
 {
-	//Resizes the backdrop to the new sizes
-	m_Backdrop.setSize(m_MainSprite.getSize());
-	m_Backdrop.setPosition(m_MainSprite.getPosition());
-
 	//If the position is within the bounds of the button return true and increase the background brightness
-	if (pos.x >= m_MainSprite.getPosition().x &&
-		pos.x <= m_MainSprite.getPosition().x + m_MainSprite.getSize().x &&
-		pos.y >= m_MainSprite.getPosition().y &&
-		pos.y <=  m_MainSprite.getPosition().y + m_MainSprite.getSize().y)
+	if (pos.x >= m_CollisionBox.left  &&
+		pos.x <= m_CollisionBox.left + m_CollisionBox.width &&
+		pos.y >= m_CollisionBox.top &&
+		pos.y <= m_CollisionBox.top + m_CollisionBox.height)
 	{
-		m_Backdrop.setFillColor(m_DefaultColor + sf::Color(30,30,30,255));
 		return true;
 	}
 
-	m_Backdrop.setFillColor(m_DefaultColor);
 	return false;
 }
 
@@ -51,6 +70,11 @@ void Button::setBackgroundColor(sf::Color newColor)
 {
 	m_DefaultColor = newColor;
 	m_Backdrop.setFillColor(newColor);
+}
+
+void Button::setCollisionBox(sf::FloatRect newArea)
+{
+	m_CollisionBox = newArea;
 }
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const

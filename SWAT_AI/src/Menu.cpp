@@ -61,7 +61,7 @@ void Menu::update(sf::Vector2i mousePos)
 	//Checks buttons for a hovering mouse
 	for (int i = 0; i < m_Buttons.size(); i++)
 	{
-		m_Buttons.at(i)->hovering(mousePos);
+		m_Buttons.at(i)->update(mousePos);
 	}
 }
 

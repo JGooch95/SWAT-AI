@@ -19,6 +19,8 @@ Settings* Settings::getInstance()
 Settings::Settings()
 {
 	m_bDebug = false;
+	fVolume = 100;
+	gameResolution = sf::Vector2f(800, 600);
 }
 
 bool Settings::debugActive()
@@ -29,4 +31,24 @@ bool Settings::debugActive()
 void Settings::setDebug(bool bSetting)
 {
 	m_bDebug = bSetting;
+}
+
+sf::Vector2f Settings::getResolution()
+{
+	return gameResolution;
+}
+
+float Settings::getVolume()
+{
+	return fVolume;
+}
+
+void Settings::setResolution(sf::Vector2f newRes)
+{
+	gameResolution = newRes;
+}
+
+void Settings::setVolume(float fNewVolume)
+{
+	fVolume = fNewVolume;
 }

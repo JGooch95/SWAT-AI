@@ -7,11 +7,20 @@
 #include "../include/SoundManager.h"
 #include "../include/FontManager.h"
 #include "../include/MathUtils.h"
+#include "../include/Options.h"
 
 int main()
 {
+	Settings* m_CurrentSettings = Settings::getInstance();
+	m_CurrentSettings->setResolution(sf::Vector2f(800,600));
+
 	//Sets up the window
-	sf::RenderWindow mainWindow(sf::VideoMode(1920,1080), "SWAT AI", sf::Style::Close);
+	sf::RenderWindow mainWindow(sf::VideoMode(m_CurrentSettings->getResolution().x, m_CurrentSettings->getResolution().y), "SWAT AI", sf::Style::Close);
+
+	/*
+	mainWindow.setSize(sf::Vector2u(1920, 1080));
+	m_CurrentSettings->setResolution(sf::Vector2f(1920, 1080));
+	mainWindow.setView(sf::View(sf::FloatRect(0, 0, 1920, 1080)));*/
 
 	//Initialises the event value for input readings
 	sf::Event event;
@@ -85,9 +94,9 @@ int main()
 	Menu* Menu1 = new Menu(mainWindow.getSize());
 	Game* Game1 = NULL;
 	Editor* Editor1 = NULL;
+	Options* Options1 = NULL;
 
 	Map* m_CurrentMap = NULL;
-	Settings* m_CurrentSettings = Settings::getInstance();
 
 	const float kfTargetFPS = 60; //Holds the target frames per second
 
@@ -161,6 +170,13 @@ int main()
 								Editor1 = new Editor(mainWindow.getSize());
 								break;
 
+							//Options button
+							case 3:
+								delete Menu1;
+								Menu1 = NULL;
+								Options1 = new Options(mainWindow.getSize());
+								break;
+
 							//Exit button
 							case 4:
 								delete Menu1;
@@ -177,6 +193,27 @@ int main()
 							case 1:
 								delete Editor1;
 								Editor1 = NULL;
+								Menu1 = new Menu(mainWindow.getSize());
+								break;
+						}
+					}
+
+					else if (Options1 != NULL)
+					{
+						switch (Options1->clickLeft(sf::Mouse::getPosition(mainWindow)))
+						{
+							//Exit button to menu
+							case 1:
+								delete Options1;
+								Options1 = NULL;
+								Menu1 = new Menu(mainWindow.getSize());
+								break;
+
+							case 2:
+								mainWindow.setSize(sf::Vector2u(m_CurrentSettings->getResolution()));
+								mainWindow.setView(sf::View(sf::FloatRect(0, 0, m_CurrentSettings->getResolution().x, m_CurrentSettings->getResolution().y)));
+								delete Options1;
+								Options1 = NULL;
 								Menu1 = new Menu(mainWindow.getSize());
 								break;
 						}
@@ -203,6 +240,11 @@ int main()
 				Editor1->update(sf::Mouse::getPosition(mainWindow));
 			}
 
+			if (Options1 != NULL)
+			{
+				Options1->update(sf::Mouse::getPosition(mainWindow));
+			}
+
 			//Draw
 			mainWindow.clear(sf::Color(0,0,0,0));
 			if (Game1 != NULL)
@@ -218,6 +260,11 @@ int main()
 			if (Editor1 != NULL)
 			{
 				mainWindow.draw(*Editor1);
+			}
+
+			if (Options1 != NULL)
+			{
+				mainWindow.draw(*Options1);
 			}
 			mainWindow.display();
 
@@ -240,6 +287,12 @@ int main()
 	{
 		delete Editor1;
 		Editor1 = NULL;
+	}
+
+	if (Options1 != NULL)
+	{
+		delete Options1;
+		Options1 = NULL;
 	}
 
 	delete m_Textures;
