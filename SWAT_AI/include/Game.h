@@ -11,7 +11,7 @@
 #include "Button.h"
 #include "Settings.h"
 #include "HUDWindow.h"
-#include "SoundWave.h"
+#include "WaveEffect.h"
 
 /// \brief The main game screen
 class Game : public sf::Drawable
@@ -41,6 +41,7 @@ class Game : public sf::Drawable
 		//DEBUGGING LINES
 		sf::VertexArray m_EdgeLines; //!< Holds the debug lines for the edges of walls
 
+		std::vector<WaveEffect*> m_vWaves;
 		/// \brief Draws all of the game's entities to the screen.
 		/// \param target Holds where to draw the entities to.		   
 		///	\param states 

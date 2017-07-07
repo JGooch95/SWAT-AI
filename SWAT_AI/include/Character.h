@@ -8,7 +8,7 @@
 #include "Weapon.h"
 #include "MathUtils.h"
 #include "TextureLoader.h"
-#include "SoundWave.h"
+#include "WaveEffect.h"
 
 enum loadoutItem {Lazer, Silencer, Scope, None};
 enum States { IDLE, SEARCH_SWEEP, SEARCH_SPIN, FOCUS, AIM, INVESTIGATING, PATROL, MOVE_TO_SPOT };
@@ -27,7 +27,7 @@ class Character : public Object
 		SoundManager* m_SoundManager;  //!< Holds the location of all of the sounds
 		 
 		//Sounds
-		std::vector<soundWave*> m_Waves; //!< Holds soundwaves which are emitted
+		std::vector<WaveEffect*> m_vWaves; //!< Holds soundwaves which are emitted
 		sf::Sound m_StepSound; //!< The sound played every step
 		sf::Sound m_LoadoutSound; //!< The loadout switching sound
 		sf::Sound m_DeathSound; //!< The dying sound
@@ -204,11 +204,11 @@ class Character : public Object
 		/// \brief States whether the sound given has been heard
 		/// \param soundArea The sound being analysed
 		/// \return returns whether the sound given has been heard
-		bool hearsSound(soundWave* soundArea);
+		bool hearsSound(WaveEffect* soundArea);
 
 		/// \brief Gets the characters emitted sound waves
 		/// \return returns the characters emitted sound waves
-		std::vector<soundWave*>* getSoundWaves();
+		std::vector<WaveEffect*>* getSoundWaves();
 
 		/// \brief Gets the state of the aiming state machine
 		/// \return returns the state of the aiming state machine

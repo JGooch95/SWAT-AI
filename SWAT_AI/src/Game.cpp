@@ -283,6 +283,32 @@ Game::Game(sf::Vector2u windowSize)
 
 void Game::update(sf::Vector2i mousePos)
 {	
+	for (int i = 0; i < m_vWaves.size(); i++)
+	{
+		m_vWaves.at(i)->update();
+		if (m_vWaves.at(i)->isDone())
+		{
+			delete  m_vWaves.at(i);
+			 m_vWaves.at(i) = NULL;
+			 m_vWaves.erase( m_vWaves.begin() + i);
+		}
+		else
+		{
+			for (int j = 0; j < m_vCharacters.size(); j++)
+			{
+				if ((Util::magnitude( m_vWaves.at(i)->getPosition() - m_vCharacters.at(j)->getPosition()) <  m_vWaves.at(i)->getRadius() + m_vCharacters.at(j)->getSize().y))
+				{
+					switch ( m_vWaves.at(i)->getType())
+					{
+					case Explosion:
+						m_vCharacters.at(j)->setHealth(m_vCharacters.at(j)->getHealthData().lower - 1);
+						break;
+					}
+				}
+			}
+		}
+	}
+
 	//Clears the temp edge data
 	m_CurrentMap->clearEdges(&m_CurrentMap->m_vTempEdges);
 	m_CurrentMap->clearCorners(&m_CurrentMap->m_vTempCorners);
@@ -398,59 +424,57 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 	//For every character in the first container
 	for (int i = 0; i < vCharSet1.size(); i++)
 	{
-		
-			//Check lazer collision
-			int iIntersector = vCharSet1.at(i)->rayChecks(vCharSet2, 1);
+		//Check lazer collision
+		int iIntersector = vCharSet1.at(i)->rayChecks(vCharSet2, 1);
 
-			//If the lazer collided with a character
-			if (iIntersector != -1)
+		//If the lazer collided with a character
+		if (iIntersector != -1)
+		{
+			//If a character is alive then set it to be a target
+			if (vCharSet2.at(iIntersector)->getHealthData().lower > 0)
 			{
-				//If a character is alive then set it to be a target
-				if (vCharSet2.at(iIntersector)->getHealthData().lower > 0)
+				vCharSet1.at(i)->setTarget(vCharSet2.at(iIntersector));
+			}
+		}
+		else //If no characters have been seen then set a Null target
+		{
+			vCharSet1.at(i)->setTarget(NULL);
+		}
+
+		//If the character is shooting check if the bullet hit opposing characters
+		if (vCharSet1.at(i)->isShooting())
+		{
+			int iShot = vCharSet1.at(i)->rayChecks(vCharSet2, 0);
+
+			if (iShot != -1)
+			{
+				vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet1.at(i)->getWeapon()->getDamage());
+
+				if (vCharSet2.at(iShot)->getAimingState() != AIM)
 				{
-					vCharSet1.at(i)->setTarget(vCharSet2.at(iIntersector));
+					vCharSet2.at(iShot)->setAimingState(SEARCH_SPIN);
 				}
 			}
-			else //If no characters have been seen then set a Null target
-			{
-				vCharSet1.at(i)->setTarget(NULL);
-			}
+		}
 
-			//If the character is shooting check if the bullet hit opposing characters
-			if (vCharSet1.at(i)->isShooting())
+		//Check against every character in the second container
+		for (int j = 0; j < vCharSet2.size(); j++)
+		{
+			if (!vCharSet1.at(i)->isDead() && !vCharSet2.at(j)->isDead())
 			{
-				int iShot = vCharSet1.at(i)->rayChecks(vCharSet2, 0);
-
-				if (iShot != -1)
+				//Dont allow checks on itself
+				if (!(vCharSet1 == vCharSet2 && i == j))
 				{
-					vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet1.at(i)->getWeapon()->getDamage());
-
-					if (vCharSet2.at(iShot)->getAimingState() != AIM)
+					for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
 					{
-						vCharSet2.at(iShot)->setAimingState(SEARCH_SPIN);
-					}
-				}
-			}
-
-			//Check against every character in the second container
-			for (int j = 0; j < vCharSet2.size(); j++)
-			{
-				if (!vCharSet1.at(i)->isDead() && !vCharSet2.at(j)->isDead())
-				{
-					//Dont allow checks on itself
-					if (!(vCharSet1 == vCharSet2 && i == j))
-					{
-						for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
+						if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
 						{
-							if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
-							{
-								vCharSet1.at(i)->setPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition());
-							}
+							vCharSet1.at(i)->setPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition());
 						}
 					}
 				}
 			}
-		
+		}
 	}
 }
 
@@ -514,6 +538,14 @@ int Game::clickLeft(sf::Vector2i mousePos)
 				m_vUnitUI.at(m_vUnitUI.size() - 1)->scaleUI();
 			}
 		}
+	}
+
+	if (mousePos.x > m_CurrentMap->getPosition().x &&
+		mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+		mousePos.y > m_CurrentMap->getPosition().y &&
+		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
+	{
+		 m_vWaves.push_back(new WaveEffect(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y )* 2, 10, 0.5, sf::Vector2f(mousePos), Explosion));
 	}
 
 	//If the exit button is pressed return to the menu
@@ -812,6 +844,11 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(*m_vCharacters.at(i));
 	}
 
+	for (int i = 0; i <  m_vWaves.size(); i++)
+	{
+		target.draw(* m_vWaves.at(i));
+	}
+
 	if (m_CurrentSettings->debugActive())
 	{
 		//Draws the edges of the walls
@@ -901,4 +938,13 @@ Game::~Game()
 
 	delete(exitButton);
 	exitButton = NULL;
+
+	for (int i = 0; i < m_vWaves.size(); i++)
+	{
+		if (m_vWaves.at(i) != NULL)
+		{
+			delete m_vWaves.at(i);
+			m_vWaves.at(i) = NULL;
+		}
+	}
 }

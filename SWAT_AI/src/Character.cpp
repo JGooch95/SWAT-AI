@@ -144,16 +144,16 @@ Character::Character()
 void Character::update()
 {
 	//Updates any sound waves that are expanding
-	for (int i = 0; i < m_Waves.size(); i++)
+	for (int i = 0; i <  m_vWaves.size(); i++)
 	{
-		if (m_Waves.at(i) != NULL)
+		if ( m_vWaves.at(i) != NULL)
 		{
-			m_Waves.at(i)->update();
-			if (m_Waves.at(i)->isDone()) //If the wave has finished delete it
+			 m_vWaves.at(i)->update();
+			if ( m_vWaves.at(i)->isDone()) //If the wave has finished delete it
 			{
-				delete m_Waves.at(i);
-				m_Waves.at(i) = NULL;
-				m_Waves.erase(m_Waves.begin() + i);
+				delete  m_vWaves.at(i);
+				 m_vWaves.at(i) = NULL;
+				 m_vWaves.erase( m_vWaves.begin() + i);
 			}
 		}
 	}
@@ -175,13 +175,13 @@ void Character::update()
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'R' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'G')
 			{
-				m_Waves.push_back(new soundWave((getSize().x * 3), 3.0f, 1.0f, getPosition()));
+				 m_vWaves.push_back(new WaveEffect((getSize().x * 3), 3.0f, 1.0f, getPosition(), Sound));
 			}
 			else if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'C' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
 			{
-				m_Waves.push_back(new soundWave((getSize().x * 3) * 2, 3.0f, 1.0f, getPosition()));
+				 m_vWaves.push_back(new WaveEffect((getSize().x * 3) * 2, 3.0f, 1.0f, getPosition(), Sound));
 			}
 			fDistanceSinceStep = 0;
 		}
@@ -266,7 +266,7 @@ void Character::update()
 						if (m_Weapon1.isShooting())
 						{
 							//Output a shooting wave from the end of the characters gun
-							m_Waves.push_back(new soundWave((m_Weapon1.getWeaponVolume()/50)* getSize().x, 10.0f, 1.0f, m_Weapon1.getWeaponEnd()));
+							 m_vWaves.push_back(new WaveEffect((m_Weapon1.getWeaponVolume()/50)* getSize().x, 10.0f, 1.0f, m_Weapon1.getWeaponEnd(), Sound));
 						}
 					}
 				}
@@ -973,7 +973,7 @@ bool Character::isDead()
 	return m_bDead;
 }
 
-bool Character::hearsSound(soundWave* soundArea)
+bool Character::hearsSound(WaveEffect* soundArea)
 {
 	if (m_AimingState != AIM && m_MovementState != INVESTIGATING)
 	{
@@ -988,9 +988,9 @@ bool Character::hearsSound(soundWave* soundArea)
 	return false;
 }
 
-std::vector<soundWave*>* Character::getSoundWaves()
+std::vector<WaveEffect*>* Character::getSoundWaves()
 {
-	return &m_Waves;
+	return & m_vWaves;
 }
 
 States Character::getAimingState()
@@ -1034,12 +1034,12 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 Character::~Character()
 {
-	for (int i = 0; i < m_Waves.size(); i++)
+	for (int i = 0; i <  m_vWaves.size(); i++)
 	{
-		if (m_Waves.at(i) != NULL)
+		if ( m_vWaves.at(i) != NULL)
 		{
-			delete m_Waves.at(i);
-			m_Waves.at(i) = NULL;
+			delete  m_vWaves.at(i);
+			 m_vWaves.at(i) = NULL;
 		}
 	}
 }

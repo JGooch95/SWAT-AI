@@ -51,9 +51,6 @@
     <ClInclude Include="include\Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SoundWave.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Bar.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
@@ -99,6 +96,9 @@
     <ClInclude Include="include\Weapon.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="include\WaveEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AStar.cpp">
@@ -111,9 +111,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\soundWave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Bar.cpp">
@@ -160,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="src\Weapon.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WaveEffect.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
