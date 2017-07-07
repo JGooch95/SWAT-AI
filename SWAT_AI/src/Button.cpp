@@ -4,12 +4,15 @@ Button::Button()
 {
 	m_FontManager = FontManager::getInstance();
 
+	//Sets up the text
 	m_ButtonText.setFont(*m_FontManager->getFont(0));
 	m_ButtonText.setFillColor(sf::Color(255, 255, 255, 255));
 	m_ButtonText.setCharacterSize(100.0f);
 
+	//Sets the default box colour
 	setBackgroundColor(sf::Color(100, 100, 100, 255));
 
+	//Sets the collision box size
 	setCollisionBox(sf::FloatRect(getPosition().x,
 		getPosition().y,
 		getSize().x,
@@ -18,14 +21,17 @@ Button::Button()
 
 void Button::update(sf::Vector2i mousePos)
 {
+	//Updates the background size
 	m_Backdrop.setSize(m_MainSprite.getSize());
 	m_Backdrop.setPosition(m_MainSprite.getPosition());
 
+	//Updates the collision box
 	setCollisionBox(sf::FloatRect(getPosition().x,
 		getPosition().y,
 		getSize().x,
 		getSize().y));
 
+	//Performs background highlighting
 	if (hovering(mousePos))
 	{
 		m_Backdrop.setFillColor(m_DefaultColor + sf::Color(30, 30, 30, m_Backdrop.getFillColor().a));
@@ -38,7 +44,7 @@ void Button::update(sf::Vector2i mousePos)
 
 bool Button::hovering(sf::Vector2i pos)
 {
-	//If the position is within the bounds of the button return true and increase the background brightness
+	//If the position is within the bounds of the button return true
 	if (pos.x >= m_CollisionBox.left  &&
 		pos.x <= m_CollisionBox.left + m_CollisionBox.width &&
 		pos.y >= m_CollisionBox.top &&

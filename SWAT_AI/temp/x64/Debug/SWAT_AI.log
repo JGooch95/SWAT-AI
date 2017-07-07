@@ -1,5 +1,17 @@
-﻿  main.cpp
-c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\include\mathutils.h(95): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\main.cpp(17): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+﻿  Game.cpp
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(8): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(16): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(232): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(235): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(353): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  Character.cpp
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(138): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(171): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(582): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(587): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(649): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(882): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+c:\users\jonny gooch\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(939): warning C4715: 'Character::getNextLoadoutItem': not all control paths return a value
   SWAT_AI.vcxproj -> C:\Users\Jonny Gooch\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonny Gooch\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.pdb (Partial PDB)

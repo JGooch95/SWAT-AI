@@ -35,6 +35,7 @@ void soundWave::update()
 	m_Wave.setOrigin(sf::Vector2f(m_Wave.getRadius(), m_Wave.getRadius()));
 }
 
+//Getters
 bool soundWave::isDone()
 {
 	if (m_Wave.getRadius() >= m_fDesiredRadius)

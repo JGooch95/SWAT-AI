@@ -2,10 +2,11 @@
 
 Entrance::Entrance()
 {
+	m_SoundManager = SoundManager::getInstance();
+
 	setOpen(false);
 	m_fOrientation = 0;
 	m_iOpeningDirection = 1;
-	m_SoundManager = SoundManager::getInstance();
 	m_OpeningSound.setBuffer(*m_SoundManager->getSound(5));
 }
 

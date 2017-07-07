@@ -2,6 +2,7 @@
 #include <SFML\Graphics.hpp>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 enum MapType {ObjectMap, FloorMap};
 
@@ -21,9 +22,6 @@ class Map : public sf::Drawable
 		std::vector<std::vector<char>> m_vcLevelBits; //!< Holds the map layout loaded from the file
 		std::vector<std::vector<char>> m_vcFloorBits; //!< Holds the floor layout loaded from the file
 
-		//std::vector<std::pair<sf::Vector2f, sf::Vector2f>> m_vEdges; //!< Holds the wall edges
-		//std::vector<sf::Vector2f> m_vCorners;						 //!< Holds the wall corners
-
 	    /// \brief Draws all of the Map's entities to the screen.
 	    /// \param target Holds where to draw the entities to.		   
 	    ///	\param states 
@@ -32,14 +30,14 @@ class Map : public sf::Drawable
 	public:
 		/// \brief Default constructor
 		Map();
+		
+		std::vector<sf::Vector2f*> m_vWallCorners; //!< Holds the corners of edges for the walls for light checks
+		std::vector<sf::Vector2f*> m_vTempCorners; //!< Holds the corners of edges that change like walls
+		std::vector<sf::Vector2f*> m_vCorners; //!< Holds all of the corners of edges together
 
-		std::vector<sf::Vector2f*> m_vWallCorners;
-		std::vector<sf::Vector2f*> m_vTempCorners;
-		std::vector<sf::Vector2f*> m_vCorners;
-
-		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vWallEdges;
-		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vTempEdges;
-		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vEdges;
+		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vWallEdges; //!< Holds the edges for the walls for light checks
+		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vTempEdges; //!< Holds the edges for objects that change like walls
+		std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>> m_vEdges;     //!< Holds all of the edges together
 
 		/// \brief Gets a pointer to the singleton object and creates one if it doesnt exist.
 		/// \return returns the pointer to the object
@@ -56,7 +54,18 @@ class Map : public sf::Drawable
 		void load(MapType newMap, std::string sDir);
 
 		/// \brief Sets up the grid for being drawn to the screen
-		void setupGrid(); 
+		void setupGrid();
+
+		/// \brief Clears a vector of edges given to it
+		/// \param EdgeVector The vector of edges being cleared
+		void clearEdges(std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeVector);
+
+		/// \brief Clears a vector of corners given to it
+		/// \param CornerVector The vector of corners being cleared
+		void clearCorners(std::vector<sf::Vector2f*>* CornerVector);
+
+		/// \brief Clears all Edge vectors
+		void clearAllEdgeData();
 
 		//Setters
 		/// \brief Sets the postion of the map
@@ -100,9 +109,6 @@ class Map : public sf::Drawable
 		/// \return returns the position of the map
 		sf::Vector2f getPosition();
 
-		void clearEdges(std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeVector);
-		void clearCorners(std::vector<sf::Vector2f*>* CornerVector);
-		void clearAllEdgeData();
-
+		/// \brief Default deconstructor
 		~Map();
 };

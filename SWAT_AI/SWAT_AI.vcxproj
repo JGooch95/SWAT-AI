@@ -159,7 +159,6 @@
     <ClInclude Include="include\Bar.h" />
     <ClInclude Include="include\Button.h" />
     <ClInclude Include="include\Character.h" />
-    <ClInclude Include="include\Collidable.h" />
     <ClInclude Include="include\Editor.h" />
     <ClInclude Include="include\Entrance.h" />
     <ClInclude Include="include\FontManager.h" />
@@ -182,7 +181,6 @@
     <ClCompile Include="src\Bar.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Character.cpp" />
-    <ClCompile Include="src\Collidable.cpp" />
     <ClCompile Include="src\Editor.cpp" />
     <ClCompile Include="src\Entrance.cpp" />
     <ClCompile Include="src\FontManager.cpp" />

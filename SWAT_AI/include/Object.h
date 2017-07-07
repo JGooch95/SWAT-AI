@@ -11,9 +11,10 @@ class Object : public sf::Drawable
 	protected:
 		Map* m_CurrentMap; //!< Holds the data for the map
 		Settings* m_CurrentSettings; //!< Holds the current settings
-		TextureLoader* m_Textures;
+		TextureLoader* m_Textures; //!< Holds pointer to all textures
 		sf::RectangleShape m_MainSprite; //!< Holds the sprite
 		const sf::Texture* m_CurrentTexture; //!< Holds a pointer to the texture
+
 		/// \brief Draws all of the object's entities to the screen.
 		/// \param target Holds where to draw the entities to.		   
 		/// \param states 

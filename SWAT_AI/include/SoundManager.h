@@ -2,6 +2,7 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 
+
 /// \brief A container of sounds to hold them in one location
 class SoundManager
 {

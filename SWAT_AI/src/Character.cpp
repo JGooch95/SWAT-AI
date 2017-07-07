@@ -403,23 +403,26 @@ void Character::move()
 		{
 			if (iMoveType == 2)
 			{
-				if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent == NULL)
+				if (m_PatrolPath.at(m_PatrolPath.size() - 1)->parent == NULL)
 				{
-					patrolDirection = -1;
+					if (patrolNode == m_PatrolPath.size() - 1)
+					{
+						patrolDirection = -1;
+					}
+					else if (patrolNode == 0)
+					{
+						patrolDirection = 1;
+					}
 				}
-				else if (patrolNode == 0 && m_PatrolPath.at(0)->parent == NULL)
-				{
-					patrolDirection = 1;
-				}
-
-				if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent != NULL)
+				else if (patrolNode == m_PatrolPath.size() - 1)
 				{
 					patrolNode = 0;
 				}
-				else
-				{
-					patrolNode += patrolDirection;
-				}
+				
+				
+				patrolNode += patrolDirection;
+				
+				
 			}
 			else
 			{
@@ -452,23 +455,22 @@ void Character::move()
 			{
 				if (iMoveType == 2)
 				{
-					if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent == NULL)
+					if (m_PatrolPath.at(m_PatrolPath.size() - 1)->parent == NULL)
 					{
-						patrolDirection = -1;
+						if (patrolNode == m_PatrolPath.size() - 1)
+						{
+							patrolDirection = -1;
+						}
+						else if (patrolNode == 0)
+						{
+							patrolDirection = 1;
+						}
 					}
-					else if (patrolNode == 0 && m_PatrolPath.at(0)->parent == NULL)
+					else if (patrolNode == m_PatrolPath.size() - 1)
 					{
-						patrolDirection = 1;
+						patrolNode = 0;	
 					}
-
-					if (patrolNode == m_PatrolPath.size() - 1 && m_PatrolPath.at(0)->parent != NULL)
-					{
-						patrolNode = 0;
-					}
-					else
-					{
-						patrolNode += patrolDirection;
-					}
+					patrolNode += patrolDirection;
 				}
 				else
 				{
@@ -532,125 +534,6 @@ void Character::lookAt(float fAngle)
 
 void Character::visionCalculation()
 {
-	/*
-	std::vector<Ray> vRays;
-	std::vector<Ray> vFinalRays;
-	Ray tempRay;
-	float fViewDistance = 2000.0f;
-	float fVisionCone = 45.0f;
-	int iCurrentEdge = -1;
-	int iPreviousEdge = -1;
-
-	for (int i = 0; i < m_CurrentMap->m_vCorners.size(); i++)
-	{
-		//Create a ray pointing towards the corner given
-		sf::Vector2f rayVect = (*m_CurrentMap->m_vCorners.at(i)) - m_MainSprite.getPosition();
-		rayVect /= Util::magnitude(rayVect);
-
-		//Gets the angle of the vector
-		float fRotAngle = Util::getAngle(rayVect);
-		fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
-		tempRay.angle = fRotAngle;
-
-		tempRay.originalVect = (*m_CurrentMap->m_vCorners.at(i));
-
-		rayVect = Util::rotateVect(sf::Vector2f(fViewDistance, fViewDistance), fRotAngle - 90);
-		tempRay.vect = m_MainSprite.getPosition() + rayVect;
-
-		vRays.push_back(tempRay);
-	}
-	QuickSort(vRays,0,vRays.size());
-
-	for (int i = 0; i < vRays.size(); i++)
-	{
-		//Set the lowest intersect to the rays location
-		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
-		Util::intersectData tempData = Util::findLowestIntersect2(&m_CurrentMap->m_vEdges, viewRay);
-		vRays.at(i).vect = tempData.collisionPoint; //Sets the new length of the ray
-
-		if (tempData.index != iCurrentEdge && tempData.index != -1)
-		{
-			if (i > 0 && iPreviousEdge != -1)
-			{
-				//float fRotAngle = Util::getAngle(vRays.at(i - 1).vect - m_MainSprite.getPosition());
-				//fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
-				//vRays.at(i - 1).angle = fRotAngle; 
-				vFinalRays.push_back(tempRay);
-				tempRay.vect = tempRay.originalVect;
-
-				tempRay.vect = Util::lineIntersect(*m_CurrentMap->m_vEdges.at(iPreviousEdge).first, *m_CurrentMap->m_vEdges.at(iPreviousEdge).second, m_MainSprite.getPosition(), tempRay.vect); //Sets the new length of the ray
-
-				vFinalRays.push_back(tempRay);
-			}
-
-			iPreviousEdge = iCurrentEdge;
-			iCurrentEdge = tempData.index;
-			
-			float fRotAngle = Util::getAngle(vRays.at(i).vect - m_MainSprite.getPosition());
-			fRotAngle = Util::setWithinRange(fRotAngle, 0.0f, 360.0f);
-			vRays.at(i).angle = fRotAngle;
-
-			tempRay = vRays.at(i);
-
-			vFinalRays.push_back(tempRay);
-		}
-		
-		//If the distance to the corner being pointed at is less than the ray distance then the corner is added to get the correct effect
-		if (Util::magnitude(tempRay.originalVect - m_MainSprite.getPosition()) < Util::magnitude(tempRay.vect - m_MainSprite.getPosition()))
-		{
-			tempRay.vect = vRays.at(i).originalVect;
-			tempRay.angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
-			tempRay.originalVect = sf::Vector2f(fViewDistance, fViewDistance);
-			vFinalRays.push_back(tempRay);
-		}
-		else
-		{
-
-		}
-
-		// Recalculates the angle and Pushes the vector of rays to the new vector
-		//vRays.at(i).angle = atan2f(vRays.at(i).vect.y - m_MainSprite.getPosition().y, vRays.at(i).vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
-		//vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
-
-		//vRays.push_back(tempRay);
-	}
-
-	for (int i = 0; i < vFinalRays.size(); i++)
-	{
-		vFinalRays.at(i).angle = atan2f(vFinalRays.at(i).vect.y - m_MainSprite.getPosition().y, vFinalRays.at(i).vect.x - m_MainSprite.getPosition().x) * (180.0f / 3.14f);
-		vFinalRays.at(i).angle = Util::setWithinRange(vFinalRays.at(i).angle, 0.0f, 360.0f);
-	}
-
-	//Sort the rays into angle order
-	QuickSort(vFinalRays, 0, vFinalRays.size());
-
-	//Add the rays to the vertex array
-	m_VisionRays.clear();
-	m_VisionRays.resize((vFinalRays.size() + 1));
-
-	m_VisionLines.clear();
-	m_VisionLines.resize((vFinalRays.size() + 1) * 2);
-
-	//Center Point
-	sf::Vertex newVertex;
-	sf::Vertex newVertex2;
-	newVertex.color = sf::Color(255, 255, 255, 70);
-	newVertex.position = m_MainSprite.getPosition();
-	m_VisionRays[0] = newVertex;
-
-	//For every ray create a triangle 
-	for (int i = 0; i < vFinalRays.size(); i++)
-	{
-		newVertex.position = vFinalRays.at(i).vect;
-		m_VisionRays[i + 1] = newVertex;
-
-		newVertex2.position = getPosition();
-		newVertex2.color = sf::Color(0, 255, 255, 255);
-		m_VisionLines[(2 * i)] = newVertex2;
-		newVertex2.position = newVertex.position;
-		m_VisionLines[(2 * i) + 1] = newVertex2;
-	}*/
-
 	std::vector<Ray> vRays;
 	std::vector<Ray> vFinalRays;
 	Ray tempRay;
@@ -832,17 +715,20 @@ int Character::rayChecks(std::vector<Character*> vCharSet, int iType)
 	int iOutput = -1;
 	for (int i = 0; i < vCharSet.size(); i++)
 	{
-		//Checks where the ray and the edge intersect
-		sf::Vector2f currentIntersect = Util::lineIntersect(vCharSet.at(i)->getCollisionLine(getRotation()).first, 
-															vCharSet.at(i)->getCollisionLine(getRotation()).second, 
-															Ray.at(0),
-															Ray.at(1));
-
-		//If the ray is shorter than the previous rays then set the ray to be the shortest ray
-		if (Util::magnitude(currentIntersect - Ray.at(0)) < Util::magnitude(lowestIntersect - Ray.at(0)))
+		if (!vCharSet.at(i)->isDead())
 		{
-			iOutput = i;
-			lowestIntersect = currentIntersect;
+			//Checks where the ray and the edge intersect
+			sf::Vector2f currentIntersect = Util::lineIntersect(vCharSet.at(i)->getCollisionLine(getRotation()).first,
+				vCharSet.at(i)->getCollisionLine(getRotation()).second,
+				Ray.at(0),
+				Ray.at(1));
+
+			//If the ray is shorter than the previous rays then set the ray to be the shortest ray
+			if (Util::magnitude(currentIntersect - Ray.at(0)) < Util::magnitude(lowestIntersect - Ray.at(0)))
+			{
+				iOutput = i;
+				lowestIntersect = currentIntersect;
+			}
 		}
 	}
 
@@ -873,7 +759,11 @@ void Character::setPatrolPath(std::vector<int> viPathNodes)
 		{
 			if (viPathNodes.at(i) == viPathNodes.at(0))
 			{
-				m_PatrolPath.at(0)->parent = m_PatrolPath.at(i);
+				m_PatrolPath.at(i)->parent = m_PatrolPath.at(0);
+			}
+			else
+			{
+				m_PatrolPath.at(i)->parent = NULL;
 			}
 		}
 	}

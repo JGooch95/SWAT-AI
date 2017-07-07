@@ -2,25 +2,28 @@
 
 Slider::Slider()
 {
+	//Sets the bar data
 	setColor(sf::Color(255,255,255,125));
+	setSize(sf::Vector2f(100.0f, 10.0f));
+	m_iNumberOfOptions = 9;
 
-	setSize(sf::Vector2f(100, 10));
-	setCursorSize(sf::Vector2f(20, 20));
+	//Sets the cursor data
+	setCursorSize(sf::Vector2f(20.0f, 20.0f));
 	m_Cursor.setPosition(sf::Vector2f(getPosition().x, getPosition().y + (getSize().y / 2)));
 	m_Cursor.setColor(sf::Color(0, 186, 255, 255));
 	m_Cursor.setBackgroundColor(sf::Color(0, 0, 0, 0));
-
-	m_NumberOfOptions = 9;
 }
 
 void Slider::update(sf::Vector2i mousePos)
 {
+	//Sets the collision boxes to go around entire slider
 	setCollisionBox(sf::FloatRect(m_MainSprite.getGlobalBounds().left,
 		m_Cursor.getRect().top,
 		m_MainSprite.getGlobalBounds().width,
 		m_Cursor.getSize().y));
 
-	m_Cursor.setPosition(getPosition() + sf::Vector2f(m_CursorLevel * (getSize().x / m_NumberOfOptions), getSize().y / 2));
+	//Updates the cursor location
+	m_Cursor.setPosition(getPosition() + sf::Vector2f(m_iCursorLevel * (getSize().x / m_iNumberOfOptions), getSize().y / 2));
 }
 
 void Slider::setCursorTexture(sf::Texture* tex2)
@@ -31,7 +34,7 @@ void Slider::setCursorTexture(sf::Texture* tex2)
 
 void Slider::setCursorColour(sf::Color newColour)
 {
-	m_Cursor.setBackgroundColor(newColour);
+	m_Cursor.setColor(newColour);
 }
 
 void Slider::setCursorSize(sf::Vector2f newSize)
@@ -42,41 +45,45 @@ void Slider::setCursorSize(sf::Vector2f newSize)
 
 void Slider::setNumberOfOptions(int iNumber)
 {
-	iNumber--;
+	iNumber--; //Accounts for 0 value
 
-	m_NumberOfOptions = iNumber;
+	m_iNumberOfOptions = iNumber;
 
 	//If the cursor level is outside the range change the level
-	if (m_CursorLevel > m_NumberOfOptions)
+	if (m_iCursorLevel > m_iNumberOfOptions)
 	{
-		m_CursorLevel = m_NumberOfOptions;
+		m_iCursorLevel = m_iNumberOfOptions;
 	}
-	if (m_CursorLevel < 0)
+	if (m_iCursorLevel < 0)
 	{
-		m_CursorLevel = 0;
+		m_iCursorLevel = 0;
 	}
 }
 
 void Slider::setCursorPos(sf::Vector2i mousePos)
 {
+	//If the mouse is out of the bounds of the bar then set the cursor to
+	//Max
 	if (mousePos.x > m_MainSprite.getPosition().x + m_MainSprite.getSize().x)
 	{
-		m_CursorLevel = m_NumberOfOptions;
+		m_iCursorLevel = m_iNumberOfOptions;
 	}
+	//Min
 	else if (mousePos.x < m_MainSprite.getPosition().x)
 	{
-		m_CursorLevel = 0;
+		m_iCursorLevel = 0;
 	}
 	else
 	{
+		//Interpolate Position of cursor to get the level value
 		float fProgress = (mousePos.x - m_MainSprite.getPosition().x) / m_MainSprite.getSize().x;
-		m_CursorLevel = rint(m_NumberOfOptions * fProgress);
+		m_iCursorLevel = rint(m_iNumberOfOptions * fProgress);
 	}
 }
 
 void Slider::setLevel(int iNewLevel)
 {
-	m_CursorLevel = iNewLevel;
+	m_iCursorLevel = iNewLevel;
 }
 
 sf::Vector2f Slider::getCursorSize()
@@ -86,12 +93,12 @@ sf::Vector2f Slider::getCursorSize()
 
 int Slider::getNumberOfOptions()
 {
-	return m_NumberOfOptions;
+	return m_iNumberOfOptions;
 }
 
 int Slider::getLevel()
 {
-	return m_CursorLevel;
+	return m_iCursorLevel;
 }
 
 void Slider::draw(sf::RenderTarget & target, sf::RenderStates states) const

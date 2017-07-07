@@ -389,8 +389,8 @@ void Game::update(sf::Vector2i mousePos)
 		{
 			m_vUnitUI.at(i)->getLoadoutButton(j)->update(mousePos);
 		}
-		exitButton->update(mousePos);
 	}
+	exitButton->update(mousePos);
 }
 
 void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<Character*>  vCharSet2)
@@ -398,57 +398,59 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 	//For every character in the first container
 	for (int i = 0; i < vCharSet1.size(); i++)
 	{
-		//Check lazer collision
-		int iIntersector = vCharSet1.at(i)->rayChecks(vCharSet2, 1);
+		
+			//Check lazer collision
+			int iIntersector = vCharSet1.at(i)->rayChecks(vCharSet2, 1);
 
-		//If the lazer collided with a character
-		if (iIntersector != -1)
-		{
-			//If a character is alive then set it to be a target
-			if (vCharSet2.at(iIntersector)->getHealthData().lower > 0)
+			//If the lazer collided with a character
+			if (iIntersector != -1)
 			{
-				vCharSet1.at(i)->setTarget(vCharSet2.at(iIntersector));
-			}
-		}
-		else //If no characters have been seen then set a Null target
-		{
-			vCharSet1.at(i)->setTarget(NULL);
-		}
-
-		//If the character is shooting check if the bullet hit opposing characters
-		if (vCharSet1.at(i)->isShooting())
-		{
-			int iShot = vCharSet1.at(i)->rayChecks(vCharSet2, 0);
-
-			if (iShot != -1)
-			{
-				vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet1.at(i)->getWeapon()->getDamage());
-
-				if (vCharSet2.at(iShot)->getAimingState() != AIM)
+				//If a character is alive then set it to be a target
+				if (vCharSet2.at(iIntersector)->getHealthData().lower > 0)
 				{
-					vCharSet2.at(iShot)->setAimingState(SEARCH_SPIN);
+					vCharSet1.at(i)->setTarget(vCharSet2.at(iIntersector));
 				}
 			}
-		}
-
-		//Check against every character in the second container
-		for (int j = 0; j < vCharSet2.size(); j++)
-		{
-			if (!vCharSet1.at(i)->isDead() && !vCharSet2.at(j)->isDead())
+			else //If no characters have been seen then set a Null target
 			{
-				//Dont allow checks on itself
-				if (!(vCharSet1 == vCharSet2 && i == j))
+				vCharSet1.at(i)->setTarget(NULL);
+			}
+
+			//If the character is shooting check if the bullet hit opposing characters
+			if (vCharSet1.at(i)->isShooting())
+			{
+				int iShot = vCharSet1.at(i)->rayChecks(vCharSet2, 0);
+
+				if (iShot != -1)
 				{
-					for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
+					vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet1.at(i)->getWeapon()->getDamage());
+
+					if (vCharSet2.at(iShot)->getAimingState() != AIM)
 					{
-						if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
+						vCharSet2.at(iShot)->setAimingState(SEARCH_SPIN);
+					}
+				}
+			}
+
+			//Check against every character in the second container
+			for (int j = 0; j < vCharSet2.size(); j++)
+			{
+				if (!vCharSet1.at(i)->isDead() && !vCharSet2.at(j)->isDead())
+				{
+					//Dont allow checks on itself
+					if (!(vCharSet1 == vCharSet2 && i == j))
+					{
+						for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
 						{
-							vCharSet1.at(i)->setPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition());
+							if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
+							{
+								vCharSet1.at(i)->setPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition());
+							}
 						}
 					}
 				}
 			}
-		}
+		
 	}
 }
 
@@ -730,33 +732,25 @@ void Game::loadPatrolPaths(std::string sDir)
 	{
 		//Initialise reading variables
 		std::string sLine;
-		std::string currentNum;
+		std::string sCurrentNum;
 		std::vector<int> viPathNodes;
 
 		int iIndex = 0;
 		while (!pathFile.eof()) //while the end of file hasnt been reached
 		{
 			viPathNodes.clear();
-			currentNum = "";
+			sCurrentNum = "";
 			getline(pathFile, sLine); //Get the next line
 
 			if (sLine != "")
 			{
-				for (int i = 3; i < sLine.length(); i++)
+				std::istringstream sNum(sLine);
+
+				sNum >> sCurrentNum; //Read the index
+				while (!sNum.eof())
 				{
-					if (sLine.at(i) != ' ')
-					{
-						currentNum = currentNum + sLine.at(i);
-					}
-					else if (currentNum != "" || i == sLine.length() - 1)
-					{
-						viPathNodes.push_back(stoi(currentNum));
-						currentNum = "";
-					}
-				}
-				if (currentNum != "")
-				{
-					viPathNodes.push_back(stoi(currentNum));
+					sNum >> sCurrentNum; //Read the number
+					viPathNodes.push_back(stoi(sCurrentNum)); //Add it to the vector
 				}
 				m_vEnemies.at(iIndex)->setPatrolPath(viPathNodes);
 				iIndex++;
@@ -834,9 +828,9 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(*exitButton);
 }
 
-void Game::addEdge(sf::Vector2f points[2], std::vector<sf::Vector2f*>* CornerList, std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeList)
+void Game::addEdge(sf::Vector2f points[2], std::vector<sf::Vector2f*>* vCornerList, std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* vEdgeList)
 {
-	sf::Vector2f* iPointIndices[2] {NULL, NULL};
+	sf::Vector2f* aiPointIndices[2] {NULL, NULL};
 	
 	bool bFound = false;
 
@@ -844,26 +838,26 @@ void Game::addEdge(sf::Vector2f points[2], std::vector<sf::Vector2f*>* CornerLis
 	for (int i = 0; i < 2; i++)
 	{
 		bFound = false;
-		for (int j = 0; j < CornerList->size(); j++) //Check the corner list
+		for (int j = 0; j < vCornerList->size(); j++) //Check the corner list
 		{
 			//If the point exists on the corner list
-			if (abs(points[i].x - (*CornerList->at(j)).x) <  0.01f &&
-				abs(points[i].y - (*CornerList->at(j)).y) <  0.01f ) 
+			if (abs(points[i].x - (*vCornerList->at(j)).x) <  0.01f &&
+				abs(points[i].y - (*vCornerList->at(j)).y) <  0.01f ) 
 			{
-				iPointIndices[i] = CornerList->at(j); //Assign the corner to that address
+				aiPointIndices[i] = vCornerList->at(j); //Assign the corner to that address
 				bFound = true;
 			}
 		}
 		if (!bFound || m_CurrentMap->m_vCorners.size() == 0) //If the corner isnt in the list
 		{
 			//Create a new corner
-			iPointIndices[i] = new sf::Vector2f(points[i]); 
-			CornerList->push_back(iPointIndices[i]);
+			aiPointIndices[i] = new sf::Vector2f(points[i]); 
+			vCornerList->push_back(aiPointIndices[i]);
 		}
 	}
 
 	//Add the edge to the list
-	EdgeList->push_back(std::pair <sf::Vector2f*, sf::Vector2f*>( iPointIndices[0], iPointIndices[1]));
+	vEdgeList->push_back(std::pair <sf::Vector2f*, sf::Vector2f*>( aiPointIndices[0], aiPointIndices[1]));
 }
 
 Game::~Game()

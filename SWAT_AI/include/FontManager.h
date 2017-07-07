@@ -14,14 +14,14 @@ private:
 public:
 	/// \brief Gets a pointer to the singleton object and creates one if it doesnt exist.
 	/// \return returns the pointer to the object
-	static FontManager* getInstance(); //Gets the pointer to the object
+	static FontManager* getInstance();
 
 	/// \brief Loads the fonts from the directories given
 	/// \param vsNewFonts The directories to the fonts
-	void loadFonts(std::vector<std::string> vsNewFonts); //Loads every Font
+	void loadFonts(std::vector<std::string> vsNewFonts);
 
 	/// \brief Returns the font at the index given
 	/// \param iIndex the index of the font
 	/// \return returns a pointer to the font
-	sf::Font* getFont(int iIndex); //Returns the font at the index given
+	sf::Font* getFont(int iIndex);
 };

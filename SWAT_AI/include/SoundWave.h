@@ -7,8 +7,8 @@ class soundWave :public sf::Drawable
 	private:
 		sf::CircleShape m_Wave; //!< Holds the wave being emitted
 		float m_fDesiredRadius; //!< Holds the radius where the wave ends
-		float m_fIncreaseRate; //!< Holds the rate at which the radius increases
-		float m_fDecreaseRate;  //!< Holds the rate at which the radius decreases
+		float m_fIncreaseRate;  //!< Holds the rate at which the wave emerges
+		float m_fDecreaseRate;  //!< Holds the rate at which the wave fades
 
 		/// \brief Draws all of the soundWave's entities to the screen.
 		/// \param target Holds where to draw the entities to.		   
@@ -29,12 +29,13 @@ class soundWave :public sf::Drawable
 		/// \brief Updates the waves data
 		void update(); 
 
+		//Getters
 		/// \brief States whether the wave has reached the desired radius 
-		/// \return returns whether the wave has reached the desired radius 
+		/// \return Returns whether the wave has reached the desired radius 
 		bool isDone(); 
 
 		/// \brief Gets the position of the wave center
-		/// \return returns the position of the wave center
+		/// \return Returns the position of the wave center
 		sf::Vector2f getPosition();
 
 		/// \brief Gets the current radius of the soundwave

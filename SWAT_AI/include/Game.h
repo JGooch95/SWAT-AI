@@ -79,7 +79,11 @@ class Game : public sf::Drawable
 		/// \param sDir The directory containing the path
 		void loadPatrolPaths(std::string sDir);
 
-		void addEdge(sf::Vector2f points[2], std::vector<sf::Vector2f*>* CornerList, std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeList);
+		/// \brief Adds an edge to a corner and edge list
+		/// \param points The edge to give
+		/// \param CornerList The list of corners to be added to
+		/// \param EdgeList The list of edges to be added to
+		void addEdge(sf::Vector2f points[2], std::vector<sf::Vector2f*>* vCornerList, std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* vEdgeList);
 
 		/// \brief Default deconstructor
 		~Game();

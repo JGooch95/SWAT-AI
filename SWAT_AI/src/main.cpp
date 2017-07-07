@@ -12,15 +12,10 @@
 int main()
 {
 	Settings* m_CurrentSettings = Settings::getInstance();
-	m_CurrentSettings->setResolution(sf::Vector2f(800,600));
+	m_CurrentSettings->load("./Assets/Options/settings.txt");
 
 	//Sets up the window
 	sf::RenderWindow mainWindow(sf::VideoMode(m_CurrentSettings->getResolution().x, m_CurrentSettings->getResolution().y), "SWAT AI", sf::Style::Close);
-
-	/*
-	mainWindow.setSize(sf::Vector2u(1920, 1080));
-	m_CurrentSettings->setResolution(sf::Vector2f(1920, 1080));
-	mainWindow.setView(sf::View(sf::FloatRect(0, 0, 1920, 1080)));*/
 
 	//Initialises the event value for input readings
 	sf::Event event;
@@ -212,6 +207,7 @@ int main()
 							case 2:
 								mainWindow.setSize(sf::Vector2u(m_CurrentSettings->getResolution()));
 								mainWindow.setView(sf::View(sf::FloatRect(0, 0, m_CurrentSettings->getResolution().x, m_CurrentSettings->getResolution().y)));
+								m_CurrentSettings->save("./Assets/Options/settings.txt");
 								delete Options1;
 								Options1 = NULL;
 								Menu1 = new Menu(mainWindow.getSize());
@@ -272,7 +268,8 @@ int main()
 		}
 
 	}
-
+	
+	//Clean pointers
 	if (Game1 != NULL)
 	{
 		delete Game1;

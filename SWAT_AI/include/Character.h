@@ -95,15 +95,15 @@ class Character : public Object
 		/// \param vEdges The vector of edges being checked
 		void visionCalculation();
 
-		/// \brief Sends the edges to the gun to calculate bullet collisions
-		/// \param vEdges The vector of edges being checked
-		/// \return Retuns the damage dealt if the gun is shot
-
 		/// \brief Checks if the weapons lazer has collided
 		/// \param vEdges The vector of edges being checked
 		/// \return Retuns if the lazer hit anything
 		int rayChecks(std::vector<Character*>  vCharSet, int iType);
+
+		/// \brief Checks if the lazer has collided with any walls
 		void lazerEdgeChecks();
+
+		/// \brief Checks if the bullet has collided with any walls
 		void bulletEdgeChecks();
 
 		/// \brief Sets the patrol path to the nodes given

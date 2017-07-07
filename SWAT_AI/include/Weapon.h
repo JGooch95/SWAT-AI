@@ -58,12 +58,23 @@ class Weapon : public Object
 	public:
 		/// \brief Default constructor
 		Weapon();
-		void aim(sf::Vector2f location); //Aims towards the location given
-		void aim(float fAngle); //Aims towards the angle given
-		void update(); //Updates the states of data
-		void shoot(); //Shoots a bullet out of the weapon if the gun can shoot
-		void reload(); //Refills the gun ammo after the reload period has finished
-		//void bulletChecks(std::vector<Character*> vCharSet, float rotation); //Checks collision for the bullets
+
+		///\brief Aims towards a given location
+		///\param location The location to point towards
+		void aim(sf::Vector2f location);
+
+		///\brief aims towards a given angle
+		///\param fAngle The angle to aim towards 
+		void aim(float fAngle);
+
+		///\brief Updates the states of the data
+		void update();
+
+		///\brief Shoots a bullet out of the weapon if the gun can shoot
+		void shoot();
+
+		///\brief Refills the gun ammo after the reload period has finished
+		void reload();
 
 		//Setters
 		/// \brief Sets the fire rate of the weapon

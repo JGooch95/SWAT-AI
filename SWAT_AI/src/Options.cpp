@@ -2,12 +2,11 @@
 
 Options::Options(sf::Vector2u windowSize)
 {
+	//Links asset managers and settings
 	m_CurrentSettings = Settings::getInstance();
 	m_Textures = TextureLoader::getInstance();
 	m_Fonts = FontManager::getInstance();
-
-	m_Textures = TextureLoader::getInstance();
-	m_Fonts = FontManager::getInstance();
+	m_SoundManager = SoundManager::getInstance();
 
 	//Sets up the background
 	m_Background.setSize(sf::Vector2f(windowSize.x, windowSize.y));
@@ -19,141 +18,208 @@ Options::Options(sf::Vector2u windowSize)
 	m_ContentBox.setSize(sf::Vector2f(windowSize.x / 3.0f, windowSize.y * (2.0f / 3.0f)));
 	m_ContentBox.setFillColor(sf::Color(42, 42, 42, 255));
 
-	//Create the buttons
-	for (int i = 0; i < 2; i++)
-	{
-		m_Buttons.push_back(new Button());
-		m_UI.push_back(m_Buttons.at(m_Buttons.size() - 1));
-	}
-
-	float fButtonGap = m_ContentBox.getSize().x / 30.0f; //The gap between each button
-	float fButtonArea = (m_ContentBox.getSize().y * (2.0f / 3.0f)) - (fButtonGap); //The size in the y axis of where the buttons are kept
-	float fButtonStart = m_ContentBox.getPosition().y + (m_ContentBox.getSize().y / 3.0f) + fButtonGap; //The y position of where the buttons are kept
-
-																										//Setup every button
-	for (int i = 0; i < m_Buttons.size(); i++)
-	{
-		m_Buttons.at(i)->setColor(sf::Color(0, 0, 0, 0));
-		m_Buttons.at(i)->setBackgroundColor(sf::Color(0, 186, 255, 255));
-		m_Buttons.at(i)->setSize(sf::Vector2f(m_ContentBox.getSize().x / 2 - (fButtonGap * ((m_Buttons.size() + 1)/2.0f)), 50));
-		m_Buttons.at(i)->setPosition(sf::Vector2f(m_ContentBox.getPosition().x + (m_Buttons.at(i)->getSize().x * i )+  (fButtonGap * (i + 1)),
-												  m_ContentBox.getPosition().y + m_ContentBox.getSize().y - m_Buttons.at(i)->getSize().y - fButtonGap));
-	}
-
-	//Sets the button text
-	m_Buttons.at(0)->setText("Cancel");
-	m_Buttons.at(1)->setText("Accept");
-
-	resolutionList.push_back(sf::Vector2f(800, 600));
-	resolutionList.push_back(sf::Vector2f(1366, 768));
-	resolutionList.push_back(sf::Vector2f(1920, 1080));
-
-	for (int i = 0; i < 2; i++)
-	{
-		m_Sliders.push_back(new Slider);
-		m_UI.push_back(m_Sliders.at(m_Sliders.size()-1));
-	}
-
-	m_Sliders.at(0)->setSize(sf::Vector2f(m_ContentBox.getSize().x - (fButtonGap * 2), 10));
-	m_Titles.push_back(sf::Text(sf::String("Resolution"), *m_Fonts->getFont(0), 30));
-	//m_Titles.at(0).setPosition(m_Sliders.at(0)->getPosition().x, m_Sliders.at(0)->getPosition().y - 30);
-	m_Titles.at(0).setPosition(sf::Vector2f(m_ContentBox.getPosition().x + fButtonGap + (m_Sliders.at(0)->getSize().x / 2), fButtonStart) - sf::Vector2f(m_Titles.at(0).getLocalBounds().width / 2.0f, 0));
-
-	m_Sliders.at(0)->setPosition(sf::Vector2f(m_ContentBox.getPosition().x + fButtonGap, m_Titles.at(0).getPosition().y + m_Titles.at(0).getLocalBounds().height + fButtonGap+ 10));
-	m_Sliders.at(0)->setCursorTexture(m_Textures->getTexture(1));
-	m_Sliders.at(0)->setNumberOfOptions(resolutionList.size());
-
-	m_DataText.push_back(sf::Text(sf::String("Resolution"), *m_Fonts->getFont(0), 30));
-	m_DataText.at(0).setPosition(m_Sliders.at(0)->getPosition().x, m_Sliders.at(0)->getPosition().y + 20);
-
-	m_Sliders.at(1)->setPosition(sf::Vector2f(m_ContentBox.getPosition().x + fButtonGap, m_ContentBox.getPosition().y + 300));
-	m_Sliders.at(1)->setSize(sf::Vector2f(m_ContentBox.getSize().x - (fButtonGap * 2), 10));
-	m_Sliders.at(1)->setCursorTexture(m_Textures->getTexture(1));
-	m_Sliders.at(1)->setNumberOfOptions(101);
-	m_Sliders.at(1)->setLevel(m_CurrentSettings->getVolume());
-
-	m_Titles.push_back(sf::Text(sf::String("Volume"), *m_Fonts->getFont(0), 30));
-	m_Titles.at(1).setPosition(m_Sliders.at(1)->getPosition().x, m_Sliders.at(1)->getPosition().y - 30);
-
-	m_DataText.push_back(sf::Text(sf::String("Volume"), *m_Fonts->getFont(0), 30));
-	m_DataText.at(1).setPosition(m_Sliders.at(1)->getPosition().x, m_Sliders.at(1)->getPosition().y + 20);
+	m_fButtonGap = m_ContentBox.getSize().x / 30.0f; //The gap between each button
 
 	//Sets up the title
 	m_TitleText.setString("SWAT AI");
 	m_TitleText.setFont(*m_Fonts->getFont(0));
-	m_TitleText.setPosition(sf::Vector2f(m_ContentBox.getPosition().x + fButtonGap, m_ContentBox.getPosition().y + fButtonGap));
+	m_TitleText.setPosition(sf::Vector2f(m_ContentBox.getPosition().x + m_fButtonGap, m_ContentBox.getPosition().y + m_fButtonGap));
 
 	//Fits the title to be within the bounds of the content box
 	m_TitleText.setCharacterSize(200);
-	while (m_TitleText.getLocalBounds().width > m_ContentBox.getSize().x - (2 * fButtonGap) ||
-		m_TitleText.getLocalBounds().height > (m_ContentBox.getSize().y / 3) - (2 * fButtonGap))
+	while (m_TitleText.getLocalBounds().width > m_ContentBox.getSize().x - (2 * m_fButtonGap) ||
+		   m_TitleText.getLocalBounds().height > (m_ContentBox.getSize().y / 3) - (2 * m_fButtonGap))
 	{
 		m_TitleText.setCharacterSize(m_TitleText.getCharacterSize() - 1);
 	}
 
-	m_SoundManager = SoundManager::getInstance();
+	//Creates the sliders
+	for (int i = 0; i < 2; i++)
+	{
+		m_vSliders.push_back(new Slider);
+
+		//Set general slider settings
+		m_vSliders.at(i)->setSize(sf::Vector2f(m_ContentBox.getSize().x - (m_fButtonGap * 2), (m_ContentBox.getSize().x - (m_fButtonGap * 2)) / 20));
+		m_vSliders.at(i)->setCursorSize(sf::Vector2f(m_vSliders.at(0)->getSize().y * 2, m_vSliders.at(0)->getSize().y * 2));
+		m_vSliders.at(i)->setCursorTexture(m_Textures->getTexture(1));
+
+		m_vUI.push_back(m_vSliders.at(m_vSliders.size()-1));
+
+	}
+
+	//Resolution Slider Title
+	m_vTitles.push_back(sf::Text(sf::String("Resolution"), *m_Fonts->getFont(0), m_vSliders.at(0)->getSize().y * 2));
+	m_vTitles.at(0).setPosition(sf::Vector2f(m_ContentBox.getPosition().x + m_fButtonGap + (m_vSliders.at(0)->getSize().x / 2), m_TitleText.getPosition().y + m_TitleText.getLocalBounds().height + m_fButtonGap + (m_ContentBox.getSize().y / 5)) - sf::Vector2f(m_vTitles.at(0).getLocalBounds().width / 2.0f, 0));
+
+	//Resolution Slider 
+	m_vSliders.at(0)->setPosition(sf::Vector2f(m_ContentBox.getPosition().x + m_fButtonGap, m_vTitles.at(0).getPosition().y + m_vTitles.at(0).getLocalBounds().height + m_fButtonGap));
+	loadResolutionList("./Assets/Options/resList.txt");
+
+	//Resolution Data Text
+	m_vDataText.push_back(sf::Text(sf::String(std::to_string((int)m_CurrentSettings->getResolution().x) + "x" + std::to_string((int)m_CurrentSettings->getResolution().y)), *m_Fonts->getFont(0), m_vSliders.at(0)->getSize().y * 2));
+	m_vDataText.at(0).setPosition((m_ContentBox.getPosition().x + m_fButtonGap + (m_vSliders.at(0)->getSize().x / 2)) - (m_vDataText.at(0).getLocalBounds().width / 2.0f), m_vSliders.at(0)->getPosition().y + m_fButtonGap);
+
+	//Sound Volume Slider Title
+	m_vTitles.push_back(sf::Text(sf::String("Volume"), *m_Fonts->getFont(0), m_vSliders.at(0)->getSize().y * 2));
+	m_vTitles.at(1).setPosition((m_ContentBox.getPosition().x + m_fButtonGap + (m_vSliders.at(0)->getSize().x / 2)) - (m_vTitles.at(1).getLocalBounds().width / 2.0f), m_vDataText.at(0).getPosition().y + m_vDataText.at(0).getLocalBounds().height + m_fButtonGap);
+
+	//Sound Volume Slider
+	m_vSliders.at(1)->setPosition(sf::Vector2f(m_ContentBox.getPosition().x + m_fButtonGap, m_vTitles.at(1).getPosition().y + m_vTitles.at(1).getLocalBounds().height + m_fButtonGap));
+	m_vSliders.at(1)->setNumberOfOptions(101);
+	m_vSliders.at(1)->setLevel(m_CurrentSettings->getVolume());
+
+	//Sound Volume Data Text
+	m_vDataText.push_back(sf::Text(sf::String(std::to_string((int)m_CurrentSettings->getVolume())), *m_Fonts->getFont(0), m_vSliders.at(1)->getSize().y * 2));
+	m_vDataText.at(1).setPosition((m_ContentBox.getPosition().x + m_fButtonGap + (m_vSliders.at(1)->getSize().x / 2)) - (m_vDataText.at(1).getLocalBounds().width / 2.0f), m_vSliders.at(1)->getPosition().y + m_fButtonGap);
+
+	//Sets up the sound for the volume slider
 	m_TestSound.setBuffer(*m_SoundManager->getSound(10));
 	m_TestSound.setVolume(m_CurrentSettings->getVolume());
 
-	ActiveSlider = -1;
+	int iNumOfButtons = 2;
+	//Create the buttons
+	for (int i = 0; i < iNumOfButtons; i++)
+	{
+		m_vButtons.push_back(new Button());
+		m_vButtons.at(i)->setColor(sf::Color(0, 0, 0, 0));
+		m_vButtons.at(i)->setBackgroundColor(sf::Color(0, 186, 255, 255));
+		m_vButtons.at(i)->setSize(sf::Vector2f(m_ContentBox.getSize().x / 2 - (m_fButtonGap * ((iNumOfButtons + 1) / 2.0f)), 50));
+		m_vButtons.at(i)->setPosition(sf::Vector2f(m_ContentBox.getPosition().x + (m_vButtons.at(i)->getSize().x * i) + (m_fButtonGap * (i + 1)),
+												  m_ContentBox.getPosition().y + m_ContentBox.getSize().y - m_vButtons.at(i)->getSize().y - m_fButtonGap));
+		m_vUI.push_back(m_vButtons.at(m_vButtons.size() - 1));
+	}
+
+	//Sets the button text
+	m_vButtons.at(0)->setText("Cancel");
+	m_vButtons.at(1)->setText("Accept");
+
+	m_iActiveSlider = -1; //Sets no sliders to be active
 }
 
 void Options::update(sf::Vector2i mousePos)
 {
-	//Checks buttons for a hovering mouse
-	for (int i = 0; i < m_UI.size(); i++)
+	//Updates all UI objects
+	for (int i = 0; i < m_vUI.size(); i++)
 	{
-		m_UI.at(i)->update(mousePos);
+		m_vUI.at(i)->update(mousePos);
 	}
 
-	if (ActiveSlider != -1)
+	if (m_iActiveSlider != -1) //If there is an active slider
 	{
-		m_Sliders.at(ActiveSlider)->setCursorPos(mousePos);
-
-		if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) //If the left mouse is removed
 		{
-			if (ActiveSlider == 1)
+			//IF the slider used was the volume slider
+			if (m_iActiveSlider == 1)
 			{
-				m_TestSound.setVolume(m_Sliders.at(1)->getLevel());
+				//Set the volume and play an indicator
+				m_TestSound.setVolume(m_vSliders.at(1)->getLevel());
 				m_TestSound.play();
 			}
-			ActiveSlider = -1;
+			m_iActiveSlider = -1; //Set the active slider to none
+		}
+		else
+		{
+			m_vSliders.at(m_iActiveSlider)->setCursorPos(mousePos); //Update the slider cursor position
+			m_ContentBox.getSize().x / 30.0f; //The gap between each button
+
+			//Update the slider text and positioning
+			switch (m_iActiveSlider)
+			{
+				case 0:
+					m_vDataText.at(0).setString(std::to_string(int(resolutionList.at(m_vSliders.at(0)->getLevel()).x)) + "x" + std::to_string(int(resolutionList.at(m_vSliders.at(0)->getLevel()).y)));
+					m_vDataText.at(0).setPosition((m_ContentBox.getPosition().x + m_fButtonGap + (m_vSliders.at(0)->getSize().x / 2)) - (m_vDataText.at(0).getLocalBounds().width / 2.0f), m_vSliders.at(0)->getPosition().y + m_fButtonGap);
+					break;
+				case 1:
+					m_vDataText.at(1).setString(std::to_string(int(m_vSliders.at(1)->getLevel())));
+					m_vDataText.at(1).setPosition((m_ContentBox.getPosition().x + m_fButtonGap + (m_vSliders.at(1)->getSize().x / 2)) - (m_vDataText.at(1).getLocalBounds().width / 2.0f), m_vSliders.at(1)->getPosition().y + m_fButtonGap);
+					break;
+			}
 		}
 	}
-	else
+	else //If there is no active slider
 	{
+		//Check if any sliders are being clicked on
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 		{
-			for (int i = 0; i < m_Sliders.size(); i++)
+			for (int i = 0; i < m_vSliders.size(); i++)
 			{
-				if (m_Sliders.at(i)->hovering(mousePos))
+				if (m_vSliders.at(i)->hovering(mousePos))
 				{
-					ActiveSlider = i;
+					m_iActiveSlider = i; //Set the active slider
 				}
 			}
 		}
 	}
-
-	m_DataText.at(0).setString(std::to_string(int(resolutionList.at(m_Sliders.at(0)->getLevel()).x)) + "x" + std::to_string(int(resolutionList.at(m_Sliders.at(0)->getLevel()).y)));
-	m_DataText.at(1).setString(std::to_string(int(m_Sliders.at(1)->getLevel())));
 }
 
 int Options::clickLeft(sf::Vector2i mousePos)
 {
 	//Checks if the buttons have been clicked
-	for (int i = 0; i < m_Buttons.size(); i++)
+	for (int i = 0; i < m_vButtons.size(); i++)
 	{
-		if (m_Buttons.at(i)->hovering(mousePos))
+		if (m_vButtons.at(i)->hovering(mousePos))
 		{
-			if (i == 1)
+			if (i == 1) //If Accept is clicked
 			{
-				m_CurrentSettings->setResolution(resolutionList.at(m_Sliders.at(0)->getLevel()));
-				m_CurrentSettings->setVolume(m_Sliders.at(1)->getLevel());
+				//Set the new values
+				m_CurrentSettings->setResolution(resolutionList.at(m_vSliders.at(0)->getLevel()));
+				m_CurrentSettings->setVolume(m_vSliders.at(1)->getLevel());
 			}
 			return i + 1;
 		}
 	}
 	return 0;
+}
+
+void Options::loadResolutionList(std::string sDir)
+{
+	std::ifstream resFile;
+	resFile.open(sDir); //Open the file
+
+	if (resFile.is_open()) //If the file opened correctly
+	{
+		//Initialise reading variables
+		std::string sLine;
+		std::string sToken;
+		int iCounter = 0;
+
+		while (!resFile.eof()) //while the end of file hasnt been reached
+		{
+			getline(resFile, sLine); //Get the next line
+			
+			std::istringstream sWord(sLine); //Adds the line to a string stream
+
+			if (sLine != "") //If the line isnt empty 
+			{
+				sf::Vector2f res;
+				
+				//Read the x coordinate
+				sWord >> sToken;
+				res.x = stoi(sToken);
+
+				//Read the y coordinate
+				sWord >> sToken;
+				res.y = stoi(sToken);
+
+				resolutionList.push_back(res); //Add the resolution to the list
+
+				//If the current resolution is in the list set the slider level to the resolution
+				if (res == m_CurrentSettings->getResolution())
+				{
+					m_vSliders.at(0)->setLevel(iCounter);
+				}
+				iCounter++;
+			}
+		}
+		m_vSliders.at(0)->setNumberOfOptions(resolutionList.size()); //Change the number of options for the slider
+	}
+	else
+	{
+		//Ouptut an error
+		std::cout << "Resolution File: " << sDir << " could not be opened." << "\n";
+	}
+
+	resFile.close();
 }
 
 void Options::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -162,35 +228,35 @@ void Options::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_ContentBox);
 	target.draw(m_TitleText);
 
-	for (int i = 0; i < m_Buttons.size(); i++)
+	for (int i = 0; i < m_vButtons.size(); i++)
 	{
-		target.draw(*m_Buttons.at(i));
+		target.draw(*m_vButtons.at(i));
 	}
-	for (int i = 0; i < m_Sliders.size(); i++)
+	for (int i = 0; i < m_vSliders.size(); i++)
 	{
-		target.draw(*m_Sliders.at(i));
+		target.draw(*m_vSliders.at(i));
 	}
-	for (int i = 0; i < m_Titles.size(); i++)
+	for (int i = 0; i < m_vTitles.size(); i++)
 	{
-		target.draw(m_Titles.at(i));
+		target.draw(m_vTitles.at(i));
 	}
-	for (int i = 0; i < m_DataText.size(); i++)
+	for (int i = 0; i < m_vDataText.size(); i++)
 	{
-		target.draw(m_DataText.at(i));
+		target.draw(m_vDataText.at(i));
 	}
 }
 
 Options::~Options()
 {
-	for (int i = 0; i < m_Buttons.size(); i++)
+	for (int i = 0; i < m_vButtons.size(); i++)
 	{
-		delete(m_Buttons.at(i));
-		m_Buttons.at(i) = NULL;
+		delete(m_vButtons.at(i));
+		m_vButtons.at(i) = NULL;
 	}
 
-	for (int i = 0; i < m_Sliders.size(); i++)
+	for (int i = 0; i < m_vSliders.size(); i++)
 	{
-		delete(m_Sliders.at(i));
-		m_Sliders.at(i) = NULL;
+		delete(m_vSliders.at(i));
+		m_vSliders.at(i) = NULL;
 	}
 }

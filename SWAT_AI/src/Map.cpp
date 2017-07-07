@@ -38,10 +38,12 @@ void Map::load(MapType newMap, std::string sDir)
 		case ObjectMap:
 			m_vcLevelBits.clear();
 			break;
+
 		case FloorMap:
 			m_vcFloorBits.clear();
 			break;
 	}
+
 	std::ifstream mapFile;
 	mapFile.open(sDir); //Open the map file
 

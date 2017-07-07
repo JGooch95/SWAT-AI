@@ -99,12 +99,12 @@ void HUDWindow::setBarText(BarType currentBarType, std::string barText)
 	{
 		case HealthBar:
 			m_UIText.at(0)->setString(barText);
-			m_UIText.at(0)->setPosition(m_UIBars.at(0)->getPosition() + sf::Vector2f((m_UIBars.at(0)->getSize().x / 2) - (m_UIText.at(0)->getLocalBounds().width / 2), 0));
+			m_UIText.at(0)->setPosition(m_UIBars.at(0)->getPosition() + sf::Vector2f((m_UIBars.at(0)->getSize().x / 2.0f) - (m_UIText.at(0)->getLocalBounds().width / 2.0f), 0.f));
 			break;
 
 		case AmmoBar:
 			m_UIText.at(1)->setString(barText);
-			m_UIText.at(1)->setPosition(m_UIBars.at(1)->getPosition() + sf::Vector2f((m_UIBars.at(1)->getSize().x / 2) - (m_UIText.at(1)->getLocalBounds().width / 2), 0));
+			m_UIText.at(1)->setPosition(m_UIBars.at(1)->getPosition() + sf::Vector2f((m_UIBars.at(1)->getSize().x / 2.0f) - (m_UIText.at(1)->getLocalBounds().width / 2.0f), 0.0f));
 			break;
 	}
 }
@@ -112,14 +112,14 @@ void HUDWindow::setBarText(BarType currentBarType, std::string barText)
 void HUDWindow::scaleUI()
 {
 	//Class changing button
-	m_ClassButton.setPosition(m_BackDrop.getPosition() + sf::Vector2f((m_BackDrop.getSize().y / 20), m_BackDrop.getSize().y / 20));
-	m_ClassButton.setSize(sf::Vector2f(m_BackDrop.getSize().y / 4, m_BackDrop.getSize().y / 4));
+	m_ClassButton.setPosition(m_BackDrop.getPosition() + sf::Vector2f((m_BackDrop.getSize().y / 20.0f), m_BackDrop.getSize().y / 20.0f));
+	m_ClassButton.setSize(sf::Vector2f(m_BackDrop.getSize().y / 4.0f, m_BackDrop.getSize().y / 4.0f));
 
 	//Health and ammo bars
 	for (int i = 0; i < m_UIBars.size(); i++)
 	{
 		//Bars
-		m_UIBars.at(i)->setSize(sf::Vector2f(m_BackDrop.getSize().x - (m_BackDrop.getSize().x / 5.0f), m_BackDrop.getSize().y / 10));
+		m_UIBars.at(i)->setSize(sf::Vector2f(m_BackDrop.getSize().x - (m_BackDrop.getSize().x / 5.0f), m_BackDrop.getSize().y / 10.0f));
 		m_UIBars.at(i)->setPosition(sf::Vector2f(m_BackDrop.getPosition().x + ((m_BackDrop.getSize().x / 5.0f) / 2.0f), m_BackDrop.getPosition().y + ((2 + i) * (m_BackDrop.getSize().y / 5.0f))));
 
 		//Icons
@@ -131,15 +131,15 @@ void HUDWindow::scaleUI()
 		{
 			m_UIText.at(i)->setCharacterSize(m_UIText.at(i)->getCharacterSize() - 1);
 		}
-		m_UIText.at(i)->setPosition(m_UIBars.at(i)->getPosition() + sf::Vector2f((m_UIBars.at(i)->getSize().x / 2) - (m_UIText.at(i)->getLocalBounds().width / 2), (m_UIBars.at(i)->getSize().y / 3)));
+		m_UIText.at(i)->setPosition(m_UIBars.at(i)->getPosition() + sf::Vector2f((m_UIBars.at(i)->getSize().x / 2.0f) - (m_UIText.at(i)->getLocalBounds().width / 2.0f), (m_UIBars.at(i)->getSize().y / 3.0f)));
 		m_UIText.at(i)->setFillColor(sf::Color(0, 0, 0, 255));
 	}
 
 	//Loadout buttons
 	for (int i = 0; i < m_LoadoutButton.size(); i++)
 	{
-		m_LoadoutButton.at(i)->setPosition(sf::Vector2f(m_ClassButton.getPosition().x + ((i+1) * (m_ClassButton.getSize().x*m_ClassButton.getScale().x)) + ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4)));
-		m_LoadoutButton.at(i)->setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2));
+		m_LoadoutButton.at(i)->setPosition(sf::Vector2f(m_ClassButton.getPosition().x + ((i+1) * (m_ClassButton.getSize().x*m_ClassButton.getScale().x)) + ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4.0f), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4.0f)));
+		m_LoadoutButton.at(i)->setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2.0f, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2.0f));
 	}
 }
 

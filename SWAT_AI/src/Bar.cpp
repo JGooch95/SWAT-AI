@@ -54,6 +54,7 @@ void Bar::setLevel(float fLevel)
 
 void Bar::setLimit(float fLimit)
 {
+	//Ensures limit is higher than 0 before setting
 	if (fLimit > 0)
 	{
 		m_LevelLimits.upper = fLimit;

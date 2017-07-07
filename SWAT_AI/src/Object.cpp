@@ -4,7 +4,7 @@ Object::Object()
 {
 	//Sets up the sprite
 	m_MainSprite.setTextureRect(sf::IntRect(0, 0, 50, 50));
-	m_MainSprite.setPosition(100, 100);
+	m_MainSprite.setPosition(100.0f, 100.0f);
 	m_CurrentMap = Map::getInstance();
 	m_CurrentSettings = Settings::getInstance();
 }

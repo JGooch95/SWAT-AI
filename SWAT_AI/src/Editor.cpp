@@ -2,7 +2,7 @@
 
 Editor::Editor(sf::Vector2u windowSize)
 {
-	//Sets up the default map
+	//Links the Asset managers
 	m_CurrentMap = Map::getInstance();
 	m_CurrentSettings = Settings::getInstance();
 	m_Textures = TextureLoader::getInstance();
@@ -13,6 +13,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	m_Toolbar.setFillColor(sf::Color(70, 70, 70, 255));
 	m_Toolbar.setSize(sf::Vector2f(windowSize.x, windowSize.y / 20));
 
+	//Sets up the map window
 	m_CurrentMap->setup(
 		sf::FloatRect(sf::Vector2f(0, m_Toolbar.getSize().y), sf::Vector2f(windowSize) - sf::Vector2f(windowSize.x / 3, m_Toolbar.getSize().y)),
 		sf::Vector2f(20, 20)
@@ -157,17 +158,19 @@ Editor::Editor(sf::Vector2u windowSize)
 	createButtons(&m_vToolButtons, 4, std::vector<int>{23, 33, 34});
 
 	//Sets the starting tool to the wooden wall tool
-	m_cCurrentTool = 'W';
+	m_cCurrentTool = ' ';
 
 	//Starts the editing on the main objects
 	m_Editing = ObjectEdit;
 
+	//Sets up the path editor tools
 	Selector.setOutlineThickness(3);
 	Selector.setOutlineColor(sf::Color(0,255,0,255));
 	Selector.setFillColor(sf::Color(0, 255, 0, 0));
 	Selector.setSize(m_CurrentMap->getTileSize());
-
 	PathLine.setPrimitiveType(sf::LinesStrip);
+
+	loadMap(" ");
 }
 
 void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std::vector<int> iTexIndex)
@@ -210,6 +213,43 @@ void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std:
 		}
 	}
 }
+
+void Editor::updatePathUI()
+{
+	//Clear the path UI
+	m_vEnemyCircles.clear();
+	PathLine.clear();
+
+	//IF an enemy has been selected
+	if (iSelectedEnemy != NULL)
+	{
+		//Create Path UI
+		PathLine.resize(iSelectedEnemy->path.size());
+		for (int i = 0; i < iSelectedEnemy->path.size(); i++)
+		{
+			sf::CircleShape tempCircle;
+			tempCircle.setFillColor(sf::Color::Red);
+			tempCircle.setRadius(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) / 5.0f);
+			tempCircle.setOrigin(tempCircle.getRadius(), tempCircle.getRadius());
+			tempCircle.setPosition(m_CurrentMap->getPosition() + sf::Vector2f(iSelectedEnemy->path.at(i).x * m_CurrentMap->getTileSize().x, iSelectedEnemy->path.at(i).y * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize() / 2.0f));
+			m_vEnemyCircles.push_back(tempCircle);
+
+			PathLine[i].position = m_vEnemyCircles.at(i).getPosition();
+			PathLine[i].color = sf::Color::Green;
+		}
+
+		//Move the selector to the enemy position
+		Selector.setSize(m_CurrentMap->getTileSize());
+		Selector.setPosition(m_CurrentMap->getPosition() + sf::Vector2f(iSelectedEnemy->position.x * m_CurrentMap->getTileSize().x, iSelectedEnemy->position.y * m_CurrentMap->getTileSize().y));
+	}
+	else
+	{
+		//Move the selector to the default location
+		Selector.setSize(m_CurrentMap->getTileSize());
+		Selector.setPosition(sf::Vector2f(0,0));
+	}
+}
+
 
 void Editor::update(sf::Vector2i mousePos)
 {
@@ -259,26 +299,133 @@ void Editor::update(sf::Vector2i mousePos)
 		}
 	}
 
-	if (m_Editing == CharacterEdit)
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		Selector.setSize(m_CurrentMap->getTileSize());
-		Selector.setPosition(m_CurrentMap->getPosition() + sf::Vector2f(selectedEnemy.x * m_CurrentMap->getTileSize().x, selectedEnemy.y * m_CurrentMap->getTileSize().y));
-		
-		PathLine.clear();
-		for (int i = 0; i < m_vEnemyCircles.size(); i++)
+		//If the mouse is within the bounds of the grid
+		if (mousePos.x > m_CurrentMap->getPosition().x &&
+			mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+			mousePos.y > m_CurrentMap->getPosition().y &&
+			mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 		{
-			if (selectedEnemy == m_vEnemyCircles.at(i).first)
-			{
-				PathLine.resize(m_vEnemyCircles.at(i).second.size());
-				for (int j = 0; j < m_vEnemyCircles.at(i).second.size(); j++)
-				{
-					m_vEnemyCircles.at(i).second.at(j).setRadius(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) / 5.0f);
-					m_vEnemyCircles.at(i).second.at(j).setOrigin(m_vEnemyCircles.at(i).second.at(j).getRadius(), m_vEnemyCircles.at(i).second.at(j).getRadius());
+			//Calculate the mouses position on the grid
+			sf::Vector2i gridPos(0, 0);
+			gridPos.x = (mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x;
+			gridPos.y = (mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y;
+			EnemyData newEnemy;
 
-					m_vEnemyCircles.at(i).second.at(j).setPosition(m_CurrentMap->getPosition() + sf::Vector2f(m_vEnemyPaths.at(i).second.at(j).x * m_CurrentMap->getTileSize().x, m_vEnemyPaths.at(i).second.at(j).y * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize() / 2.0f));
-					PathLine[j].position = m_vEnemyCircles.at(i).second.at(j).getPosition();
-					PathLine[j].color = sf::Color::Green;
-				}
+			switch (m_Editing)
+			{
+				case ObjectEdit:
+					if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) != m_cCurrentTool)
+					{
+					//If the tool is valid
+						if (m_cCurrentTool == 'W' || m_cCurrentTool == 'P' || m_cCurrentTool == 'E' ||
+							m_cCurrentTool == 'D' || m_cCurrentTool == 'B' || m_cCurrentTool == ' ')
+						{
+							//If there is an item currently in that location clear the pointer
+							if (m_vItems.at(gridPos.y).at(gridPos.x) != NULL)
+							{
+								delete(m_vItems.at(gridPos.y).at(gridPos.x));
+								m_vItems.at(gridPos.y).at(gridPos.x) = NULL;
+							}
+							//If the tool isnt an eraser create a new object
+							if (m_cCurrentTool != ' ')
+							{
+								m_vItems.at(gridPos.y).at(gridPos.x) = new Object();
+
+								//Give the object the following texture
+								switch (m_cCurrentTool)
+								{
+								case 'W':
+									m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(0));
+									break;
+								case 'P':
+									m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(1));
+									break;
+								case 'E':
+									m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(2));
+									newEnemy.position = gridPos;
+									m_vEnemyPaths.push_back(newEnemy);
+									break;
+								case 'D':
+									m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
+									break;
+								case 'B':
+									m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(30));
+									break;
+								}
+							}
+							else
+							{
+								if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
+								{
+									for (int i = 0; i < m_vEnemyPaths.size(); i++)
+									{
+										if (gridPos == m_vEnemyPaths.at(i).position)
+										{
+											m_vEnemyPaths.erase(m_vEnemyPaths.begin() + i);
+											iSelectedEnemy = NULL;
+											updatePathUI();
+										}
+									}
+								}
+							}
+
+							//Set the main map bit to the current tool letter
+							m_vcLevelBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
+						}
+					}
+					break;
+
+				case FloorEdit:
+					if (m_vcFloorBits.at(gridPos.y).at(gridPos.x) != m_cCurrentTool)
+					{
+						//If the tool is valid
+						if (m_cCurrentTool == 'G' || m_cCurrentTool == 'F' || m_cCurrentTool == 'K' ||
+							m_cCurrentTool == 'C' || m_cCurrentTool == 'B' || m_cCurrentTool == 'R' ||
+							m_cCurrentTool == ' ')
+						{
+							//If there is an item currently in that location clear the pointer
+							if (m_vFloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
+							{
+								delete(m_vFloorTiles.at(gridPos.y).at(gridPos.x));
+								m_vFloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
+							}
+
+							//If the tool isnt an eraser create a new object
+							if (m_cCurrentTool != ' ')
+							{
+								m_vFloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
+
+								//Give the object the following texture
+								switch (m_cCurrentTool)
+								{
+								case 'G':
+									m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(14));
+									break;
+								case 'F':
+									m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(25));
+									break;
+								case 'K':
+									m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(27));
+									break;
+								case 'C':
+									m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
+									break;
+								case 'B':
+									m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(28));
+									break;
+								case 'R':
+									m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(29));
+									break;
+								}
+							}
+
+							//Set the floor map bit to the current tool letter
+							m_vcFloorBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
+						}
+					}
+					break;
 			}
 		}
 	}
@@ -309,9 +456,6 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		for (int i = 0; i < m_vcLevelBits.size(); i++)
 		{
 			m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-		for (int i = 0; i < m_vcLevelBits.size(); i++)
-		{
 			m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
 
@@ -319,11 +463,9 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		for (int i = 0; i < m_vcFloorBits.size(); i++)
 		{
 			m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-		for (int i = 0; i <  m_vcFloorBits.size(); i++)
-		{
 			m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
+		updatePathUI();
 	}
 
 	//If the - X Grid button is pressed
@@ -332,6 +474,18 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		//Decrement the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x -1, m_CurrentMap->getGridDims().y));
 
+		//Check if any path nodes are off the screen
+		for (int i = 0; i < m_vEnemyPaths.size(); i++)
+		{
+			for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
+			{
+				if (m_vEnemyPaths.at(i).path.at(j).x >= m_CurrentMap->getGridDims().x)  //If they are
+				{
+					m_vEnemyPaths.at(i).path.erase(m_vEnemyPaths.at(i).path.begin() + j); //Erase them
+				}
+			}
+		}
+
 		//Decrement the LevelBits vector
 		for (int i = 0; i < m_vcLevelBits.size(); i++)
 		{
@@ -339,15 +493,17 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 			{
 				for (int j = 0; j < m_vEnemyPaths.size(); j++)
 				{
-					if (sf::Vector2i(m_vcLevelBits.at(i).size() - 1, i) == m_vEnemyPaths.at(j).first)
+					if (sf::Vector2i(m_vcLevelBits.at(i).size() - 1, i) == m_vEnemyPaths.at(j).position)
 					{
+						//If the enemy is removed delete the associated enemy path
 						m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
-						m_vEnemyCircles.erase(m_vEnemyCircles.begin() + j);
+						iSelectedEnemy = NULL;
 					}
 				}
 			}
 			m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
+		updatePathUI();
 
 		//For the objects the pointers are cleared at the end of each row.
 		for (int i = 0; i < m_vItems.size(); i++)
@@ -376,21 +532,6 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 			}
 			m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
 		}
-
-		for (int i = 0; i < m_vEnemyPaths.size(); i++)
-		{
-			if (selectedEnemy == m_vEnemyPaths.at(i).first)
-			{
-				for (int j = m_vEnemyPaths.at(i).second.size() - 1; j >= 0; j--)
-				{
-					if (m_vEnemyPaths.at(i).second.at(j).x >= m_CurrentMap->getGridDims().x)
-					{
-						m_vEnemyPaths.at(i).second.erase(m_vEnemyPaths.at(i).second.begin() + j);
-						m_vEnemyCircles.at(i).second.erase(m_vEnemyCircles.at(i).second.begin() + j);
-					}
-				}
-			}
-		}
 	}
 
 	//If the + Y Grid button is pressed
@@ -403,15 +544,19 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		//LevelBits
 		m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
 		m_vcLevelBits.at(m_vcLevelBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
+		
 		//Map objects
 		m_vItems.resize(m_CurrentMap->getGridDims().y);
 		m_vItems.at(m_vItems.size() - 1).resize(m_CurrentMap->getGridDims().x);
+
 		//FloorBits
 		m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
 		m_vcFloorBits.at(m_vcFloorBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
+		
 		//Floor objects
 		m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
 		m_vFloorTiles.at(m_vFloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
+		updatePathUI();
 	}
 
 	//If the - Y Grid button is pressed
@@ -420,24 +565,38 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		//Decrement the dimensions
 		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y - 1));
 
+		//Check if any path nodes are off the screen
+		for (int i = 0; i < m_vEnemyPaths.size(); i++)
+		{
+			for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
+			{
+				if (m_vEnemyPaths.at(i).path.at(j).y >= m_CurrentMap->getGridDims().y) //If they are
+				{
+					m_vEnemyPaths.at(i).path.erase(m_vEnemyPaths.at(i).path.begin() + j); //Erase them
+				}
+			}
+		}
+
+		//Decrement the LevelBits vector
 		for (int i = 0; i < m_vcLevelBits.at(m_vcLevelBits.size() - 1).size(); i++)
 		{
 			if (m_vcLevelBits.at(m_vcLevelBits.size() - 1).at(i) == 'E')
 			{
 				for (int j = 0; j < m_vEnemyPaths.size(); j++)
 				{
-					if (sf::Vector2i(i, m_vcLevelBits.size() - 1) == m_vEnemyPaths.at(j).first)
+					if (sf::Vector2i(i, m_vcLevelBits.size() - 1) == m_vEnemyPaths.at(j).position)
 					{
+						//If the enemy is removed delete the associated enemy path
 						m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
-						m_vEnemyCircles.erase(m_vEnemyCircles.begin() + j);
+						iSelectedEnemy = NULL;
 					}
 				}
 			}
 		}
+		updatePathUI();
 
 		//Decrement the levelBits vector
 		m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
-		m_vcLevelBits.at(m_vcLevelBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
 
 		//Clear the pointers of all objects on the bottom row and decrement the row
 		for (int i = 0; i < m_vItems.at(m_vItems.size() - 1).size(); i++)
@@ -449,12 +608,10 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 			}
 		}
 		m_vItems.resize(m_CurrentMap->getGridDims().y);
-		m_vItems.at(m_vItems.size() - 1).resize(m_CurrentMap->getGridDims().x);
 
 		//Decrement the floorBits vector
 		m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
-		m_vcFloorBits.at(m_vcFloorBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
-
+		
 		//Clear the pointers of all objects on the bottom row and decrement the row
 		for (int i = 0; i < m_vFloorTiles.at(m_vItems.size() - 1).size(); i++)
 		{
@@ -465,22 +622,6 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 			}
 		}
 		m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
-		m_vFloorTiles.at(m_vFloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
-
-		for (int i = 0; i < m_vEnemyPaths.size(); i++)
-		{
-			if (selectedEnemy == m_vEnemyPaths.at(i).first)
-			{
-				for (int j = m_vEnemyPaths.at(i).second.size() - 1; j >= 0; j--)
-				{
-					if (m_vEnemyPaths.at(i).second.at(j).y >= m_CurrentMap->getGridDims().y)
-					{
-						m_vEnemyPaths.at(i).second.erase(m_vEnemyPaths.at(i).second.begin() + j);
-						m_vEnemyCircles.at(i).second.erase(m_vEnemyCircles.at(i).second.begin() + j);
-					}
-				}
-			}
-		}
 	}
 	
 	//If the mouse is within the bounds of the grid
@@ -490,167 +631,59 @@ int Editor::clickLeft(sf::Vector2i mousePos)
 		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 	{
 		//Calculate the mouses position on the grid
-		sf::Vector2i gridPos(0,0);
-		gridPos.x = (mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x;
-		gridPos.y = (mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y;
+		sf::Vector2i gridPos((mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x,
+							 (mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y);
 
-		switch (m_Editing)
+		if (m_Editing == CharacterEdit)
 		{
-			case ObjectEdit:
-				//If the tool is valid
-				if (m_cCurrentTool == 'W' || m_cCurrentTool == 'P' || m_cCurrentTool == 'E' ||
-					m_cCurrentTool == 'D' || m_cCurrentTool == 'B' || m_cCurrentTool == ' ')
-				{
-					//If there is an item currently in that location clear the pointer
-					if (m_vItems.at(gridPos.y).at(gridPos.x) != NULL)
+			switch (m_cCurrentTool)
+			{
+				//Eraser
+				case ' ':
+					//Check each path node of the selected character
+					for (int j = 0; j < iSelectedEnemy->path.size(); j++)
 					{
-						delete(m_vItems.at(gridPos.y).at(gridPos.x));
-						m_vItems.at(gridPos.y).at(gridPos.x) = NULL;
-					}
-					//If the tool isnt an eraser create a new object
-					if (m_cCurrentTool != ' ')
-					{
-						m_vItems.at(gridPos.y).at(gridPos.x) = new Object();
-
-						//Give the object the following texture
-						switch (m_cCurrentTool)
+						if (iSelectedEnemy->path.at(j) == gridPos) //If clicked
 						{
-						case 'W':
-							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(0));
-							break;
-						case 'P':
-							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(1));
-							break;
-						case 'E':
-							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(2));
-							m_vEnemyPaths.push_back(std::pair<sf::Vector2i, std::vector<sf::Vector2i>>(gridPos, std::vector<sf::Vector2i>()));
-							m_vEnemyCircles.push_back(std::pair<sf::Vector2i, std::vector<sf::CircleShape>>(gridPos, std::vector < sf::CircleShape>()));
-							break;
-						case 'D':
-							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(24));
-							break;
-						case 'B':
-							m_vItems.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(30));
-							break;
+							//Remove the path node
+							iSelectedEnemy->path.erase(iSelectedEnemy->path.begin() + j);
+							updatePathUI();
+
+							//Stop searching
+							j = iSelectedEnemy->path.size();
 						}
 					}
-					else
+					break;
+
+				//Selector
+				case 'S':
+					//If the selected area has an enemy in it
+					if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
 					{
-						if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
-						{
-							for (int i = 0; i < m_vEnemyPaths.size(); i++)
-							{
-								if (gridPos == m_vEnemyPaths.at(i).first)
-								{
-									m_vEnemyPaths.erase(m_vEnemyPaths.begin() + i);
-								}
-							}
-						}
-					}
-
-					//Set the main map bit to the current tool letter
-					m_vcLevelBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
-				}
-			break;
-
-			case FloorEdit:
-				//If the tool is valid
-				if (m_cCurrentTool == 'G' || m_cCurrentTool == 'F' || m_cCurrentTool == 'K' ||
-					m_cCurrentTool == 'C' || m_cCurrentTool == 'B' || m_cCurrentTool == 'R' ||
-					m_cCurrentTool == ' ')
-				{
-					//Set the floor map bit to the current tool letter
-					m_vcFloorBits.at(gridPos.y).at(gridPos.x) = m_cCurrentTool;
-
-					//If there is an item currently in that location clear the pointer
-					if (m_vFloorTiles.at(gridPos.y).at(gridPos.x) != NULL)
-					{
-						delete(m_vFloorTiles.at(gridPos.y).at(gridPos.x));
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x) = NULL;
-					}
-
-					//If the tool isnt an eraser create a new object
-					if (m_cCurrentTool != ' ')
-					{
-						m_vFloorTiles.at(gridPos.y).at(gridPos.x) = new Object();
-
-						//Give the object the following texture
-						switch (m_cCurrentTool)
-						{
-						case 'G':
-							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(14));
-							break;
-						case 'F':
-							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(25));
-							break;
-						case 'K':
-							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(27));
-							break;
-						case 'C':
-							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(26));
-							break;
-						case 'B':
-							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(28));
-							break;
-						case 'R':
-							m_vFloorTiles.at(gridPos.y).at(gridPos.x)->setTexture(m_Textures->getTexture(29));
-							break;
-						}
-					}
-				}
-			break;
-
-			case CharacterEdit:
-				switch (m_cCurrentTool)
-				{
-					case ' ':
+						//Find the enemy path vector
 						for (int i = 0; i < m_vEnemyPaths.size(); i++)
 						{
-							if (selectedEnemy == m_vEnemyPaths.at(i).first)
+							if (gridPos == m_vEnemyPaths.at(i).position)
 							{
-								for (int j = m_vEnemyPaths.at(i).second.size() - 1; j >= 0; j--)
-								{
-									if (m_vEnemyPaths.at(i).second.at(j) == gridPos)
-									{
-										m_vEnemyPaths.at(i).second.erase(m_vEnemyPaths.at(i).second.begin() + j);
-										m_vEnemyCircles.at(i).second.erase(m_vEnemyCircles.at(i).second.begin() + j);
-										j = -1;
-									}
-								}
+								//Set it to be the selected enemy
+								iSelectedEnemy = &m_vEnemyPaths.at(i);
+								updatePathUI();
 							}
 						}
-						break;
+					}
+					break;
 
-					case 'S':
-						if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
-						{
-							selectedEnemy = gridPos;
-						}
-						break;
-
-					case 'P':
-						for (int i = 0; i < m_vEnemyPaths.size(); i++)
-						{	
-							if (selectedEnemy == m_vEnemyPaths.at(i).first)
-							{
-								m_vEnemyPaths.at(i).second.push_back(gridPos);
-							}
-						}
-						for (int i = 0; i < m_vEnemyCircles.size(); i++)
-						{
-							if (selectedEnemy == m_vEnemyCircles.at(i).first)
-							{
-								sf::CircleShape newPoint;
-								newPoint.setFillColor(sf::Color::Red);
-								newPoint.setRadius(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) / 5.0f);
-								newPoint.setOrigin(newPoint.getRadius(), newPoint.getRadius());
-								newPoint.setPosition(m_CurrentMap->getPosition() + sf::Vector2f(gridPos.x * m_CurrentMap->getTileSize().x, gridPos.y * m_CurrentMap->getTileSize().y)+ (m_CurrentMap->getTileSize() / 2.0f));
-								m_vEnemyCircles.at(i).second.push_back(newPoint);
-							}
-						}
-						break;
-				}
-			break;
+				//Path node placement
+				case 'P':
+					//If there is a selected enemy
+					if (iSelectedEnemy != NULL)
+					{
+						//Add a path node
+						iSelectedEnemy->path.push_back(gridPos);
+						updatePathUI();
+					}
+					break;
+			}
 		}
 	}
 	
@@ -737,11 +770,12 @@ void Editor::saveMap()
 	File1.open("Assets/Maps/CustomMap.txt", std::ios::out);
 	for (int i = 0; i < m_vcLevelBits.size(); i++)
 	{
+		//For bits in row write bits
 		for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
 		{
 			File1 << m_vcLevelBits.at(i).at(j);
 		}
-		//Creates a new row of bits
+		//If not the last row add a new row
 		if (i != m_vcLevelBits.size() - 1)
 		{
 			File1 << "\n";
@@ -753,11 +787,12 @@ void Editor::saveMap()
 	File1.open("Assets/Maps/CustomMapFloor.txt", std::ios::out);
 	for (int i = 0; i < m_vcFloorBits.size(); i++)
 	{
+		//For bits in row write bits
 		for (int j = 0; j < m_vcFloorBits.at(i).size(); j++)
 		{
 			File1 << m_vcFloorBits.at(i).at(j);
 		}
-		//Creates a new row of bits
+		//If not the last row add a new row
 		if (i != m_vcFloorBits.size() - 1)
 		{
 			File1 << "\n";
@@ -765,27 +800,34 @@ void Editor::saveMap()
 	}
 	File1.close();
 
-	//Saves the floor map 
+	//Saves the paths
 	File1.open("Assets/Maps/CustomMapPaths.txt", std::ios::out);
-	int enemiesSaved = 0;
+	int iEnemiesSaved = 0;
+
+	//Look for enemies within the map
 	for (int i = 0; i < m_vcLevelBits.size(); i++)
 	{
 		for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
 		{
-			if (m_vcLevelBits.at(i).at(j) == 'E')
+			if (m_vcLevelBits.at(i).at(j) == 'E') //If an enemy is found
 			{
+				//Find its path
 				for (int k = 0; k < m_vEnemyPaths.size(); k++)
 				{
-					if (sf::Vector2i(j, i) == m_vEnemyPaths.at(k).first)
+					if (sf::Vector2i(j, i) == m_vEnemyPaths.at(k).position)
 					{
+						//Add its path to the file preceding its index
 						File1 << std::to_string(k) + ":";
-						for (int l = 0; l < m_vEnemyPaths.at(k).second.size(); l++)
+						for (int l = 0; l < m_vEnemyPaths.at(k).path.size(); l++)
 						{
-							int iPathPos = (m_vEnemyPaths.at(k).second.at(l).y * m_CurrentMap->getGridDims().x) + m_vEnemyPaths.at(k).second.at(l).x;
+							int iPathPos = (m_vEnemyPaths.at(k).path.at(l).y * m_CurrentMap->getGridDims().x) + m_vEnemyPaths.at(k).path.at(l).x;
 							File1 << " " + std::to_string(iPathPos);
 						}
-						enemiesSaved++;
-						if (enemiesSaved != m_vEnemyPaths.size())
+
+						iEnemiesSaved++; //Increment enemies saved
+						
+						//If more enemies exist add a new row
+						if (iEnemiesSaved != m_vEnemyPaths.size()) 
 						{
 							File1 << "\n";
 						}
@@ -795,17 +837,181 @@ void Editor::saveMap()
 		}
 	}
 	File1.close();
+}
+
+void Editor::loadMap(std::string sDir)
+{
+	EnemyData newEnemy;
+
+	//Clear the floor data
+	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	{
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
+		{
+			if (m_vFloorTiles.at(i).at(j) != NULL)
+			{
+				delete(m_vFloorTiles.at(i).at(j));
+				m_vFloorTiles.at(i).at(j) = NULL;
+			}
+		}
+	}
+
+	//Clear the item data
+	for (int i = 0; i < m_vItems.size(); i++)
+	{
+		for (int j = 0; j < m_vItems.at(i).size(); j++)
+		{
+			if (m_vItems.at(i).at(j) != NULL)
+			{
+				delete(m_vItems.at(i).at(j));
+				m_vItems.at(i).at(j) = NULL;
+			}
+		}
+	}
+
+	//Load the object map
+	m_CurrentMap->load(ObjectMap, "./Assets/Maps/CustomMap.txt");
+	m_vcLevelBits = m_CurrentMap->getMapData();
+
+	//Check each level bit and fill in the item vector with the correct objecta
+	m_vItems.resize(m_vcLevelBits.size());
+	for (int i = 0; i < m_vcLevelBits.size(); i++)
+	{
+		m_vItems.at(i).resize(m_vcLevelBits.at(i).size());
+		for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+		{
+			if (m_vcLevelBits.at(i).at(j) == 'W' || m_vcLevelBits.at(i).at(j) == 'P' || m_vcLevelBits.at(i).at(j) == 'E' ||
+				m_vcLevelBits.at(i).at(j) == 'D' || m_vcLevelBits.at(i).at(j) == 'B')
+			{
+
+				m_vItems.at(i).at(j) = new Object();
+				switch (m_vcLevelBits.at(i).at(j))
+				{
+				case 'W':
+					m_vItems.at(i).at(j)->setTexture(m_Textures->getTexture(0));
+					break;
+				case 'P':
+					m_vItems.at(i).at(j)->setTexture(m_Textures->getTexture(1));
+					break;
+				case 'E':
+					m_vItems.at(i).at(j)->setTexture(m_Textures->getTexture(2));
+					//newEnemy.position = sf::Vector2i(j, i);
+					//m_vEnemyPaths.push_back(newEnemy);
+					break;
+				case 'D':
+					m_vItems.at(i).at(j)->setTexture(m_Textures->getTexture(24));
+					break;
+				case 'B':
+					m_vItems.at(i).at(j)->setTexture(m_Textures->getTexture(30));
+					break;
+				}
+			}
+		}
+	}
+
+	//Load the floor map
+	m_CurrentMap->load(FloorMap, "./Assets/Maps/CustomMapFloor.txt");
+	m_vcFloorBits = m_CurrentMap->getFloorData();
+
+	//Check each floor bit and fill in the floor vector with the correct objecta
+	m_vFloorTiles.resize(m_vcFloorBits.size());
+	for (int i = 0; i < m_vcFloorBits.size(); i++)
+	{
+		m_vFloorTiles.at(i).resize(m_vcFloorBits.at(i).size());
+		for (int j = 0; j < m_vcFloorBits.at(i).size(); j++)
+		{
+			if (m_vcFloorBits.at(i).at(j) == 'G' || m_vcFloorBits.at(i).at(j) == 'F' || m_vcFloorBits.at(i).at(j) == 'K' ||
+				m_vcFloorBits.at(i).at(j) == 'C' || m_vcFloorBits.at(i).at(j) == 'B' || m_vcFloorBits.at(i).at(j) == 'R' )
+			{
+				m_vFloorTiles.at(i).at(j) = new Object();
+				switch (m_vcFloorBits.at(i).at(j))
+				{
+				case 'G':
+					m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(14));
+					break;			 	   
+				case 'F':			 	   
+					m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(25));
+					break;			 	   
+				case 'K':			 	   
+					m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(27));
+					break;			 	   
+				case 'C':			 	  
+					m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(26));
+					break;			 	   
+				case 'B':			 	   
+					m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(28));
+					break;			 	   
+				case 'R':			 	   
+					m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(29));
+					break;
+				}
+			}
+		}
+	}
+	
+	//Loads paths for enemies
+	std::ifstream pathFile;
+	pathFile.open("Assets/Maps/CustomMapPaths.txt"); //Open the map file
+
+	if (pathFile.is_open()) //If the file opened correctly
+	{
+		//Initialise reading variables
+		std::string sLine;
+		std::string sCurrentNum;
+
+		for (int i = 0; i < m_vcLevelBits.size(); i++)
+		{
+			for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+			{
+				if (m_vcLevelBits.at(i).at(j) == 'E')
+				{
+					if (!pathFile.eof())
+					{
+						getline(pathFile, sLine); //Get the next line
+
+						if (sLine != "")
+						{
+							m_vEnemyPaths.push_back(EnemyData()); //Add a new enemy
+							m_vEnemyPaths.at(m_vEnemyPaths.size() - 1).position = sf::Vector2i(j, i); //Set the grid position
+
+							std::istringstream sNum(sLine);
+
+							sNum >> sCurrentNum; //Read the index
+							while (!sNum.eof())
+							{
+								sNum >> sCurrentNum; //Read the number
+
+								//Translate it to x y grid cooridinates
+								sf::Vector2i gridPos((((stoi(sCurrentNum) % (int)m_CurrentMap->getGridDims().x))),
+									(((stoi(sCurrentNum) / (int)m_CurrentMap->getGridDims().x))));
+								
+								//Push it to the path vector
+								m_vEnemyPaths.at(m_vEnemyPaths.size() - 1).path.push_back(gridPos);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		//Ouptut an error
+		std::cout << "Path File: " << sDir << " could not be opened." << "\n";
+	}
+
+	pathFile.close();
 	
 }
 
 void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	if (m_CurrentSettings->debugActive())
-	{
-		target.draw(*m_CurrentMap);
-	}
+	//Draw the grid
+	target.draw(*m_CurrentMap);
+	
 	target.draw(m_Sidebar);
 
+	//Floor Items
 	for (int i = 0; i < m_vFloorTiles.size(); i++)
 	{
 		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
@@ -817,6 +1023,7 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		}
 	}
 
+	//Draw main items
 	for (int i = 0; i < m_vItems.size(); i++)
 	{
 		for (int j = 0; j < m_vItems.at(i).size(); j++)
@@ -828,22 +1035,18 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		}
 	}
 
+	//Draw path editing tools
 	if (m_Editing == CharacterEdit)
 	{
 		target.draw(Selector);
 		target.draw(PathLine);
 		for (int i = 0; i < m_vEnemyCircles.size(); i++)
 		{
-			if (selectedEnemy == m_vEnemyCircles.at(i).first)
-			{
-				for (int j = 0; j < m_vEnemyCircles.at(i).second.size(); j++)
-				{
-					target.draw(m_vEnemyCircles.at(i).second.at(j));
-				}
-			}
+			target.draw(m_vEnemyCircles.at(i));
 		}
 	}
 
+	//Buttons
 	for (int i = 0; i < m_vGridButtons.size(); i++)
 	{
 		target.draw(*m_vGridButtons.at(i));
@@ -861,11 +1064,13 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(*m_vFloorButtons.at(i));
 	}
 
+	//Button text
 	for (int i = 0; i < m_vUIText.size(); i++)
 	{
 		target.draw(m_vUIText.at(i));
 	}
 
+	//Toolbar + Toolbar buttons
 	target.draw(m_Toolbar);
 	target.draw(*m_ExitButton);
 	target.draw(*m_SaveButton);
@@ -922,4 +1127,6 @@ Editor::~Editor()
 
 	delete(m_SaveButton);
 	m_SaveButton = NULL;
+
+	iSelectedEnemy = NULL;
 }

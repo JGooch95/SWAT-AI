@@ -28,6 +28,16 @@ void AStar::setupLists()
 	m_vOpenList.clear();
 	m_Path.clear();
 
+	//Resets Grid data
+	for (int i = 0; i < m_vGrid.size(); i++)
+	{
+		m_vGrid.at(i).parent = NULL;
+		m_vGrid.at(i).h = 0;
+		m_vGrid.at(i).f = 0;
+		m_vGrid.at(i).g = 0;
+	}
+
+	//Adds all invalid map nodes to the closed list
 	for (int i = 0; i < m_CurrentMap->getMapData().size(); i++)
 	{
 		for (int j = 0; j < m_CurrentMap->getMapData().at(i).size(); j++)
@@ -37,14 +47,6 @@ void AStar::setupLists()
 				m_vClosedList.push_back(&m_vGrid.at((i*m_CurrentMap->getGridDims().x) + j));
 			}
 		}
-	}
-
-	for (int i = 0; i < m_vGrid.size(); i++)
-	{
-		m_vGrid.at(i).parent = NULL;
-		m_vGrid.at(i).h = 0;
-		m_vGrid.at(i).f = 0;
-		m_vGrid.at(i).g = 0;
 	}
 }
 
@@ -61,9 +63,11 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 	int iEndTile = iXTile +  ((int)m_CurrentMap->getGridDims().x * iYTile);
 
 	m_bEndWall = false;
+	m_bPathFound = false;
 
 	int iCurrentTile = iStartTile; //Holds the tile being checked
 
+	//If the path isnt the same location, off the grid or within an invlid area
 	if (iStartTile != iEndTile && iStartTile < m_vGrid.size() && iEndTile < m_vGrid.size() && validVacinity(iEndTile))
 	{
 		//Checks that the end tile isn't on the closed list
@@ -126,14 +130,14 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 		//If the current node isn't the start node
 		if (CurrentNode->index != iStartTile)
 		{
-			//Loop tace back through the parents to find the path
+			//Loop trace back through the parents to find the path
 			do{
 				CurrentNode = CurrentNode->parent;
 				m_Path.push_front(CurrentNode);
 			} while (CurrentNode->parent != NULL);
 		}
 	}
-	m_bPathFound = false;
+
 	return m_Path;
 }
 

@@ -9,6 +9,30 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{b58fe358-15c3-4006-a8cd-a6073538b44d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{3e2e40bc-319b-4293-8f78-f29560e3690c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game States">
+      <UniqueIdentifier>{a0be9e70-3394-4a72-81bd-e9d0cb5b8156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game States">
+      <UniqueIdentifier>{b3058544-c8f0-43ef-ad16-000819f10527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Asset Management">
+      <UniqueIdentifier>{180bf9ed-28a5-4b89-8978-e46e37d9b56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Asset Management">
+      <UniqueIdentifier>{23447f5b-a282-405f-a633-164845d5ff34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{b820e29f-6d4f-4b67-ac6e-6db43b76cc37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{efef5e80-9f65-4f05-b3a6-4de9e6796263}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -18,96 +42,66 @@
     <ClInclude Include="include\AStar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Bar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Collidable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Entrance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\FontManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\HUDWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\MathUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Menu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SoundWave.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TextureLoader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\Bar.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="include\Weapon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Options.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\Button.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="include\Slider.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HUDWindow.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game.h">
+      <Filter>Header Files\Game States</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Menu.h">
+      <Filter>Header Files\Game States</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Options.h">
+      <Filter>Header Files\Game States</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Editor.h">
+      <Filter>Header Files\Game States</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FontManager.h">
+      <Filter>Header Files\Asset Management</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SoundManager.h">
+      <Filter>Header Files\Asset Management</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TextureLoader.h">
+      <Filter>Header Files\Asset Management</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Character.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Entrance.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Weapon.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AStar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collidable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Entrance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FontManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\HUDWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -116,32 +110,56 @@
     <ClCompile Include="src\Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SoundManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\soundWave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextureLoader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Bar.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Weapon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Options.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\HUDWindow.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="src\Slider.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Button.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor.cpp">
+      <Filter>Source Files\Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Menu.cpp">
+      <Filter>Source Files\Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>Source Files\Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Options.cpp">
+      <Filter>Source Files\Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FontManager.cpp">
+      <Filter>Source Files\Asset Management</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoundManager.cpp">
+      <Filter>Source Files\Asset Management</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureLoader.cpp">
+      <Filter>Source Files\Asset Management</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Character.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entrance.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Weapon.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
