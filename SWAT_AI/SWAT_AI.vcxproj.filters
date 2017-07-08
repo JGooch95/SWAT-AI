@@ -99,6 +99,9 @@
     <ClInclude Include="include\WaveEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Throwable.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AStar.cpp">
@@ -160,6 +163,9 @@
     </ClCompile>
     <ClCompile Include="src\WaveEffect.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Throwable.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

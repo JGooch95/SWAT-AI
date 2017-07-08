@@ -309,6 +309,34 @@ void Game::update(sf::Vector2i mousePos)
 		}
 	}
 
+	for (int i = 0; i < m_vThrowables.size(); i++)
+	{
+		m_vThrowables.at(i)->update(mousePos);
+		if (m_vThrowables.at(i)->isDone())
+		{
+			switch (m_vThrowables.at(i)->getType())
+			{
+				case Grenade:
+					m_vWaves.push_back(new WaveEffect(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) * 2, 10, 0.5, sf::Vector2f(m_vThrowables.at(i)->getPosition()), Explosion));
+					m_vWaves.push_back(new WaveEffect(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) * 10, 10, 0.5, sf::Vector2f(m_vThrowables.at(i)->getPosition()), Sound));
+					break;
+
+				case Flashbang:
+					m_vWaves.push_back(new WaveEffect(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) * 3, 10, 0.5, sf::Vector2f(m_vThrowables.at(i)->getPosition()), Flash));
+					m_vWaves.push_back(new WaveEffect(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) * 5, 10, 0.5, sf::Vector2f(m_vThrowables.at(i)->getPosition()), Sound));
+					break;
+
+				case Rock:
+					m_vWaves.push_back(new WaveEffect(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y) * 3, 10, 0.5, sf::Vector2f(m_vThrowables.at(i)->getPosition()), Sound));
+					break;
+			}
+
+			delete  m_vThrowables.at(i);
+			m_vThrowables.at(i) = NULL;
+			m_vThrowables.erase(m_vThrowables.begin() + i);
+		}
+	}
+
 	//Clears the temp edge data
 	m_CurrentMap->clearEdges(&m_CurrentMap->m_vTempEdges);
 	m_CurrentMap->clearCorners(&m_CurrentMap->m_vTempCorners);
@@ -540,19 +568,35 @@ int Game::clickLeft(sf::Vector2i mousePos)
 		}
 	}
 
-	if (mousePos.x > m_CurrentMap->getPosition().x &&
-		mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
-		mousePos.y > m_CurrentMap->getPosition().y &&
-		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
-	{
-		 m_vWaves.push_back(new WaveEffect(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y )* 2, 10, 0.5, sf::Vector2f(mousePos), Explosion));
-	}
-
 	//If the exit button is pressed return to the menu
 	if (exitButton->hovering(mousePos))
 	{
 		return 1;
 	}
+	return 0;
+}
+
+int Game::processInput(sf::Event::KeyEvent keyCode, sf::Vector2i mousePos)
+{
+	if (mousePos.x > m_CurrentMap->getPosition().x &&
+		mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+		mousePos.y > m_CurrentMap->getPosition().y &&
+		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
+	{
+		switch (keyCode.code)
+		{
+			case sf::Keyboard::R:
+				m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+				break;
+			case sf::Keyboard::G:
+				m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+				break;
+			case sf::Keyboard::F:
+				m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+				break;
+		}
+	}
+			
 	return 0;
 }
 
@@ -849,6 +893,11 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(* m_vWaves.at(i));
 	}
 
+	for (int i = 0; i < m_vThrowables.size(); i++)
+	{
+		target.draw(*m_vThrowables.at(i));
+	}
+
 	if (m_CurrentSettings->debugActive())
 	{
 		//Draws the edges of the walls
@@ -938,6 +987,15 @@ Game::~Game()
 
 	delete(exitButton);
 	exitButton = NULL;
+
+	for (int i = 0; i < m_vThrowables.size(); i++)
+	{
+		if (m_vThrowables.at(i) != NULL)
+		{
+			delete m_vThrowables.at(i);
+			m_vThrowables.at(i) = NULL;
+		}
+	}
 
 	for (int i = 0; i < m_vWaves.size(); i++)
 	{

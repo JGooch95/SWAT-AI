@@ -12,6 +12,7 @@
 #include "Settings.h"
 #include "HUDWindow.h"
 #include "WaveEffect.h"
+#include "Throwable.h"
 
 /// \brief The main game screen
 class Game : public sf::Drawable
@@ -35,13 +36,16 @@ class Game : public sf::Drawable
 		std::vector<Object*> m_vWalls; //!< Holds the walls
 		std::vector<Entrance*> m_vDoors; //!< Holds the doors
 		std::vector<Object*> m_Background;
-		
+
+		std::vector<Throwable*> m_vThrowables; //Any thrown objects
+		std::vector<WaveEffect*> m_vWaves;
+
+
 		Button* exitButton; //!< Holds the button which exits to the menu
 
 		//DEBUGGING LINES
 		sf::VertexArray m_EdgeLines; //!< Holds the debug lines for the edges of walls
 
-		std::vector<WaveEffect*> m_vWaves;
 		/// \brief Draws all of the game's entities to the screen.
 		/// \param target Holds where to draw the entities to.		   
 		///	\param states 
@@ -64,7 +68,9 @@ class Game : public sf::Drawable
 		/// \brief Processes left click
 		/// \param mousePos The position of the mouse
 		/// \return Retuns an action if required
-		int clickLeft(sf::Vector2i mousePos); 
+		int clickLeft (sf::Vector2i mousePos);
+
+		int processInput(sf::Event::KeyEvent keyCode, sf::Vector2i mousePos);
 
 		/// \brief Processes right click
 		/// \param mousePos The position of the mouse

@@ -60,7 +60,10 @@ int main()
 		"Assets/Sprites/Save.png",						//31
 		"Assets/Sprites/Dead.png",						//32
 		"Assets/Sprites/Select.png",					//33
-		"Assets/Sprites/PathMaker.png"					//34
+		"Assets/Sprites/PathMaker.png",					//34
+		"Assets/Sprites/Grenade.png",					//35
+		"Assets/Sprites/Flashbang.png",					//36
+		"Assets/Sprites/Rock.png"						//37
 	});
 
 	//Loads the sounds
@@ -94,6 +97,7 @@ int main()
 	Map* m_CurrentMap = NULL;
 
 	const float kfTargetFPS = 60; //Holds the target frames per second
+	mainWindow.setKeyRepeatEnabled(false);
 
 	//Main Loop
 	while (mainWindow.isOpen())
@@ -108,6 +112,10 @@ int main()
 			}
 			if (event.type == sf::Event::KeyPressed)
 			{
+				if (Game1 != NULL)
+				{
+					Game1->processInput(event.key, sf::Mouse::getPosition(mainWindow));
+				}
 				if (event.key.code == sf::Keyboard::D)
 				{
 					//Toggles Debug mode if the settings have been initialised

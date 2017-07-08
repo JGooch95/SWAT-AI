@@ -172,6 +172,7 @@
     <ClInclude Include="include\Settings.h" />
     <ClInclude Include="include\Slider.h" />
     <ClInclude Include="include\SoundManager.h" />
+    <ClInclude Include="include\Throwable.h" />
     <ClInclude Include="include\WaveEffect.h" />
     <ClInclude Include="include\TextureLoader.h" />
     <ClInclude Include="include\Weapon.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\Slider.cpp" />
     <ClCompile Include="src\SoundManager.cpp" />
+    <ClCompile Include="src\Throwable.cpp" />
     <ClCompile Include="src\WaveEffect.cpp" />
     <ClCompile Include="src\TextureLoader.cpp" />
     <ClCompile Include="src\Weapon.cpp" />
