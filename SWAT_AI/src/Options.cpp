@@ -152,23 +152,34 @@ void Options::update(sf::Vector2i mousePos)
 	}
 }
 
-int Options::clickLeft(sf::Vector2i mousePos)
+int Options::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 {
-	//Checks if the buttons have been clicked
-	for (int i = 0; i < m_vButtons.size(); i++)
+	if (keyCode.type == sf::Event::MouseButtonPressed)
 	{
-		if (m_vButtons.at(i)->hovering(mousePos))
+		switch (keyCode.key.code)
 		{
-			if (i == 1) //If Accept is clicked
-			{
-				//Set the new values
-				m_CurrentSettings->setResolution(resolutionList.at(m_vSliders.at(0)->getLevel()));
-				m_CurrentSettings->setVolume(m_vSliders.at(1)->getLevel());
-			}
-			return i + 1;
+			case sf::Mouse::Left:
+				//Checks if the buttons have been clicked
+				for (int i = 0; i < m_vButtons.size(); i++)
+				{
+					if (m_vButtons.at(i)->hovering(mousePos))
+					{
+						if (i == 1) //If Accept is clicked
+						{
+							//Set the new values
+							m_CurrentSettings->setResolution(resolutionList.at(m_vSliders.at(0)->getLevel()));
+							m_CurrentSettings->setVolume(m_vSliders.at(1)->getLevel());
+							m_CurrentSettings->save("./Assets/Options/settings.txt");
+							m_CurrentSettings->updateWindow(true);
+						}
+						return S_Menu;
+					}
+				}
+				break;
 		}
 	}
-	return 0;
+
+	return S_None;
 }
 
 void Options::loadResolutionList(std::string sDir)

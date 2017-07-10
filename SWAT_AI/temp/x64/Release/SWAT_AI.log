@@ -1,7 +1,69 @@
-﻿  Throwable.cpp
+﻿  Editor.cpp
+src\Editor.cpp(14): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(18): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(40): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(42): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Editor.cpp(104): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(107): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(111): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(114): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(119): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(122): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(133): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(136): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(312): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\Editor.cpp(313): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+src\Editor.cpp(463): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(464): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(470): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(471): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(485): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+src\Editor.cpp(501): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+src\Editor.cpp(509): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(521): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(527): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(538): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(550): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(551): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(554): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(555): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(558): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(559): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(562): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(563): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(576): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+src\Editor.cpp(592): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+src\Editor.cpp(604): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(615): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(618): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(629): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+src\Editor.cpp(640): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\Editor.cpp(658): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+src\Editor.cpp(831): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Game.cpp
+src\Game.cpp(8): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(16): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(232): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(235): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+src\Game.cpp(407): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  Menu.cpp
+src\Menu.cpp(9): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Options.cpp
+src\Options.cpp(12): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+src\Options.cpp(51): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Options.cpp(59): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Options.cpp(63): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Options.cpp(69): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+src\Options.cpp(72): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+src\Options.cpp(115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+src\Options.cpp(123): warning C4552: '/': operator has no effect; expected operator with side-effect
+src\Options.cpp(171): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+src\Options.cpp(209): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+src\Options.cpp(213): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+src\Options.cpp(225): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   Generating code
-  67 of 3255 functions ( 2.1%) were compiled, the rest were copied from previous compilation.
+  70 of 3263 functions ( 2.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    13 functions had inline decision re-evaluated but remain unchanged
+    84 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  SWAT_AI.vcxproj -> C:\Users\Jonny Gooch\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.exe
+  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.exe

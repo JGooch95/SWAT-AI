@@ -9,16 +9,13 @@
 #include "FontManager.h"
 #include "Object.h"
 #include "Button.h"
+#include "ContentScreen.h"
 
 
 /// \brief The menu screen
-class Menu : public sf::Drawable
+class Menu : public ContentScreen
 {
 	private:
-		//RESOURCES
-		TextureLoader* m_Textures; //!< Contains all textures used in the game
-		FontManager* m_Fonts; //!< Holds the location to all of the fonts
-
 		sf::Text m_TitleText; //!< Holds the title
 		sf::RectangleShape m_Background; //!< Background for the overall screen
 		sf::RectangleShape m_ContentBox; //!< Background for the content
@@ -38,10 +35,7 @@ class Menu : public sf::Drawable
 		/// \param mousePos The position of the mouse
 		void update(sf::Vector2i mousePos);
 
-		/// \brief Processes left click
-		/// \param mousePos The position of the mouse
-		/// \return Retuns an action if required
-		int clickLeft(sf::Vector2i mousePos);
+		int processInput(sf::Event keyCode, sf::Vector2i mousePos);
 
 		/// \brief Default deconstructor
 		~Menu();

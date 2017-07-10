@@ -431,336 +431,344 @@ void Editor::update(sf::Vector2i mousePos)
 	}
 }
 
-int Editor::clickLeft(sf::Vector2i mousePos)
+int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 {
-	//If the exit button is clicked return to the menu
-	if (m_ExitButton->hovering(mousePos))
+	if (keyCode.type == sf::Event::MouseButtonPressed)
 	{
-		m_CurrentSettings->setDebug(false);
-		return 1;
-	}
-
-	//If the save button is clicked save the game
-	if (m_SaveButton->hovering(mousePos))
-	{
-		saveMap();
-	}
-	
-	//If the + X Grid button is pressed
-	if (m_vGridButtons.at(0)->hovering(mousePos))
-	{
-		//Increment the dimensions
-		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x+1, m_CurrentMap->getGridDims().y));
-
-		//Increment every row of the map by adding a new item
-		for (int i = 0; i < m_vcLevelBits.size(); i++)
+		switch (keyCode.key.code)
 		{
-			m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
-			m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-
-		//Increment every row of the floor map by adding a new item
-		for (int i = 0; i < m_vcFloorBits.size(); i++)
-		{
-			m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
-			m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-		updatePathUI();
-	}
-
-	//If the - X Grid button is pressed
-	if (m_vGridButtons.at(1)->hovering(mousePos))
-	{
-		//Decrement the dimensions
-		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x -1, m_CurrentMap->getGridDims().y));
-
-		//Check if any path nodes are off the screen
-		for (int i = 0; i < m_vEnemyPaths.size(); i++)
-		{
-			for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
+		case sf::Mouse::Left:
+			//If the exit button is clicked return to the menu
+			if (m_ExitButton->hovering(mousePos))
 			{
-				if (m_vEnemyPaths.at(i).path.at(j).x >= m_CurrentMap->getGridDims().x)  //If they are
-				{
-					m_vEnemyPaths.at(i).path.erase(m_vEnemyPaths.at(i).path.begin() + j); //Erase them
-				}
+				m_CurrentSettings->setDebug(false);
+				return S_Menu;
 			}
-		}
 
-		//Decrement the LevelBits vector
-		for (int i = 0; i < m_vcLevelBits.size(); i++)
-		{
-			if (m_vcLevelBits.at(i).at(m_vcLevelBits.at(i).size() - 1) == 'E')
+			//If the save button is clicked save the game
+			if (m_SaveButton->hovering(mousePos))
 			{
-				for (int j = 0; j < m_vEnemyPaths.size(); j++)
+				saveMap();
+			}
+
+			//If the + X Grid button is pressed
+			if (m_vGridButtons.at(0)->hovering(mousePos))
+			{
+				//Increment the dimensions
+				m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x + 1, m_CurrentMap->getGridDims().y));
+
+				//Increment every row of the map by adding a new item
+				for (int i = 0; i < m_vcLevelBits.size(); i++)
 				{
-					if (sf::Vector2i(m_vcLevelBits.at(i).size() - 1, i) == m_vEnemyPaths.at(j).position)
+					m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
+					m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
+				}
+
+				//Increment every row of the floor map by adding a new item
+				for (int i = 0; i < m_vcFloorBits.size(); i++)
+				{
+					m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
+					m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
+				}
+				updatePathUI();
+			}
+
+			//If the - X Grid button is pressed
+			if (m_vGridButtons.at(1)->hovering(mousePos))
+			{
+				//Decrement the dimensions
+				m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x - 1, m_CurrentMap->getGridDims().y));
+
+				//Check if any path nodes are off the screen
+				for (int i = 0; i < m_vEnemyPaths.size(); i++)
+				{
+					for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
 					{
-						//If the enemy is removed delete the associated enemy path
-						m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
-						iSelectedEnemy = NULL;
-					}
-				}
-			}
-			m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-		updatePathUI();
-
-		//For the objects the pointers are cleared at the end of each row.
-		for (int i = 0; i < m_vItems.size(); i++)
-		{
-			if (m_vItems.at(i).at(m_vItems.at(i).size() - 1) != NULL)
-			{
-				delete(m_vItems.at(i).at(m_vItems.at(i).size() - 1));
-				m_vItems.at(i).at(m_vItems.at(i).size()-1) = NULL;
-			}
-			m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-
-		//Decrement the FloorBits vector
-		for (int i = 0; i < m_vcFloorBits.size(); i++)
-		{
-			m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-
-		//For the objects the pointers are cleared at the end of each row.
-		for (int i = 0; i < m_vFloorTiles.size(); i++)
-		{
-			if (m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1) != NULL)
-			{
-				delete(m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1));
-				m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1) = NULL;
-			}
-			m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
-		}
-	}
-
-	//If the + Y Grid button is pressed
-	if (m_vGridButtons.at(2)->hovering(mousePos))
-	{
-		//Increment the dimensions
-		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y+1));
-
-		//A new row is added to each vector
-		//LevelBits
-		m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
-		m_vcLevelBits.at(m_vcLevelBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
-		
-		//Map objects
-		m_vItems.resize(m_CurrentMap->getGridDims().y);
-		m_vItems.at(m_vItems.size() - 1).resize(m_CurrentMap->getGridDims().x);
-
-		//FloorBits
-		m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
-		m_vcFloorBits.at(m_vcFloorBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
-		
-		//Floor objects
-		m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
-		m_vFloorTiles.at(m_vFloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
-		updatePathUI();
-	}
-
-	//If the - Y Grid button is pressed
-	if (m_vGridButtons.at(3)->hovering(mousePos))
-	{
-		//Decrement the dimensions
-		m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y - 1));
-
-		//Check if any path nodes are off the screen
-		for (int i = 0; i < m_vEnemyPaths.size(); i++)
-		{
-			for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
-			{
-				if (m_vEnemyPaths.at(i).path.at(j).y >= m_CurrentMap->getGridDims().y) //If they are
-				{
-					m_vEnemyPaths.at(i).path.erase(m_vEnemyPaths.at(i).path.begin() + j); //Erase them
-				}
-			}
-		}
-
-		//Decrement the LevelBits vector
-		for (int i = 0; i < m_vcLevelBits.at(m_vcLevelBits.size() - 1).size(); i++)
-		{
-			if (m_vcLevelBits.at(m_vcLevelBits.size() - 1).at(i) == 'E')
-			{
-				for (int j = 0; j < m_vEnemyPaths.size(); j++)
-				{
-					if (sf::Vector2i(i, m_vcLevelBits.size() - 1) == m_vEnemyPaths.at(j).position)
-					{
-						//If the enemy is removed delete the associated enemy path
-						m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
-						iSelectedEnemy = NULL;
-					}
-				}
-			}
-		}
-		updatePathUI();
-
-		//Decrement the levelBits vector
-		m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
-
-		//Clear the pointers of all objects on the bottom row and decrement the row
-		for (int i = 0; i < m_vItems.at(m_vItems.size() - 1).size(); i++)
-		{
-			if (m_vItems.at(m_vItems.size()-1).at(i) != NULL)
-			{
-				delete(m_vItems.at(m_vItems.size()-1).at(i));
-				m_vItems.at(m_vItems.size()-1).at(i) = NULL;
-			}
-		}
-		m_vItems.resize(m_CurrentMap->getGridDims().y);
-
-		//Decrement the floorBits vector
-		m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
-		
-		//Clear the pointers of all objects on the bottom row and decrement the row
-		for (int i = 0; i < m_vFloorTiles.at(m_vItems.size() - 1).size(); i++)
-		{
-			if (m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i) != NULL)
-			{
-				delete(m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i));
-				m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i) = NULL;
-			}
-		}
-		m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
-	}
-	
-	//If the mouse is within the bounds of the grid
-	if (mousePos.x > m_CurrentMap->getPosition().x &&
-		mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
-		mousePos.y > m_CurrentMap->getPosition().y &&
-		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
-	{
-		//Calculate the mouses position on the grid
-		sf::Vector2i gridPos((mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x,
-							 (mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y);
-
-		if (m_Editing == CharacterEdit)
-		{
-			switch (m_cCurrentTool)
-			{
-				//Eraser
-				case ' ':
-					//Check each path node of the selected character
-					for (int j = 0; j < iSelectedEnemy->path.size(); j++)
-					{
-						if (iSelectedEnemy->path.at(j) == gridPos) //If clicked
+						if (m_vEnemyPaths.at(i).path.at(j).x >= m_CurrentMap->getGridDims().x)  //If they are
 						{
-							//Remove the path node
-							iSelectedEnemy->path.erase(iSelectedEnemy->path.begin() + j);
-							updatePathUI();
-
-							//Stop searching
-							j = iSelectedEnemy->path.size();
+							m_vEnemyPaths.at(i).path.erase(m_vEnemyPaths.at(i).path.begin() + j); //Erase them
 						}
 					}
-					break;
+				}
 
-				//Selector
-				case 'S':
-					//If the selected area has an enemy in it
-					if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
+				//Decrement the LevelBits vector
+				for (int i = 0; i < m_vcLevelBits.size(); i++)
+				{
+					if (m_vcLevelBits.at(i).at(m_vcLevelBits.at(i).size() - 1) == 'E')
 					{
-						//Find the enemy path vector
-						for (int i = 0; i < m_vEnemyPaths.size(); i++)
+						for (int j = 0; j < m_vEnemyPaths.size(); j++)
 						{
-							if (gridPos == m_vEnemyPaths.at(i).position)
+							if (sf::Vector2i(m_vcLevelBits.at(i).size() - 1, i) == m_vEnemyPaths.at(j).position)
 							{
-								//Set it to be the selected enemy
-								iSelectedEnemy = &m_vEnemyPaths.at(i);
-								updatePathUI();
+								//If the enemy is removed delete the associated enemy path
+								m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
+								iSelectedEnemy = NULL;
 							}
 						}
 					}
-					break;
+					m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
+				}
+				updatePathUI();
 
-				//Path node placement
-				case 'P':
-					//If there is a selected enemy
-					if (iSelectedEnemy != NULL)
+				//For the objects the pointers are cleared at the end of each row.
+				for (int i = 0; i < m_vItems.size(); i++)
+				{
+					if (m_vItems.at(i).at(m_vItems.at(i).size() - 1) != NULL)
 					{
-						//Add a path node
-						iSelectedEnemy->path.push_back(gridPos);
-						updatePathUI();
+						delete(m_vItems.at(i).at(m_vItems.at(i).size() - 1));
+						m_vItems.at(i).at(m_vItems.at(i).size() - 1) = NULL;
 					}
-					break;
+					m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
+				}
+
+				//Decrement the FloorBits vector
+				for (int i = 0; i < m_vcFloorBits.size(); i++)
+				{
+					m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
+				}
+
+				//For the objects the pointers are cleared at the end of each row.
+				for (int i = 0; i < m_vFloorTiles.size(); i++)
+				{
+					if (m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1) != NULL)
+					{
+						delete(m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1));
+						m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1) = NULL;
+					}
+					m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
+				}
 			}
+
+			//If the + Y Grid button is pressed
+			if (m_vGridButtons.at(2)->hovering(mousePos))
+			{
+				//Increment the dimensions
+				m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y + 1));
+
+				//A new row is added to each vector
+				//LevelBits
+				m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
+				m_vcLevelBits.at(m_vcLevelBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
+
+				//Map objects
+				m_vItems.resize(m_CurrentMap->getGridDims().y);
+				m_vItems.at(m_vItems.size() - 1).resize(m_CurrentMap->getGridDims().x);
+
+				//FloorBits
+				m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
+				m_vcFloorBits.at(m_vcFloorBits.size() - 1).resize(m_CurrentMap->getGridDims().x);
+
+				//Floor objects
+				m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
+				m_vFloorTiles.at(m_vFloorTiles.size() - 1).resize(m_CurrentMap->getGridDims().x);
+				updatePathUI();
+			}
+
+			//If the - Y Grid button is pressed
+			if (m_vGridButtons.at(3)->hovering(mousePos))
+			{
+				//Decrement the dimensions
+				m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y - 1));
+
+				//Check if any path nodes are off the screen
+				for (int i = 0; i < m_vEnemyPaths.size(); i++)
+				{
+					for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
+					{
+						if (m_vEnemyPaths.at(i).path.at(j).y >= m_CurrentMap->getGridDims().y) //If they are
+						{
+							m_vEnemyPaths.at(i).path.erase(m_vEnemyPaths.at(i).path.begin() + j); //Erase them
+						}
+					}
+				}
+
+				//Decrement the LevelBits vector
+				for (int i = 0; i < m_vcLevelBits.at(m_vcLevelBits.size() - 1).size(); i++)
+				{
+					if (m_vcLevelBits.at(m_vcLevelBits.size() - 1).at(i) == 'E')
+					{
+						for (int j = 0; j < m_vEnemyPaths.size(); j++)
+						{
+							if (sf::Vector2i(i, m_vcLevelBits.size() - 1) == m_vEnemyPaths.at(j).position)
+							{
+								//If the enemy is removed delete the associated enemy path
+								m_vEnemyPaths.erase(m_vEnemyPaths.begin() + j);
+								iSelectedEnemy = NULL;
+							}
+						}
+					}
+				}
+				updatePathUI();
+
+				//Decrement the levelBits vector
+				m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
+
+				//Clear the pointers of all objects on the bottom row and decrement the row
+				for (int i = 0; i < m_vItems.at(m_vItems.size() - 1).size(); i++)
+				{
+					if (m_vItems.at(m_vItems.size() - 1).at(i) != NULL)
+					{
+						delete(m_vItems.at(m_vItems.size() - 1).at(i));
+						m_vItems.at(m_vItems.size() - 1).at(i) = NULL;
+					}
+				}
+				m_vItems.resize(m_CurrentMap->getGridDims().y);
+
+				//Decrement the floorBits vector
+				m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
+
+				//Clear the pointers of all objects on the bottom row and decrement the row
+				for (int i = 0; i < m_vFloorTiles.at(m_vItems.size() - 1).size(); i++)
+				{
+					if (m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i) != NULL)
+					{
+						delete(m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i));
+						m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i) = NULL;
+					}
+				}
+				m_vFloorTiles.resize(m_CurrentMap->getGridDims().y);
+			}
+
+			//If the mouse is within the bounds of the grid
+			if (mousePos.x > m_CurrentMap->getPosition().x &&
+				mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+				mousePos.y > m_CurrentMap->getPosition().y &&
+				mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
+			{
+				//Calculate the mouses position on the grid
+				sf::Vector2i gridPos((mousePos.x - m_CurrentMap->getPosition().x) / m_CurrentMap->getTileSize().x,
+					(mousePos.y - m_CurrentMap->getPosition().y) / m_CurrentMap->getTileSize().y);
+
+				if (m_Editing == CharacterEdit)
+				{
+					switch (m_cCurrentTool)
+					{
+						//Eraser
+					case ' ':
+						//Check each path node of the selected character
+						for (int j = 0; j < iSelectedEnemy->path.size(); j++)
+						{
+							if (iSelectedEnemy->path.at(j) == gridPos) //If clicked
+							{
+								//Remove the path node
+								iSelectedEnemy->path.erase(iSelectedEnemy->path.begin() + j);
+								updatePathUI();
+
+								//Stop searching
+								j = iSelectedEnemy->path.size();
+							}
+						}
+						break;
+
+						//Selector
+					case 'S':
+						//If the selected area has an enemy in it
+						if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
+						{
+							//Find the enemy path vector
+							for (int i = 0; i < m_vEnemyPaths.size(); i++)
+							{
+								if (gridPos == m_vEnemyPaths.at(i).position)
+								{
+									//Set it to be the selected enemy
+									iSelectedEnemy = &m_vEnemyPaths.at(i);
+									updatePathUI();
+								}
+							}
+						}
+						break;
+
+						//Path node placement
+					case 'P':
+						//If there is a selected enemy
+						if (iSelectedEnemy != NULL)
+						{
+							//Add a path node
+							iSelectedEnemy->path.push_back(gridPos);
+							updatePathUI();
+						}
+						break;
+					}
+				}
+			}
+
+			//If an object button is being hovered over set the tool to the value of the tool
+			if (m_vObjectButtons.at(0)->hovering(mousePos)) //Wooden Wall
+			{
+				m_cCurrentTool = 'W';
+				m_Editing = ObjectEdit;
+			}
+			else if (m_vObjectButtons.at(1)->hovering(mousePos)) //Friendly unit
+			{
+				m_cCurrentTool = 'P';
+				m_Editing = ObjectEdit;
+			}
+			else if (m_vObjectButtons.at(2)->hovering(mousePos)) //Enemy unit
+			{
+				m_cCurrentTool = 'E';
+				m_Editing = ObjectEdit;
+			}
+			else if (m_vObjectButtons.at(3)->hovering(mousePos)) //Door
+			{
+				m_cCurrentTool = 'D';
+				m_Editing = ObjectEdit;
+			}
+			else if (m_vObjectButtons.at(4)->hovering(mousePos)) //Brick wall
+			{
+				m_cCurrentTool = 'B';
+				m_Editing = ObjectEdit;
+			}
+
+			if (m_vToolButtons.at(0)->hovering(mousePos)) //Eraser
+			{
+				m_cCurrentTool = ' ';
+			}
+			else if (m_vToolButtons.at(1)->hovering(mousePos)) //Eraser
+			{
+				m_cCurrentTool = 'S';
+				m_Editing = CharacterEdit;
+			}
+			else if (m_vToolButtons.at(2)->hovering(mousePos)) //Eraser
+			{
+				m_cCurrentTool = 'P';
+				m_Editing = CharacterEdit;
+			}
+
+			if (m_vFloorButtons.at(0)->hovering(mousePos)) //Grass
+			{
+				m_cCurrentTool = 'G';
+				m_Editing = FloorEdit;
+			}
+			else if (m_vFloorButtons.at(1)->hovering(mousePos)) //Wooden floor
+			{
+				m_cCurrentTool = 'F';
+				m_Editing = FloorEdit;
+			}
+			else if (m_vFloorButtons.at(2)->hovering(mousePos)) //Concrete
+			{
+				m_cCurrentTool = 'C';
+				m_Editing = FloorEdit;
+			}
+			else if (m_vFloorButtons.at(3)->hovering(mousePos)) //Kitchen tile
+			{
+				m_cCurrentTool = 'K';
+				m_Editing = FloorEdit;
+			}
+			else if (m_vFloorButtons.at(4)->hovering(mousePos)) //Blue carpet
+			{
+				m_cCurrentTool = 'B';
+				m_Editing = FloorEdit;
+			}
+			else if (m_vFloorButtons.at(5)->hovering(mousePos)) //Red carpet
+			{
+				m_cCurrentTool = 'R';
+				m_Editing = FloorEdit;
+			}
+			break;
 		}
 	}
-	
-	//If an object button is being hovered over set the tool to the value of the tool
-	if (m_vObjectButtons.at(0)->hovering(mousePos)) //Wooden Wall
-	{
-		m_cCurrentTool = 'W';
-		m_Editing = ObjectEdit;
-	}
-	else if (m_vObjectButtons.at(1)->hovering(mousePos)) //Friendly unit
-	{
-		m_cCurrentTool = 'P';
-		m_Editing = ObjectEdit;
-	}
-	else if (m_vObjectButtons.at(2)->hovering(mousePos)) //Enemy unit
-	{
-		m_cCurrentTool = 'E';
-		m_Editing = ObjectEdit;
-	}
-	else if (m_vObjectButtons.at(3)->hovering(mousePos)) //Door
-	{
-		m_cCurrentTool = 'D';
-		m_Editing = ObjectEdit;
-	}
-	else if (m_vObjectButtons.at(4)->hovering(mousePos)) //Brick wall
-	{
-		m_cCurrentTool = 'B';
-		m_Editing = ObjectEdit;
-	}
 
-	if (m_vToolButtons.at(0)->hovering(mousePos)) //Eraser
-	{
-		m_cCurrentTool = ' ';
-	}
-	else if (m_vToolButtons.at(1)->hovering(mousePos)) //Eraser
-	{
-		m_cCurrentTool = 'S';
-		m_Editing = CharacterEdit;
-	}
-	else if (m_vToolButtons.at(2)->hovering(mousePos)) //Eraser
-	{
-		m_cCurrentTool = 'P';
-		m_Editing = CharacterEdit;
-	}
-
-	if (m_vFloorButtons.at(0)->hovering(mousePos)) //Grass
-	{
-		m_cCurrentTool = 'G';
-		m_Editing = FloorEdit;
-	}
-	else if (m_vFloorButtons.at(1)->hovering(mousePos)) //Wooden floor
-	{
-		m_cCurrentTool = 'F';
-		m_Editing = FloorEdit;
-	}
-	else if (m_vFloorButtons.at(2)->hovering(mousePos)) //Concrete
-	{
-		m_cCurrentTool = 'C';
-		m_Editing = FloorEdit;
-	}
-	else if (m_vFloorButtons.at(3)->hovering(mousePos)) //Kitchen tile
-	{
-		m_cCurrentTool = 'K';
-		m_Editing = FloorEdit;
-	}
-	else if (m_vFloorButtons.at(4)->hovering(mousePos)) //Blue carpet
-	{
-		m_cCurrentTool = 'B';
-		m_Editing = FloorEdit;
-	}
-	else if (m_vFloorButtons.at(5)->hovering(mousePos)) //Red carpet
-	{
-		m_cCurrentTool = 'R';
-		m_Editing = FloorEdit;
-	}
-
-	return 0;
+	return S_None;
 }
 
 void Editor::saveMap()

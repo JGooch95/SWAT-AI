@@ -88,16 +88,17 @@ int main()
 		"Assets/Fonts/arial.ttf"						//0
 	});
 
-	//Sets up the main objects needed
-	Menu* Menu1 = new Menu(mainWindow.getSize());
-	Game* Game1 = NULL;
-	Editor* Editor1 = NULL;
-	Options* Options1 = NULL;
-
 	Map* m_CurrentMap = NULL;
 
 	const float kfTargetFPS = 60; //Holds the target frames per second
 	mainWindow.setKeyRepeatEnabled(false);
+
+	//Sets the window Icon to the logo
+	mainWindow.setIcon(m_Textures->getTexture(3)->copyToImage().getSize().x,
+					   m_Textures->getTexture(3)->copyToImage().getSize().y,
+					   m_Textures->getTexture(3)->copyToImage().getPixelsPtr());
+
+	ContentScreen* currentScreen = new Menu(mainWindow.getSize());
 
 	//Main Loop
 	while (mainWindow.isOpen())
@@ -110,12 +111,9 @@ int main()
 			{
 				mainWindow.close();
 			}
-			if (event.type == sf::Event::KeyPressed)
+
+			else if (event.type == sf::Event::KeyPressed)
 			{
-				if (Game1 != NULL)
-				{
-					Game1->processInput(event.key, sf::Mouse::getPosition(mainWindow));
-				}
 				if (event.key.code == sf::Keyboard::D)
 				{
 					//Toggles Debug mode if the settings have been initialised
@@ -132,172 +130,72 @@ int main()
 					}
 				}
 			}
-			if (event.type == sf::Event::MouseButtonPressed)
+
+			if (currentScreen != NULL)
 			{
-				if (event.key.code == sf::Mouse::Right)
+				if (currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Game ||
+					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Menu ||
+					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Editor ||
+					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Options ||
+					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == Exit)
 				{
-					if (Game1 != NULL)
-					{
-						Game1->clickRight(sf::Mouse::getPosition(mainWindow));
-					}
-				}
-				if (event.key.code == sf::Mouse::Left)
-				{
-					if (Game1 != NULL)
-					{
-						switch (Game1->clickLeft(sf::Mouse::getPosition(mainWindow)))
-						{
-							//Exit button to menu
-							case 1:
-								delete Game1;
-								Game1 = NULL;
-								Menu1 = new Menu(mainWindow.getSize());
-								break;
-						}
-					}
-					else if (Menu1 != NULL)
-					{
-						switch (Menu1->clickLeft(sf::Mouse::getPosition(mainWindow)))
-						{
-							//Start game button
-							case 1:
-								delete Menu1;
-								Menu1 = NULL;
-								Game1 = new Game(mainWindow.getSize());
-								break;
+					int iScreenType = currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow));
 
-							//Editor button
-							case 2:
-								delete Menu1;
-								Menu1 = NULL;
-								Editor1 = new Editor(mainWindow.getSize());
-								break;
-
-							//Options button
-							case 3:
-								delete Menu1;
-								Menu1 = NULL;
-								Options1 = new Options(mainWindow.getSize());
-								break;
-
-							//Exit button
-							case 4:
-								delete Menu1;
-								Menu1 = NULL;
-								mainWindow.close();
-								break;
-						}
-					}
-					else if (Editor1 != NULL)
+					if (m_CurrentSettings->getUpdateState())
 					{
-						switch (Editor1->clickLeft(sf::Mouse::getPosition(mainWindow)))
-						{
-							//Exit button to menu
-							case 1:
-								delete Editor1;
-								Editor1 = NULL;
-								Menu1 = new Menu(mainWindow.getSize());
-								break;
-						}
+						m_CurrentSettings->updateWindow(false);
+						mainWindow.setSize(sf::Vector2u(m_CurrentSettings->getResolution()));
+						mainWindow.setView(sf::View(sf::FloatRect(0, 0, m_CurrentSettings->getResolution().x, m_CurrentSettings->getResolution().y)));
 					}
 
-					else if (Options1 != NULL)
-					{
-						switch (Options1->clickLeft(sf::Mouse::getPosition(mainWindow)))
-						{
-							//Exit button to menu
-							case 1:
-								delete Options1;
-								Options1 = NULL;
-								Menu1 = new Menu(mainWindow.getSize());
-								break;
+					delete currentScreen;
+					currentScreen = NULL;
 
-							case 2:
-								mainWindow.setSize(sf::Vector2u(m_CurrentSettings->getResolution()));
-								mainWindow.setView(sf::View(sf::FloatRect(0, 0, m_CurrentSettings->getResolution().x, m_CurrentSettings->getResolution().y)));
-								m_CurrentSettings->save("./Assets/Options/settings.txt");
-								delete Options1;
-								Options1 = NULL;
-								Menu1 = new Menu(mainWindow.getSize());
-								break;
-						}
+					switch (iScreenType)
+					{
+						case S_Game:
+							currentScreen = new Game(mainWindow.getSize());
+							break;
+
+						case S_Menu:
+							currentScreen = new Menu(mainWindow.getSize());
+							break;
+
+						case S_Editor:
+							currentScreen = new Editor(mainWindow.getSize());
+							break;
+
+						case S_Options:
+							currentScreen = new Options(mainWindow.getSize());
+							break;
+
+						case Exit:
+							mainWindow.close();
+							break;
 					}
 				}
 			}
 		}
 
-		if (timer.getElapsedTime().asSeconds() > 1.0f / kfTargetFPS)
+		if (currentScreen != NULL)
 		{
-			//Update
-			if (Game1 != NULL)
+			if (timer.getElapsedTime().asSeconds() > 1.0f / kfTargetFPS)
 			{
-				Game1->update(sf::Mouse::getPosition(mainWindow));
+				currentScreen->update(sf::Mouse::getPosition(mainWindow));
+				timer.restart(); //Resets the timer for the next frame check
 			}
 
-			if (Menu1 != NULL)
-			{
-				Menu1->update(sf::Mouse::getPosition(mainWindow));
-			}
-
-			if (Editor1 != NULL)
-			{
-				Editor1->update(sf::Mouse::getPosition(mainWindow));
-			}
-
-			if (Options1 != NULL)
-			{
-				Options1->update(sf::Mouse::getPosition(mainWindow));
-			}
-
-			//Draw
-			mainWindow.clear(sf::Color(0,0,0,0));
-			if (Game1 != NULL)
-			{
-				mainWindow.draw(*Game1);
-			}
-
-			if (Menu1 != NULL)
-			{
-				mainWindow.draw(*Menu1);
-			}
-
-			if (Editor1 != NULL)
-			{
-				mainWindow.draw(*Editor1);
-			}
-
-			if (Options1 != NULL)
-			{
-				mainWindow.draw(*Options1);
-			}
-			mainWindow.display();
-
-			timer.restart(); //Resets the timer for the next frame check
+			mainWindow.clear(sf::Color(0, 0, 0, 0));
+			mainWindow.draw(*currentScreen);
 		}
 
-	}
-	
-	//Clean pointers
-	if (Game1 != NULL)
-	{
-		delete Game1;
-		Game1 = NULL;
-	}
-	if (Menu1 != NULL)
-	{
-		delete Menu1;
-		Menu1 = NULL;
-	}
-	if (Editor1 != NULL)
-	{
-		delete Editor1;
-		Editor1 = NULL;
+		mainWindow.display();
 	}
 
-	if (Options1 != NULL)
+	if (currentScreen != NULL)
 	{
-		delete Options1;
-		Options1 = NULL;
+		delete currentScreen;
+		currentScreen = NULL;
 	}
 
 	delete m_Textures;

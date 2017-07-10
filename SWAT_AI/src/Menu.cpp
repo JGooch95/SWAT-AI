@@ -65,17 +65,34 @@ void Menu::update(sf::Vector2i mousePos)
 	}
 }
 
-int Menu::clickLeft(sf::Vector2i mousePos)
+int Menu::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 {
-	//Checks if the buttons have been clicked
-	for (int i = 0; i < m_Buttons.size(); i++)
+	if (keyCode.type == sf::Event::MouseButtonPressed)
 	{
-		if (m_Buttons.at(i)->hovering(mousePos))
+		switch (keyCode.key.code)
 		{
-			return i + 1;
+		case sf::Mouse::Left:
+			//Checks if the buttons have been clicked
+			for (int i = 0; i < m_Buttons.size(); i++)
+			{
+				if (m_Buttons.at(i)->hovering(mousePos))
+				{
+					switch (i + 1)
+					{
+						case 1:
+							return S_Game;
+						case 2:
+							return S_Editor;
+						case 3:
+							return S_Options;
+						case 4:
+							return Exit;
+					}
+				}
+			}
+			break;
 		}
 	}
-	
 	return 0;
 }
 

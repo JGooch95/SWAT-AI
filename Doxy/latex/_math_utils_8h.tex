@@ -1,0 +1,31 @@
+\hypertarget{_math_utils_8h}{}\section{C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\+Math\+Utils.h File Reference}
+\label{_math_utils_8h}\index{C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\+Math\+Utils.\+h@{C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\+Math\+Utils.\+h}}
+{\ttfamily \#include $<$S\+F\+M\+L\textbackslash{}\+Graphics.\+hpp$>$}\newline
+{\ttfamily \#include $<$set$>$}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{struct_util_1_1_limits}{Util\+::\+Limits}
+\begin{DoxyCompactList}\small\item\em Holds an upper and lower bound of an object such as a health bar. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespace_util}{Util}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static float \hyperlink{namespace_util_aa9cb7802e25081651b64f1f701f7541c}{Util\+::cross} (sf\+::\+Vector2f vectA, sf\+::\+Vector2f vectB)
+\begin{DoxyCompactList}\small\item\em Calculates the 2D cross product. \end{DoxyCompactList}\item 
+static sf\+::\+Vector2f \hyperlink{namespace_util_a4f6d91cbe64be4e4297e5ae07a9fb64a}{Util\+::line\+Intersect} (sf\+::\+Vector2f line1A, sf\+::\+Vector2f line1B, sf\+::\+Vector2f line2A, sf\+::\+Vector2f line2B)
+\begin{DoxyCompactList}\small\item\em Calculates the point at which two lines intersect. \end{DoxyCompactList}\item 
+static float \hyperlink{namespace_util_ad4f16b33bef1fb0de0b40a2d01e5ba3d}{Util\+::magnitude} (sf\+::\+Vector2f vect)
+\begin{DoxyCompactList}\small\item\em Finds the magnitude of a vector. \end{DoxyCompactList}\item 
+static float \hyperlink{namespace_util_aefa994a894bb4bf287871a0ab756ac00}{Util\+::set\+Within\+Range} (float f\+Angle, float f\+Lower\+Bound, float f\+Upper\+Bound)
+\begin{DoxyCompactList}\small\item\em Keeps an angle between a range of values. \end{DoxyCompactList}\item 
+static std\+::pair$<$ bool, sf\+::\+Vector2f $>$ \hyperlink{namespace_util_a0b6b9c5da48af75235e92300dbce08d0}{Util\+::find\+Lowest\+Intersect} (std\+::vector$<$ sf\+::\+Vector2f $>$v\+Edges, std\+::vector$<$ sf\+::\+Vector2f $>$ new\+Ray)
+\begin{DoxyCompactList}\small\item\em Finds the closest point at which a ray intersects with a set of edges. \end{DoxyCompactList}\item 
+static float \hyperlink{namespace_util_a4388b22d564bbf04e68473256c2b3100}{Util\+::get\+Angle} (sf\+::\+Vector2f vect)
+\begin{DoxyCompactList}\small\item\em Gets the angle a vector is pointing towards. \end{DoxyCompactList}\item 
+static sf\+::\+Vector2f \hyperlink{namespace_util_a73745a70851fbb031142c840ad84c48f}{Util\+::rotate\+Vect} (sf\+::\+Vector2f vect, float f\+Angle)
+\begin{DoxyCompactList}\small\item\em Rotates a vector by a given angle. \end{DoxyCompactList}\end{DoxyCompactItemize}

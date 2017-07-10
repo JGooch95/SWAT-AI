@@ -13,6 +13,7 @@ class Settings
 		bool m_bDebug; //!< Holds whether the system is in debug mode or not
 		sf::Vector2f m_WindowResolution;//!< Holds the pixel resolution of the game window
 		float m_fVolume;//!< Holds the master volume for all of the sounds
+		bool bUpdateWindow;
 
 	public:
 		/// \brief Default constructor
@@ -56,4 +57,8 @@ class Settings
 		/// \brief Gets the master volume for the sound
 		/// \return Returns the master volume for the sound
 		float getVolume();
+
+		void updateWindow(bool bState);
+
+		bool getUpdateState();
 };

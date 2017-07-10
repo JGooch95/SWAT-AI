@@ -81,6 +81,7 @@ Settings::Settings()
 	m_bDebug = false;
 	m_fVolume = 100.0f;
 	m_WindowResolution = sf::Vector2f(800.0f, 600.0f);
+	bUpdateWindow = false;
 }
 
 //Setters
@@ -113,4 +114,14 @@ sf::Vector2f Settings::getResolution()
 float Settings::getVolume()
 {
 	return m_fVolume;
+}
+
+void Settings::updateWindow(bool bState)
+{
+	bUpdateWindow = bState;
+}
+
+bool Settings::getUpdateState()
+{
+	return bUpdateWindow;
 }

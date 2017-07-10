@@ -7,15 +7,11 @@
 #include "FontManager.h"
 #include "Slider.h"
 #include "SoundManager.h"
+#include "ContentScreen.h"
 
-class Options : public sf::Drawable
+class Options : public ContentScreen
 {
 	private:
-		Settings* m_CurrentSettings;  //!< Holds the location of the settings
-		TextureLoader* m_Textures; //!< Contains all textures used in the game
-		FontManager* m_Fonts; //!< Holds the location to all of the fonts
-		SoundManager* m_SoundManager;  //!< Holds the location of all of the sounds
-
 		sf::Sound m_TestSound; //!< Holds the sound for the sound slider
 
 		sf::Text m_TitleText; //!< Holds the main title
@@ -49,9 +45,7 @@ class Options : public sf::Drawable
 		/// \param mousePos holds the position of the mouse 
 		void update(sf::Vector2i mousePos);
 
-		/// \brief Performs left click functions
-		/// \param mousePos holds the position of the mouse 
-		int clickLeft(sf::Vector2i mousePos);
+		int processInput(sf::Event keyCode, sf::Vector2i mousePos);
 
 		/// \brief Loads the list of video resolutions
 		/// \param sDir Holds the directory holding the list of resolutions 

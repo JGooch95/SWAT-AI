@@ -5,6 +5,7 @@
 #include "Button.h"
 #include "TextureLoader.h"
 #include <iostream>
+#include "ContentScreen.h"
 
 enum buttonTypes {ObjectButton, ToolButton, FloorButton};
 enum EditTypes {CharacterEdit, FloorEdit, ObjectEdit};
@@ -16,15 +17,9 @@ struct EnemyData
 };
 
 /// \brief The editor screen of the game
-class Editor : public sf::Drawable
+class Editor : public ContentScreen
 {
 	private:
-		//Resources
-		FontManager* m_Fonts;  //!< Holds the location of all of the fonts
-		Map* m_CurrentMap;  //!< Holds the location of the map data
-		Settings* m_CurrentSettings;  //!< Holds the location of the settings
-		TextureLoader* m_Textures; //!< Contains all textures used in the game
-
 		//UI
 		sf::RectangleShape m_Toolbar; //!< The background of the toolbar containing the exit and save buttons
 		sf::RectangleShape m_Sidebar; //!< The background of the tools
@@ -75,10 +70,7 @@ class Editor : public sf::Drawable
 		/// \param mousePos The current position of the mouse
 		void update(sf::Vector2i mousePos);
 
-		/// \brief Processes left click
-		/// \param mousePos The current position of the mouse
-		/// \return Returns an action if necessary
-		int clickLeft(sf::Vector2i mousePos); 
+		int processInput(sf::Event keyCode, sf::Vector2i mousePos);
 
 		/// \brief Saves the map to a file
 		void saveMap(); 

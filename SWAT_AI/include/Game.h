@@ -13,21 +13,15 @@
 #include "HUDWindow.h"
 #include "WaveEffect.h"
 #include "Throwable.h"
+#include "ContentScreen.h"
 
 /// \brief The main game screen
-class Game : public sf::Drawable
+class Game : public ContentScreen
 {
 	private:
 		//UI
 		sf::RectangleShape m_Toolbar; //!< Holds the toolbar across the top of the screen
 		std::vector<HUDWindow*> m_vUnitUI; //!< Holds the units UI boxes
-		
-		//Tools
-		Map* m_CurrentMap;  //!< Holds the location of the map data
-		Settings* m_CurrentSettings;  //!< Holds the location of the settings
-
-		//RESOURCES
-		TextureLoader* m_Textures; //!< Contains all textures used in the game
 
 		//Objects
 		std::vector<Character*> m_vCharacters; //!< Holds all of the characters
@@ -65,16 +59,7 @@ class Game : public sf::Drawable
 		/// \param charSet1 The second set of characters
 		void characterInteractions(std::vector<Character*> charSet1, std::vector<Character*>  charSet2);
 
-		/// \brief Processes left click
-		/// \param mousePos The position of the mouse
-		/// \return Retuns an action if required
-		int clickLeft (sf::Vector2i mousePos);
-
-		int processInput(sf::Event::KeyEvent keyCode, sf::Vector2i mousePos);
-
-		/// \brief Processes right click
-		/// \param mousePos The position of the mouse
-		void clickRight(sf::Vector2i mousePos);
+		int processInput(sf::Event keyCode, sf::Vector2i mousePos);
 
 		/// \brief Reduces the amounts of edges for each wall by combining adjacent edges and removing unreachable edges.
 		/// \param vXEdges The edges in the going along the X axis

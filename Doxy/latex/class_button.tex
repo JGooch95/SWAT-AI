@@ -1,0 +1,177 @@
+\hypertarget{class_button}{}\section{Button Class Reference}
+\label{class_button}\index{Button@{Button}}
+
+
+A button which takes in a press and performs an action.  
+
+
+
+
+{\ttfamily \#include $<$Button.\+h$>$}
+
+Inheritance diagram for Button\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_button}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_button_a3b36df1ae23c58aedb9e15a713159459}{Button} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+bool \hyperlink{class_button_ad29329cbec9b053165ffe043e30900ea}{hovering} (sf\+::\+Vector2i pos)
+\begin{DoxyCompactList}\small\item\em Gets whether the mouse is on the button. \end{DoxyCompactList}\item 
+void \hyperlink{class_button_adff79b7f37511a8ecd21921c13e1b0be}{set\+Text} (std\+::string s\+Value)
+\begin{DoxyCompactList}\small\item\em Sets the text within the button. \end{DoxyCompactList}\item 
+void \hyperlink{class_button_a44d606edb40d3bbf9140028b7fec95f4}{set\+Background\+Color} (sf\+::\+Color new\+Color)
+\begin{DoxyCompactList}\small\item\em Sets the background color of the button. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_button_a13280eb9f2786fd2597fd3b9c9c5c858}{draw} (sf\+::\+Render\+Target \&target, sf\+::\+Render\+States states) const
+\begin{DoxyCompactList}\small\item\em Draws all of the button\textquotesingle{}s entities to the screen. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+sf\+::\+Text \hyperlink{class_button_ae0d027f107671be7d1d46f7963773c69}{m\+\_\+\+Button\+Text}
+\begin{DoxyCompactList}\small\item\em Holds the text on the button. \end{DoxyCompactList}\item 
+\hyperlink{class_font_manager}{Font\+Manager} $\ast$ \hyperlink{class_button_a65bbfab1d336ca64f5d32baca218139c}{m\+\_\+\+Font\+Manager}
+\begin{DoxyCompactList}\small\item\em Holds the font used. \end{DoxyCompactList}\item 
+sf\+::\+Rectangle\+Shape \hyperlink{class_button_a0fc282280a38c36feb2c3e74a9a5b492}{m\+\_\+\+Backdrop}
+\begin{DoxyCompactList}\small\item\em Holds the background. \end{DoxyCompactList}\item 
+sf\+::\+Color \hyperlink{class_button_af036d6f063c8e9044c8378c9ad51d593}{m\+\_\+\+Default\+Color}
+\begin{DoxyCompactList}\small\item\em Holds the base color of the background. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+A button which takes in a press and performs an action. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_button_a3b36df1ae23c58aedb9e15a713159459}\label{class_button_a3b36df1ae23c58aedb9e15a713159459}} 
+\index{Button@{Button}!Button@{Button}}
+\index{Button@{Button}!Button@{Button}}
+\subsubsection{\texorpdfstring{Button()}{Button()}}
+{\footnotesize\ttfamily Button\+::\+Button (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default constructor. 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_button_a13280eb9f2786fd2597fd3b9c9c5c858}\label{class_button_a13280eb9f2786fd2597fd3b9c9c5c858}} 
+\index{Button@{Button}!draw@{draw}}
+\index{draw@{draw}!Button@{Button}}
+\subsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Button\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Target \&}]{target,  }\item[{sf\+::\+Render\+States}]{states }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Draws all of the button\textquotesingle{}s entities to the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target} & Holds where to draw the entities to. \\
+\hline
+{\em states} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_button_ad29329cbec9b053165ffe043e30900ea}\label{class_button_ad29329cbec9b053165ffe043e30900ea}} 
+\index{Button@{Button}!hovering@{hovering}}
+\index{hovering@{hovering}!Button@{Button}}
+\subsubsection{\texorpdfstring{hovering()}{hovering()}}
+{\footnotesize\ttfamily bool Button\+::hovering (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2i}]{pos }\end{DoxyParamCaption})}
+
+
+
+Gets whether the mouse is on the button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & The position of the mouse \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns whether the mouse is on the button 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_button_a44d606edb40d3bbf9140028b7fec95f4}\label{class_button_a44d606edb40d3bbf9140028b7fec95f4}} 
+\index{Button@{Button}!set\+Background\+Color@{set\+Background\+Color}}
+\index{set\+Background\+Color@{set\+Background\+Color}!Button@{Button}}
+\subsubsection{\texorpdfstring{set\+Background\+Color()}{setBackgroundColor()}}
+{\footnotesize\ttfamily void Button\+::set\+Background\+Color (\begin{DoxyParamCaption}\item[{sf\+::\+Color}]{new\+Color }\end{DoxyParamCaption})}
+
+
+
+Sets the background color of the button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Color} & The new color \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_button_adff79b7f37511a8ecd21921c13e1b0be}\label{class_button_adff79b7f37511a8ecd21921c13e1b0be}} 
+\index{Button@{Button}!set\+Text@{set\+Text}}
+\index{set\+Text@{set\+Text}!Button@{Button}}
+\subsubsection{\texorpdfstring{set\+Text()}{setText()}}
+{\footnotesize\ttfamily void Button\+::set\+Text (\begin{DoxyParamCaption}\item[{std\+::string}]{s\+Value }\end{DoxyParamCaption})}
+
+
+
+Sets the text within the button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s\+Value} & The string containing the text \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_button_a0fc282280a38c36feb2c3e74a9a5b492}\label{class_button_a0fc282280a38c36feb2c3e74a9a5b492}} 
+\index{Button@{Button}!m\+\_\+\+Backdrop@{m\+\_\+\+Backdrop}}
+\index{m\+\_\+\+Backdrop@{m\+\_\+\+Backdrop}!Button@{Button}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Backdrop}{m\_Backdrop}}
+{\footnotesize\ttfamily sf\+::\+Rectangle\+Shape Button\+::m\+\_\+\+Backdrop\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the background. 
+
+\mbox{\Hypertarget{class_button_ae0d027f107671be7d1d46f7963773c69}\label{class_button_ae0d027f107671be7d1d46f7963773c69}} 
+\index{Button@{Button}!m\+\_\+\+Button\+Text@{m\+\_\+\+Button\+Text}}
+\index{m\+\_\+\+Button\+Text@{m\+\_\+\+Button\+Text}!Button@{Button}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Button\+Text}{m\_ButtonText}}
+{\footnotesize\ttfamily sf\+::\+Text Button\+::m\+\_\+\+Button\+Text\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the text on the button. 
+
+\mbox{\Hypertarget{class_button_af036d6f063c8e9044c8378c9ad51d593}\label{class_button_af036d6f063c8e9044c8378c9ad51d593}} 
+\index{Button@{Button}!m\+\_\+\+Default\+Color@{m\+\_\+\+Default\+Color}}
+\index{m\+\_\+\+Default\+Color@{m\+\_\+\+Default\+Color}!Button@{Button}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Default\+Color}{m\_DefaultColor}}
+{\footnotesize\ttfamily sf\+::\+Color Button\+::m\+\_\+\+Default\+Color\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the base color of the background. 
+
+\mbox{\Hypertarget{class_button_a65bbfab1d336ca64f5d32baca218139c}\label{class_button_a65bbfab1d336ca64f5d32baca218139c}} 
+\index{Button@{Button}!m\+\_\+\+Font\+Manager@{m\+\_\+\+Font\+Manager}}
+\index{m\+\_\+\+Font\+Manager@{m\+\_\+\+Font\+Manager}!Button@{Button}}
+\subsubsection{\texorpdfstring{m\+\_\+\+Font\+Manager}{m\_FontManager}}
+{\footnotesize\ttfamily \hyperlink{class_font_manager}{Font\+Manager}$\ast$ Button\+::m\+\_\+\+Font\+Manager\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Holds the font used. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Jonathon/\+Desktop/\+Uni P14141535/\+Year Three/\+I\+M\+A\+T3451 -\/ Computing Project/\+S\+W\+A\+T\+\_\+\+A\+I/\+S\+W\+A\+T\+\_\+\+A\+I/include/\hyperlink{_button_8h}{Button.\+h}\end{DoxyCompactItemize}

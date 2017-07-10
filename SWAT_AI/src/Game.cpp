@@ -506,107 +506,115 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 	}
 }
 
-int Game::clickLeft(sf::Vector2i mousePos)
+int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 {
-	//Checks all of the UI Buttons
-	for (int i = 0; i < m_vUnitUI.size(); i++)
+	if (keyCode.type == sf::Event::KeyPressed)
 	{
-		//If a Class button is pressed
-		if (m_vUnitUI.at(i)->getClassButton()->hovering(mousePos))
+		if (mousePos.x > m_CurrentMap->getPosition().x &&
+			mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+			mousePos.y > m_CurrentMap->getPosition().y &&
+			mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 		{
-			//Switches the class of the unit
-			switch (m_vUnits.at(i)->getClass())
+			if (m_CurrentSettings->debugActive())
 			{
-				case Sniper:
-					m_vUnits.at(i)->setClass(Support);
-					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
-					break;
-				case Support:
-					m_vUnits.at(i)->setClass(Shotgunner);
-					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
-					break;
-				case Shotgunner:
-					m_vUnits.at(i)->setClass(Assault);
-					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
-					break;
-				case Assault:
-					m_vUnits.at(i)->setClass(Sniper);
-					m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
-					break;
-			}
-		}
-
-		for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
-		{
-			//If a loadout button is pressd
-			if (m_vUnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos))
-			{
-				//Switches the class of the unit
-				m_vUnits.at(i)->setLoadoutItem(j, m_vUnits.at(i)->getNextLoadoutItem(m_vUnits.at(i)->getLoadoutItem(j)));
-					
-				//Switches the class image once changed
-				switch (m_vUnits.at(i)->getLoadoutItem(j))
+				switch (keyCode.key.code)
 				{
-					case Lazer:
-						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(16));
+					case sf::Keyboard::R:
+						m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
 						break;
-
-					case Silencer:
-						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(17));
+					case sf::Keyboard::G:
+						m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
 						break;
-
-					case Scope:
-						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(18));
-						break;
-
-					case None:
-						m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(15));
+					case sf::Keyboard::F:
+						m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
 						break;
 				}
-				m_vUnitUI.at(m_vUnitUI.size() - 1)->scaleUI();
 			}
 		}
 	}
-
-	//If the exit button is pressed return to the menu
-	if (exitButton->hovering(mousePos))
+	else if (keyCode.type == sf::Event::MouseButtonPressed)
 	{
-		return 1;
-	}
-	return 0;
-}
-
-int Game::processInput(sf::Event::KeyEvent keyCode, sf::Vector2i mousePos)
-{
-	if (mousePos.x > m_CurrentMap->getPosition().x &&
-		mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
-		mousePos.y > m_CurrentMap->getPosition().y &&
-		mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
-	{
-		switch (keyCode.code)
+		switch (keyCode.key.code)
 		{
-			case sf::Keyboard::R:
-				m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+			case sf::Mouse::Left:
+				//Checks all of the UI Buttons
+				for (int i = 0; i < m_vUnitUI.size(); i++)
+				{
+					//If a Class button is pressed
+					if (m_vUnitUI.at(i)->getClassButton()->hovering(mousePos))
+					{
+						//Switches the class of the unit
+						switch (m_vUnits.at(i)->getClass())
+						{
+						case Sniper:
+							m_vUnits.at(i)->setClass(Support);
+							m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(8));
+							break;
+						case Support:
+							m_vUnits.at(i)->setClass(Shotgunner);
+							m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(9));
+							break;
+						case Shotgunner:
+							m_vUnits.at(i)->setClass(Assault);
+							m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(10));
+							break;
+						case Assault:
+							m_vUnits.at(i)->setClass(Sniper);
+							m_vUnitUI.at(i)->setClassTexture(m_Textures->getTexture(3));
+							break;
+						}
+					}
+
+					for (int j = 0; j < m_vUnits.at(i)->getLoadoutSize(); j++)
+					{
+						//If a loadout button is pressd
+						if (m_vUnitUI.at(i)->getLoadoutButton(j)->hovering(mousePos))
+						{
+							//Switches the class of the unit
+							m_vUnits.at(i)->setLoadoutItem(j, m_vUnits.at(i)->getNextLoadoutItem(m_vUnits.at(i)->getLoadoutItem(j)));
+
+							//Switches the class image once changed
+							switch (m_vUnits.at(i)->getLoadoutItem(j))
+							{
+							case Lazer:
+								m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(16));
+								break;
+
+							case Silencer:
+								m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(17));
+								break;
+
+							case Scope:
+								m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(18));
+								break;
+
+							case None:
+								m_vUnitUI.at(i)->setLoadoutTexture(j, m_Textures->getTexture(15));
+								break;
+							}
+							m_vUnitUI.at(m_vUnitUI.size() - 1)->scaleUI();
+						}
+					}
+				}
+
+				//If the exit button is pressed return to the menu
+				if (exitButton->hovering(mousePos))
+				{
+					return S_Menu;
+				}
 				break;
-			case sf::Keyboard::G:
-				m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
-				break;
-			case sf::Keyboard::F:
-				m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+
+			case sf::Mouse::Right:
+				if (m_vUnits.size() > 0)
+				{
+					m_vUnits.at(0)->setMovementState(MOVE_TO_SPOT);
+					m_vUnits.at(0)->setPath(m_vUnits.at(0)->getPosition(), (sf::Vector2f)mousePos); //Sets a path towards the clicked area
+				}
 				break;
 		}
 	}
 			
-	return 0;
-}
-
-void Game::clickRight(sf::Vector2i mousePos)
-{
-	if (m_vUnits.size() > 0)
-	{
-		m_vUnits.at(0)->setMovementState(MOVE_TO_SPOT);
-		m_vUnits.at(0)->setPath(m_vUnits.at(0)->getPosition(), (sf::Vector2f)mousePos); //Sets a path towards the clicked area
-	}
+	return S_None;
 }
 
 std::vector<std::pair<sf::Vector2f, sf::Vector2f>> Game::edgeReduction(std::vector<sf::Vector2f> vXEdges, std::vector<sf::Vector2f> vYEdges)
