@@ -148,7 +148,7 @@ void Character::update()
 		}
 	}
 
-	fMoveSpeed = (Util::magnitude(getSize()) / 2.0f) / 25.0f; //The amount of pixels the character moves per frame
+	m_fMoveSpeed = (Util::magnitude(getSize()) / 2.0f) / 25.0f; //The amount of pixels the character moves per frame
 
 	if (!m_bDead)
 	{
@@ -188,8 +188,8 @@ void Character::update()
 			}
 			if (Dir.x != 0 || Dir.y != 0)
 			{
-				m_MainSprite.setPosition(m_MainSprite.getPosition() + (Dir * fMoveSpeed));
-				fDistanceSinceStep += fMoveSpeed;
+				m_MainSprite.setPosition(m_MainSprite.getPosition() + (Dir * m_fMoveSpeed));
+				fDistanceSinceStep += m_fMoveSpeed;
 			}
 
 		}
@@ -263,7 +263,7 @@ void Character::move()
 		m_MainSprite.getPosition().y <= destination.y + 1 &&
 		m_MainSprite.getPosition().y >= destination.y - 1))
 	{
-		m_AI->move();
+		m_AI->move(); // Get the next movement location
 	}
 	else
 	{
@@ -278,9 +278,9 @@ void Character::move()
 		m_fMovementAngle = Util::getAngle(velocity) - 90;
 		m_fMovementAngle = Util::setWithinRange(m_fMovementAngle, 0.0f, 360.0f);
 
-		velocity *= fMoveSpeed; //Multiplies the direction by the speed
+		velocity *= m_fMoveSpeed; //Multiplies the direction by the speed
 
-		fDistanceSinceStep += fMoveSpeed;
+		fDistanceSinceStep += m_fMoveSpeed;
 		m_MainSprite.setPosition(m_MainSprite.getPosition() + velocity); //Moves the Sprite							
 	}
 }

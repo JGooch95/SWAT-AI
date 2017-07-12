@@ -277,24 +277,27 @@ Game::Game(sf::Vector2u windowSize)
 
 	loadPatrolPaths("Assets/Maps/CustomMapPaths.txt");
 
-	Crosshair.setTexture(m_Textures->getTexture(38));
-	Crosshair.setSize(sf::Vector2f(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y), std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y)));
-	Crosshair.setOrigin(Crosshair.getSize().x / 2, Crosshair.getSize().y / 2);
-	Crosshair.setFillColor(sf::Color(255, 255, 255, 155));
+	//Sets up the crosshair
+	m_Crosshair.setTexture(m_Textures->getTexture(38));
+	m_Crosshair.setSize(sf::Vector2f(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y), std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y)));
+	m_Crosshair.setOrigin(m_Crosshair.getSize().x / 2, m_Crosshair.getSize().y / 2);
+	m_Crosshair.setFillColor(sf::Color(255, 255, 255, 155));
 }
 
 void Game::update(sf::Vector2i mousePos)
 {	
+	//Wave handling
 	for (int i = 0; i < m_vWaves.size(); i++)
 	{
 		m_vWaves.at(i)->update();
+		//If the wave finishes delete the ray
 		if (m_vWaves.at(i)->isDone())
 		{
 			delete  m_vWaves.at(i);
 			 m_vWaves.at(i) = NULL;
 			 m_vWaves.erase( m_vWaves.begin() + i);
 		}
-		else
+		else //If the wave hasnt finished
 		{
 			for (int j = 0; j < m_vCharacters.size(); j++)
 			{
@@ -302,18 +305,24 @@ void Game::update(sf::Vector2i mousePos)
 				{
 					switch ( m_vWaves.at(i)->getType())
 					{
-					case Explosion:
-						m_vCharacters.at(j)->setHealth(m_vCharacters.at(j)->getHealthData().lower - 1);
-						break;
+						case Explosion: //Damage if character is within range of explosion
+							m_vCharacters.at(j)->setHealth(m_vCharacters.at(j)->getHealthData().lower - 1);
+							break;
 					}
 				}
 			}
 		}
 	}
 
+	//Throwable handling
 	for (int i = 0; i < m_vThrowables.size(); i++)
 	{
-		m_vThrowables.at(i)->update(mousePos);
+		//Update grenade
+		if (m_vUnits.size() > 0)
+		{
+			m_vThrowables.at(i)->update(m_vUnits.at(0)->getPosition(), mousePos);
+		}
+		//If the throwable is complete perform grenade effect
 		if (m_vThrowables.at(i)->isDone())
 		{
 			switch (m_vThrowables.at(i)->getType())
@@ -333,6 +342,7 @@ void Game::update(sf::Vector2i mousePos)
 					break;
 			}
 
+			//Clear the throwable when the effect has been placed
 			delete  m_vThrowables.at(i);
 			m_vThrowables.at(i) = NULL;
 			m_vThrowables.erase(m_vThrowables.begin() + i);
@@ -385,18 +395,21 @@ void Game::update(sf::Vector2i mousePos)
 	{
 		m_vCharacters.at(i)->update(); //Update data and states
 	}
+
+	//Manual Mode
 	if (m_vUnits.size() > 0)
 	{
 		if (m_vUnits.at(0)->bManualControls)
 		{
-			m_vUnits.at(0)->lookAt(sf::Vector2f(mousePos));
+			m_vUnits.at(0)->lookAt(sf::Vector2f(mousePos)); //Aiming
 
+			//If the mouse is within the window draw the crosshair and allow shooting command
 			if (mousePos.x > m_CurrentMap->getPosition().x &&
 				mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
 				mousePos.y > m_CurrentMap->getPosition().y &&
 				mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 			{
-				bDrawCrosshair = true;
+				//If left click is pressed shoot weapon
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 					m_vUnits.at(0)->shoot();
@@ -404,10 +417,10 @@ void Game::update(sf::Vector2i mousePos)
 			}
 			else
 			{
-				bDrawCrosshair = false;
+				m_bDrawCrosshair = false;
 			}
 
-			//Window Collision
+			//Manual character Window Collision
 			if (m_vUnits.at(0)->getRect().left + m_vUnits.at(0)->getRect().width > m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x)
 			{
 				m_vUnits.at(0)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x - (m_vUnits.at(0)->getRect().width/2), m_vUnits.at(0)->getPosition().y));
@@ -425,15 +438,16 @@ void Game::update(sf::Vector2i mousePos)
 				m_vUnits.at(0)->setPosition(sf::Vector2f(m_vUnits.at(0)->getPosition().x, m_CurrentMap->getPosition().y + (m_vUnits.at(0)->getRect().height / 2)));
 			}
 			
-			//Wall Collision
+			// Manual character wall Collision
 			for (int j = 0; j < m_vWalls.size(); j++)
 			{
 				CollideTool.AABBBoxCollision(m_vUnits.at(0), m_vWalls.at(j));
 			}
 
-			if (bDrawCrosshair)
+			//Only update crosshair if its being drawn
+			if (m_bDrawCrosshair)
 			{
-				Crosshair.setPosition(sf::Vector2f(mousePos));
+				m_Crosshair.setPosition(sf::Vector2f(mousePos));
 			}
 		}
 	}
@@ -448,7 +462,6 @@ void Game::update(sf::Vector2i mousePos)
 		
 	}
 	
-
 	//Perform checks between characters
 	characterInteractions(m_vUnits, m_vEnemies);
 	characterInteractions(m_vEnemies, m_vUnits);
@@ -539,7 +552,6 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 			}
 		}
 
-		
 		//Check against every character in the second container
 		for (int j = 0; j < vCharSet2.size(); j++)
 		{
@@ -570,7 +582,7 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 		{
 			switch (keyCode.key.code)
 			{
-				case sf::Keyboard::M:
+				case sf::Keyboard::M: //Toggle manual controls
 					if (m_vUnits.size() > 0)
 					{
 						m_vUnits.at(0)->toggleManualControls();
@@ -578,30 +590,42 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 					break;
 
 				case sf::Keyboard::R:
-					if (m_vUnits.size() > 0)
+					if (m_vUnits.size() > 0) //Manual reload
 					{
 						if (m_vUnits.at(0)->bManualControls)
 						{
 							m_vUnits.at(0)->getWeapon()->reload();
 						}
 					}
-					if (m_CurrentSettings->debugActive())
+					break;
+
+				case sf::Keyboard::H://Throw Rock
+					if (m_vUnits.size() > 0)
 					{
-						m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+						if (m_vUnits.at(0)->bManualControls)
+						{
+							m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+						}
 					}
 					break;
 
-				case sf::Keyboard::G:
-					if (m_CurrentSettings->debugActive())
+				case sf::Keyboard::G: //Throw grenade
+					if (m_vUnits.size() > 0)
 					{
-						m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+						if (m_vUnits.at(0)->bManualControls)
+						{
+							m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+						}
 					}
 					break;
 
-				case sf::Keyboard::F:
-					if (m_CurrentSettings->debugActive())
+				case sf::Keyboard::F: //Throw flashbang
+					if (m_vUnits.size() > 0)
 					{
-						m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+						if (m_vUnits.at(0)->bManualControls)
+						{
+							m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+						}
 					}
 					break;
 			}
@@ -680,6 +704,7 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				break;
 
 			case sf::Mouse::Right:
+				//Sets a calculated path
 				if (mousePos.x > m_CurrentMap->getPosition().x &&
 					mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
 					mousePos.y > m_CurrentMap->getPosition().y &&
@@ -999,9 +1024,9 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 	if (m_vUnits.size() > 0)
 	{
-		if (m_vUnits.at(0)->bManualControls && bDrawCrosshair)
+		if (m_vUnits.at(0)->bManualControls && m_bDrawCrosshair)
 		{
-			target.draw(Crosshair);
+			target.draw(m_Crosshair);
 		}
 	}
 

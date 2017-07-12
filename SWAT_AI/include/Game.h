@@ -25,8 +25,8 @@ class Game : public ContentScreen
 		sf::RectangleShape m_Toolbar; //!< Holds the toolbar across the top of the screen
 		std::vector<HUDWindow*> m_vUnitUI; //!< Holds the units UI boxes
 
-		sf::RectangleShape Crosshair;
-		bool bDrawCrosshair;
+		sf::RectangleShape m_Crosshair;
+		bool m_bDrawCrosshair;
 
 		//Objects
 		std::vector<Character*> m_vCharacters; //!< Holds all of the characters
@@ -39,8 +39,9 @@ class Game : public ContentScreen
 		std::vector<Throwable*> m_vThrowables; //Any thrown objects
 		std::vector<WaveEffect*> m_vWaves;
 
-		Collider CollideTool;
 		Button* exitButton; //!< Holds the button which exits to the menu
+
+		Collider CollideTool;
 
 		//DEBUGGING LINES
 		sf::VertexArray m_EdgeLines; //!< Holds the debug lines for the edges of walls

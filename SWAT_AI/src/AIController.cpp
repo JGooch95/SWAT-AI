@@ -11,11 +11,11 @@ AIController::AIController()
 	m_CurrentSettings = Settings::getInstance();
 	m_MovementState = IDLE;
 	m_AimingState = SEARCH_SWEEP;
-	patrolNode = 0;
-	patrolDirection = 1;
+	m_iPatrolNode = 0;
+	m_iPatrolDirection = 1;
 	m_iAimingDirection = 1;
 	m_CurrentTarget = NULL;
-	spinAmount = 0;
+	m_fSpinAmount = 0;
 	m_Pathfinder.setup();
 
 	m_PathLine.setPrimitiveType(sf::LinesStrip);
@@ -23,7 +23,7 @@ AIController::AIController()
 
 void AIController::init(Character* newCharacter)
 {
-	CurrentCharacter = newCharacter;
+	m_CurrentCharacter = newCharacter;
 }
 
 void AIController::update()
@@ -36,39 +36,41 @@ void AIController::update()
 			float fCone = 30.0f; //Holds the breadth of the cone to turn between
 
 								 //Sweeps between the cone extents
-			if (CurrentCharacter->m_fAimingAngle > fCone)
+			if (m_CurrentCharacter->m_fAimingAngle > fCone)
 			{
-				CurrentCharacter->m_fAimingAngle = fCone;
+				m_CurrentCharacter->m_fAimingAngle = fCone;
 				m_iAimingDirection *= -1;
 			}
-			if (CurrentCharacter->m_fAimingAngle < -fCone)
+			if (m_CurrentCharacter->m_fAimingAngle < -fCone)
 			{
-				CurrentCharacter->m_fAimingAngle = -fCone;
+				m_CurrentCharacter->m_fAimingAngle = -fCone;
 				m_iAimingDirection *= -1;
 			}
 
 			//Aims at the new amgle
-			CurrentCharacter->m_fAimingAngle += m_iAimingDirection;
-			CurrentCharacter->lookAt(CurrentCharacter->m_fMovementAngle + CurrentCharacter->m_fAimingAngle);
+			m_CurrentCharacter->m_fAimingAngle += m_iAimingDirection;
+			m_CurrentCharacter->lookAt(m_CurrentCharacter->m_fMovementAngle + m_CurrentCharacter->m_fAimingAngle);
 			break;
 		}
 		case SEARCH_SPIN:
 		{
 			if (m_CurrentTarget == NULL)
 			{
-				spinAmount++;
-				if (spinAmount >= 360)
+				//Spins 360 degrees from current angle
+				m_fSpinAmount++;
+				if (m_fSpinAmount >= 360)
 				{
-					spinAmount = 0;
+					m_fSpinAmount = 0;
 					m_AimingState = SEARCH_SWEEP;
 				}
 
-				CurrentCharacter->m_fAimingAngle = spinAmount;
-				CurrentCharacter->lookAt(CurrentCharacter->m_fMovementAngle + CurrentCharacter->m_fAimingAngle);
+				m_CurrentCharacter->m_fAimingAngle = m_fSpinAmount;
+				m_CurrentCharacter->lookAt(m_CurrentCharacter->m_fMovementAngle + m_CurrentCharacter->m_fAimingAngle);
 			}
 			else
 			{
-				spinAmount = 0;
+				//If there is a target aim at them
+				m_fSpinAmount = 0;
 				m_AimingState = AIM;
 			}
 			break;
@@ -78,7 +80,7 @@ void AIController::update()
 			//If there is a target
 			if (m_CurrentTarget != NULL)
 			{
-				CurrentCharacter->lookAt(m_CurrentTarget->getPosition()); //Aim at the target
+				m_CurrentCharacter->lookAt(m_CurrentTarget->getPosition()); //Aim at the target
 
 				if (m_CurrentTarget->isDead()) //If the target is dead
 				{
@@ -87,7 +89,7 @@ void AIController::update()
 				}
 				else
 				{
-					CurrentCharacter->shoot();
+					m_CurrentCharacter->shoot();
 					m_MovementState = IDLE;
 				}
 			}
@@ -102,6 +104,7 @@ void AIController::update()
 	switch (m_MovementState)
 	{
 		case IDLE:
+			//Move to any available paths
 			if (m_Path.size() > 0)
 			{
 				m_MovementState = MOVE_TO_SPOT;
@@ -123,27 +126,27 @@ void AIController::move()
 	{
 		if (m_PatrolPath.size() > 0)
 		{
-			m_PathNode = *m_PatrolPath.at(patrolNode);
+			m_PathNode = *m_PatrolPath.at(m_iPatrolNode);
 
 			if (m_PatrolPath.at(m_PatrolPath.size() - 1)->parent == NULL)
 			{
-				if (patrolNode >= m_PatrolPath.size() - 1)
+				if (m_iPatrolNode >= m_PatrolPath.size() - 1)
 				{
-					patrolNode = m_PatrolPath.size() - 1;
-					patrolDirection = -1;
+					m_iPatrolNode = m_PatrolPath.size() - 1;
+					m_iPatrolDirection = -1;
 				}
-				else if (patrolNode <= 0)
+				else if (m_iPatrolNode <= 0)
 				{
-					patrolNode = 0;
-					patrolDirection = 1;
+					m_iPatrolNode = 0;
+					m_iPatrolDirection = 1;
 				}
 			}
-			else if (patrolNode == m_PatrolPath.size() - 1)
+			else if (m_iPatrolNode == m_PatrolPath.size() - 1)
 			{
-				patrolNode = 0;
+				m_iPatrolNode = 0;
 			}
 
-			patrolNode += patrolDirection;
+			m_iPatrolNode += m_iPatrolDirection;
 
 			//Sets up the path line ready to start drawing a new path
 			m_PathLine.clear();
@@ -208,6 +211,7 @@ void AIController::setTarget(Character * newTarget)
 
 void AIController::setPatrolPath(std::vector<int> viPathNodes)
 {
+	//Reads the patrol path loaded and creates the patrol path for use
 	for (int i = 0; i < viPathNodes.size(); i++)
 	{
 		m_PatrolPath.push_back(new Node);

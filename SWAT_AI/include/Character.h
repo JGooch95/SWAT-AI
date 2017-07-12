@@ -39,7 +39,7 @@ class Character : public Object
 		std::vector<loadoutItem> m_vLoadout; //!< The equipment the character has equipped
 
 		//AI
-		AIController* m_AI;
+		AIController* m_AI; // Handles the AI
 
 		//Debug lines
 		sf::VertexArray m_OrientationLine; //!< Shows the direction the unit is facing
@@ -55,7 +55,8 @@ class Character : public Object
 		bool m_bDrawVision; //!< States whether vision cones are drawn
 		bool m_bDead; //!< States whether the character is dead
 
-		float fMoveSpeed;
+		float m_fMoveSpeed;//Holds the movespeed of the character
+
 		/// \brief Draws all of the characters's entities to the screen.
 		/// \param target Holds where to draw the entities to.		   
 	    ///	\param states 
@@ -131,13 +132,6 @@ class Character : public Object
 		void setLoadoutItem(int iIndex, loadoutItem itemType);
 
 		void toggleManualControls();
-		/// \brief Sets the movement state of the AI
-		/// \param States The state to switch to
-		//void setMovementState(States newState);
-
-		/// \brief Sets the aiming state of the AI
-		/// \param States The state to switch to
-		//void setAimingState(States newState);
 
 		//Getters
 		/// \brief Gets the rotation of the character

@@ -1,0 +1,18 @@
+CONTROLS:
+, = Debug Mode Toggle
+M = Manual control mode
+Left click = button clicking
+
+Manual Controls
+Left click = Shoot
+R = reload
+Mouse = Aim
+W = Forward
+A = Left
+S = Back
+D = right
+
+Debug Mode Controls
+R = Throw Rock
+G = Throw Grenade
+F = Flashbang

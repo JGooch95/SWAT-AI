@@ -33,7 +33,7 @@ class Throwable : public Object
 
 	public:
 		Throwable(throwableType newType, sf::Vector2i startPos);
-		void update(sf::Vector2i pos);
+		void update(sf::Vector2f startPos, sf::Vector2i pos);
 		void aimAt(sf::Vector2i pos);
 		void throwAt(sf::Vector2i pos);
 		void updateUI();

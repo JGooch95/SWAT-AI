@@ -46,7 +46,7 @@ Throwable::Throwable(throwableType newType, sf::Vector2i startPos)
 	m_CurrentState = Aiming;
 }
 
-void Throwable::update(sf::Vector2i pos)
+void Throwable::update(sf::Vector2f startPos, sf::Vector2i pos)
 {
 	switch (m_CurrentState)
 	{
@@ -56,8 +56,10 @@ void Throwable::update(sf::Vector2i pos)
 			//If the user has stopped holding
 			if (m_CurrentType == Grenade && sf::Keyboard::isKeyPressed(sf::Keyboard::G) ||
 				m_CurrentType == Flashbang && sf::Keyboard::isKeyPressed(sf::Keyboard::F) ||
-				m_CurrentType == Rock && sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+				m_CurrentType == Rock && sf::Keyboard::isKeyPressed(sf::Keyboard::H))
 			{
+				m_ThrowLine[0].position = startPos;
+				setPosition(sf::Vector2f(startPos));
 			}
 			else
 			{

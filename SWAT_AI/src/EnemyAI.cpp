@@ -2,18 +2,18 @@
 
 EnemyAI::EnemyAI()
 {
-	fLastHealth = 0.0f;
+	m_fLastHealth = 0.0f;
 }
 
 void EnemyAI::update()
 {
 	//If damaged search around character
-	if (CurrentCharacter->getHealthData().lower < fLastHealth && m_AimingState != AIM)
+	if (m_CurrentCharacter->getHealthData().lower < m_fLastHealth && m_AimingState != AIM)
 	{
 		setAimingState(SEARCH_SPIN);
 		setMovementState(IDLE);
 	}
-	fLastHealth = CurrentCharacter->getHealthData().lower;
+	m_fLastHealth = m_CurrentCharacter->getHealthData().lower; //Update health for next check
 
 	//Moves the player 
 	switch (m_AimingState)
@@ -22,40 +22,42 @@ void EnemyAI::update()
 		{
 			float fCone = 30.0f; //Holds the breadth of the cone to turn between
 
-								 //Sweeps between the cone extents
-			if (CurrentCharacter->m_fAimingAngle > fCone)
+			 //Sweeps between the cone extents
+			if (m_CurrentCharacter->m_fAimingAngle > fCone)
 			{
-				CurrentCharacter->m_fAimingAngle = fCone;
+				m_CurrentCharacter->m_fAimingAngle = fCone;
 				m_iAimingDirection *= -1;
 			}
-			if (CurrentCharacter->m_fAimingAngle < -fCone)
+			if (m_CurrentCharacter->m_fAimingAngle < -fCone)
 			{
-				CurrentCharacter->m_fAimingAngle = -fCone;
+				m_CurrentCharacter->m_fAimingAngle = -fCone;
 				m_iAimingDirection *= -1;
 			}
 
 			//Aims at the new amgle
-			CurrentCharacter->m_fAimingAngle += m_iAimingDirection;
-			CurrentCharacter->lookAt(CurrentCharacter->m_fMovementAngle + CurrentCharacter->m_fAimingAngle);
+			m_CurrentCharacter->m_fAimingAngle += m_iAimingDirection;
+			m_CurrentCharacter->lookAt(m_CurrentCharacter->m_fMovementAngle + m_CurrentCharacter->m_fAimingAngle);
 			break;
 		}
 		case SEARCH_SPIN:
 		{
 			if (m_CurrentTarget == NULL)
 			{
-				spinAmount++;
-				if (spinAmount >= 360)
+				//Spins 360 degrees from current angle
+				m_fSpinAmount++;
+				if (m_fSpinAmount >= 360)
 				{
-					spinAmount = 0;
+					m_fSpinAmount = 0;
 					m_AimingState = SEARCH_SWEEP;
 				}
 
-				CurrentCharacter->m_fAimingAngle = CurrentCharacter->m_fAimingAngle + 1;
-				CurrentCharacter->lookAt(CurrentCharacter->m_fMovementAngle + CurrentCharacter->m_fAimingAngle);
+				m_CurrentCharacter->m_fAimingAngle = m_CurrentCharacter->m_fAimingAngle + 1;
+				m_CurrentCharacter->lookAt(m_CurrentCharacter->m_fMovementAngle + m_CurrentCharacter->m_fAimingAngle);
 			}
 			else
 			{
-				spinAmount = 0;
+				//If there is a target aim at them
+				m_fSpinAmount = 0;
 				m_AimingState = AIM;
 			}
 			break;
@@ -65,8 +67,8 @@ void EnemyAI::update()
 			//If there is a target
 			if (m_CurrentTarget != NULL)
 			{
-				CurrentCharacter->lookAt(m_CurrentTarget->getPosition()); //Aim at the target
-				lastPos = m_CurrentTarget->getPosition();
+				m_CurrentCharacter->lookAt(m_CurrentTarget->getPosition()); //Aim at the target
+				m_LastPos = m_CurrentTarget->getPosition();
 
 				if (m_CurrentTarget->isDead()) //If the target is dead
 				{
@@ -75,24 +77,25 @@ void EnemyAI::update()
 				}
 				else
 				{
-					CurrentCharacter->shoot();
+					m_CurrentCharacter->shoot();
 				}
 			}
 			else
 			{
+				//If the enemy goes out of view search their last seen location
 				m_MovementState = INVESTIGATING;
-				focusPoint = lastPos;
-				m_InvestigationArea = lastPos;
-				setPath(CurrentCharacter->getPosition(), m_InvestigationArea);
+				focusPoint = m_LastPos;
+				m_InvestigationArea = m_LastPos;
+				setPath(m_CurrentCharacter->getPosition(), m_InvestigationArea);
 				move();
-
 				m_AimingState = FOCUS; //Switch states
 			}
 			break;
 		}
 		case FOCUS:
 		{
-			CurrentCharacter->lookAt(focusPoint);
+			//Focus on a specific location
+			m_CurrentCharacter->lookAt(focusPoint);
 			if (m_MovementState != INVESTIGATING)
 			{
 				m_AimingState = SEARCH_SWEEP;
@@ -104,21 +107,24 @@ void EnemyAI::update()
 		switch (m_MovementState)
 		{
 		case IDLE:
-			if (m_AimingState != SEARCH_SPIN )
+			if (m_AimingState != SEARCH_SPIN ) //Dont move when spinning
 			{
+				//If there is a path follow it
 				if (m_Path.size() > 0)
 				{
 					m_MovementState = MOVE_TO_SPOT;
 					m_PathNode = *m_Path.at(0);
 				}
+				//If there is a patrol path
 				else if (m_PatrolPath.size() > 0)
 				{
 					if (m_AimingState != AIM)
 					{
-						sf::Vector2f destination = sf::Vector2f((((m_PatrolPath.at(patrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
-							(((m_PatrolPath.at(patrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
+						//Create a path to the patrol nodes
+						sf::Vector2f destination = sf::Vector2f((((m_PatrolPath.at(m_iPatrolNode)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
+							(((m_PatrolPath.at(m_iPatrolNode)->index / (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().y) + (m_CurrentMap->getTileSize().y / 2)));
 						destination += m_CurrentMap->getPosition();
-						setPath(CurrentCharacter->getPosition(), destination);
+						setPath(m_CurrentCharacter->getPosition(), destination);
 
 						m_MovementState = MOVE_TO_PATROL;
 						if (m_Path.size() > 0)
@@ -132,6 +138,7 @@ void EnemyAI::update()
 
 		case PATROL:
 		{
+			//If the patrol is empty or there is a path go back to idle
 			if (m_PatrolPath.size() <= 0 || m_Path.size() > 0)
 			{
 				m_MovementState = IDLE;
@@ -140,6 +147,7 @@ void EnemyAI::update()
 		}
 
 		case MOVE_TO_SPOT:
+			//If the  path is empty go back to idle
 			if (m_Path.empty())
 			{
 				m_MovementState = IDLE;
@@ -148,18 +156,22 @@ void EnemyAI::update()
 			break;
 
 		case MOVE_TO_PATROL:
+			//If the  path is empty start patrolling
 			if (m_Path.empty())
 			{
 				m_MovementState = PATROL;
-				m_PathNode = *m_PatrolPath.at(patrolNode);
+				m_PathNode = *m_PatrolPath.at(m_iPatrolNode);
 			}
 			break;
 
 		case INVESTIGATING:
+			//Head to the location
 			if (m_AimingState != AIM)
 			{
 				m_AimingState = FOCUS;
-				if (Util::magnitude(CurrentCharacter->getPosition() - m_InvestigationArea) < CurrentCharacter->getSize().y)
+
+				//When the location is reached search the area
+				if (Util::magnitude(m_CurrentCharacter->getPosition() - m_InvestigationArea) < m_CurrentCharacter->getSize().y)
 				{
 					setAimingState(SEARCH_SPIN);
 					setMovementState(IDLE);
@@ -171,14 +183,15 @@ void EnemyAI::update()
 
 bool EnemyAI::hearsSound(WaveEffect* soundArea)
 {
+	//If a sound is heard then head to the location and investigate
 	if (m_AimingState != AIM && m_AimingState != SEARCH_SPIN && m_MovementState != INVESTIGATING)
 	{
-		if ((Util::magnitude(soundArea->getPosition() - CurrentCharacter->getPosition()) < soundArea->getRadius() + CurrentCharacter->getSize().y))
+		if ((Util::magnitude(soundArea->getPosition() - m_CurrentCharacter->getPosition()) < soundArea->getRadius() + m_CurrentCharacter->getSize().y))
 		{
 			m_MovementState = INVESTIGATING;
 			focusPoint = soundArea->getPosition();
 			m_InvestigationArea = soundArea->getPosition();
-			setPath(CurrentCharacter->getPosition(), m_InvestigationArea);
+			setPath(m_CurrentCharacter->getPosition(), m_InvestigationArea);
 			move();
 			return true;
 		}
