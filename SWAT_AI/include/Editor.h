@@ -70,6 +70,7 @@ class Editor : public ContentScreen
 		/// \param mousePos The current position of the mouse
 		void update(sf::Vector2i mousePos);
 
+		void updateScaling();
 		int processInput(sf::Event keyCode, sf::Vector2i mousePos);
 
 		/// \brief Saves the map to a file

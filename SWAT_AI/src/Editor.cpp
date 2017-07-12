@@ -2,12 +2,6 @@
 
 Editor::Editor(sf::Vector2u windowSize)
 {
-	//Links the Asset managers
-	m_CurrentMap = Map::getInstance();
-	m_CurrentSettings = Settings::getInstance();
-	m_Textures = TextureLoader::getInstance();
-	m_Fonts = FontManager::getInstance();
-
 	//Sets up the toolbar 
 	m_Toolbar.setPosition(0, 0);
 	m_Toolbar.setFillColor(sf::Color(70, 70, 70, 255));
@@ -171,6 +165,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	PathLine.setPrimitiveType(sf::LinesStrip);
 
 	loadMap(" ");
+	updateScaling();
 }
 
 void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std::vector<int> iTexIndex)
@@ -216,6 +211,7 @@ void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std:
 
 void Editor::updatePathUI()
 {
+	
 	//Clear the path UI
 	m_vEnemyCircles.clear();
 	PathLine.clear();
@@ -271,32 +267,6 @@ void Editor::update(sf::Vector2i mousePos)
 	for (int i = 0; i < m_vFloorButtons.size(); i++)
 	{
 		m_vFloorButtons.at(i)->update(mousePos);
-	}
-
-	//Positions all items that exist within the world objects at their respective grid space
-	for (int i = 0; i < m_vItems.size(); i++)
-	{
-		for (int j = 0; j < m_vItems.at(i).size(); j++)
-		{
-			if (m_vItems.at(i).at(j) != NULL)
-			{
-				m_vItems.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
-				m_vItems.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
-			}
-		}
-	}
-
-	//Positions all floor items that exist within the world at their respective grid space
-	for (int i = 0; i < m_vFloorTiles.size(); i++)
-	{
-		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
-		{
-			if (m_vFloorTiles.at(i).at(j) != NULL)
-			{
-				m_vFloorTiles.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
-				m_vFloorTiles.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
-			}
-		}
 	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -426,6 +396,35 @@ void Editor::update(sf::Vector2i mousePos)
 						}
 					}
 					break;
+			}
+		}
+	}
+}
+
+void Editor::updateScaling()
+{
+	//Positions all items that exist within the world objects at their respective grid space
+	for (int i = 0; i < m_vItems.size(); i++)
+	{
+		for (int j = 0; j < m_vItems.at(i).size(); j++)
+		{
+			if (m_vItems.at(i).at(j) != NULL)
+			{
+				m_vItems.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
+				m_vItems.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
+			}
+		}
+	}
+
+	//Positions all floor items that exist within the world at their respective grid space
+	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	{
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
+		{
+			if (m_vFloorTiles.at(i).at(j) != NULL)
+			{
+				m_vFloorTiles.at(i).at(j)->setSize(m_CurrentMap->getTileSize());
+				m_vFloorTiles.at(i).at(j)->setPosition(sf::Vector2f((j * m_CurrentMap->getTileSize().x) + m_CurrentMap->getPosition().x, (i * m_CurrentMap->getTileSize().y) + m_CurrentMap->getPosition().y));
 			}
 		}
 	}
@@ -767,6 +766,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 			break;
 		}
 	}
+	updateScaling();
 
 	return S_None;
 }

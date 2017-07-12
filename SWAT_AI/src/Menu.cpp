@@ -2,9 +2,6 @@
 
 Menu::Menu(sf::Vector2u windowSize)
 {
-	m_Textures = TextureLoader::getInstance();
-	m_Fonts = FontManager::getInstance();
-
 	//Sets up the background
 	m_Background.setSize(sf::Vector2f(windowSize.x, windowSize.y));
 	m_Background.setFillColor(sf::Color(77,77,78,255));
@@ -93,7 +90,7 @@ int Menu::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 			break;
 		}
 	}
-	return 0;
+	return S_None;
 }
 
 void Menu::draw(sf::RenderTarget &target, sf::RenderStates states) const

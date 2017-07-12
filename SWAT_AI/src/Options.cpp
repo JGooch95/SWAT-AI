@@ -2,12 +2,6 @@
 
 Options::Options(sf::Vector2u windowSize)
 {
-	//Links asset managers and settings
-	m_CurrentSettings = Settings::getInstance();
-	m_Textures = TextureLoader::getInstance();
-	m_Fonts = FontManager::getInstance();
-	m_SoundManager = SoundManager::getInstance();
-
 	//Sets up the background
 	m_Background.setSize(sf::Vector2f(windowSize.x, windowSize.y));
 	m_Background.setFillColor(sf::Color(77, 77, 78, 255));

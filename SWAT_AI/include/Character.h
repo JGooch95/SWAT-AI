@@ -9,9 +9,11 @@
 #include "MathUtils.h"
 #include "TextureLoader.h"
 #include "WaveEffect.h"
+#include "AIController.h"
 
 enum loadoutItem {Lazer, Silencer, Scope, None};
-enum States { IDLE, SEARCH_SWEEP, SEARCH_SPIN, FOCUS, AIM, INVESTIGATING, PATROL, MOVE_TO_SPOT };
+//enum States { IDLE, SEARCH_SWEEP, SEARCH_SPIN, FOCUS, AIM, INVESTIGATING, PATROL, MOVE_TO_SPOT };
+class AIController;
 
 /// \brief An AI character which performs the main actions within the game
 class Character : public Object
@@ -37,22 +39,11 @@ class Character : public Object
 		std::vector<loadoutItem> m_vLoadout; //!< The equipment the character has equipped
 
 		//AI
-		States m_AimingState; //!< The current state of the aiming state machine
-		States m_MovementState;  //!< The current state of the movement state machine
-		AStar m_Pathfinder;  //!< The pathfinder used for navigation
-		sf::Vector2f focusPoint; //!< The focus point used when in the focus aiming state
-		int m_iAimingDirection; //!< Holds the direction the character aims towards when doing a sweep search
-		std::deque<Node*> m_Path; //!< Holds the current movement path
-		std::deque<Node*> m_PatrolPath; //!< The path used for enemy patrols
-		Character* m_CurrentTarget; //!< Holds the target the character is aiming towards
-		int patrolNode; //!< The last patrol node reached
-		int patrolDirection; //!< The direction the patrol is followed in
-		float spinAmount; //!< The amount the character has spinned in the search spin state
+		AIController* m_AI;
 
 		//Debug lines
 		sf::VertexArray m_OrientationLine; //!< Shows the direction the unit is facing
 		sf::VertexArray m_MovementLine; //!< Shows the direction the unit is facing
-		sf::VertexArray m_PathLine; //!< Shows the path the unit is following
 		sf::VertexArray m_CollisionLine; //!< Shows the line used for shooting collisions
 		sf::VertexArray m_VisionRays; //!< Holds the character's vision cone
 		sf::VertexArray m_VisionLines; //!< Holds the character's vision cone rays
@@ -60,20 +51,21 @@ class Character : public Object
 		//Other data
 		classType m_CurrentClass; //!< Holds the class of the current unit
 		Util::Limits m_HealthLevels; //!< Holds the characters health data
-		float m_fMovementAngle; //!< Holds the angle at which the character is heading towards
-		float m_fAimingAngle; //!< Holds the angle the character is aiming towards
 		float fDistanceSinceStep; //!< Holds how many pixels the unit has moved in a step
 		bool m_bDrawVision; //!< States whether vision cones are drawn
 		bool m_bDead; //!< States whether the character is dead
 
-		sf::Vector2f m_InvestigationArea; //!< States where the character is investigating
-
+		float fMoveSpeed;
 		/// \brief Draws all of the characters's entities to the screen.
 		/// \param target Holds where to draw the entities to.		   
 	    ///	\param states 
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 	public:
+		float m_fMovementAngle; //!< Holds the angle at which the character is heading towards
+		float m_fAimingAngle; //!< Holds the angle the character is aiming towards
+		bool bManualControls;
+
 		/// \brief Default constructor
 		Character();
 
@@ -110,6 +102,7 @@ class Character : public Object
 		/// \param viPathNodes Holds the indexes for the nodes to move to
 		void setPatrolPath(std::vector<int> viPathNodes);
 
+		void shoot();
 		//Setters
 		/// \brief Sets the health of the character
 		/// \param fLevel The amount of health
@@ -137,13 +130,14 @@ class Character : public Object
 		/// \param itemType The item that is being switched to
 		void setLoadoutItem(int iIndex, loadoutItem itemType);
 
+		void toggleManualControls();
 		/// \brief Sets the movement state of the AI
 		/// \param States The state to switch to
-		void setMovementState(States newState);
+		//void setMovementState(States newState);
 
 		/// \brief Sets the aiming state of the AI
 		/// \param States The state to switch to
-		void setAimingState(States newState);
+		//void setAimingState(States newState);
 
 		//Getters
 		/// \brief Gets the rotation of the character
@@ -210,9 +204,13 @@ class Character : public Object
 		/// \return returns the characters emitted sound waves
 		std::vector<WaveEffect*>* getSoundWaves();
 
+		AIController* getAI();
+
+		void useAI(AIController * newAI);
+
 		/// \brief Gets the state of the aiming state machine
 		/// \return returns the state of the aiming state machine
-		States getAimingState();
+		//States getAimingState();
 
 		/// \brief Default deconstructor
 		~Character();

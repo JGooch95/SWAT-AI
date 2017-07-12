@@ -1,2 +1,8 @@
-﻿  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.exe
+﻿  Game.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(8): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(12): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(229): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(232): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\game.cpp(465): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.exe
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Debug\SWAT_AI.pdb (Partial PDB)

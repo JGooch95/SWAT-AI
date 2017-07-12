@@ -8,10 +8,6 @@ Game::Game(sf::Vector2u windowSize)
 	m_Toolbar.setSize(sf::Vector2f(windowSize.x, windowSize.y / 20));
 
 	//Sets up the default map
-	m_CurrentMap = Map::getInstance();
-	m_CurrentSettings = Settings::getInstance();
-	m_Textures = TextureLoader::getInstance();
-
 	m_CurrentMap->setup(
 		sf::FloatRect(sf::Vector2f(0, m_Toolbar.getSize().y), sf::Vector2f(windowSize) - sf::Vector2f(windowSize.x/3, m_Toolbar.getSize().y)),
 		sf::Vector2f(20, 20)
@@ -145,6 +141,7 @@ Game::Game(sf::Vector2u windowSize)
 					m_vEnemies.push_back(new Character);
 					m_vEnemies.at(m_vEnemies.size() - 1)->setTexture(m_Textures->getTexture(2)); //Sets the unit texture
 					m_vEnemies.at(m_vEnemies.size() - 1)->setClass(Assault);
+					m_vEnemies.at(m_vEnemies.size() - 1)->useAI(new EnemyAI());
 					m_vCharacters.push_back(m_vEnemies.at(m_vEnemies.size() - 1));
 				}
 
@@ -279,6 +276,11 @@ Game::Game(sf::Vector2u windowSize)
 	exitButton->setBackgroundColor(sf::Color(70, 70, 70, 255));
 
 	loadPatrolPaths("Assets/Maps/CustomMapPaths.txt");
+
+	Crosshair.setTexture(m_Textures->getTexture(38));
+	Crosshair.setSize(sf::Vector2f(std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y), std::min(m_CurrentMap->getTileSize().x, m_CurrentMap->getTileSize().y)));
+	Crosshair.setOrigin(Crosshair.getSize().x / 2, Crosshair.getSize().y / 2);
+	Crosshair.setFillColor(sf::Color(255, 255, 255, 155));
 }
 
 void Game::update(sf::Vector2i mousePos)
@@ -362,7 +364,6 @@ void Game::update(sf::Vector2i mousePos)
 	m_CurrentMap->m_vEdges.insert(std::end(m_CurrentMap->m_vEdges), std::begin(m_CurrentMap->m_vWallEdges), std::end(m_CurrentMap->m_vWallEdges));
 	m_CurrentMap->m_vEdges.insert(std::end(m_CurrentMap->m_vEdges), std::begin(m_CurrentMap->m_vTempEdges), std::end(m_CurrentMap->m_vTempEdges)); //Adds all of the wall edges to the end of the checked edges
 
-	
 	if (m_CurrentSettings->debugActive())
 	{
 		//Sets up the debug lines for the edges of the walls
@@ -383,12 +384,70 @@ void Game::update(sf::Vector2i mousePos)
 	for (int i = 0; i < m_vCharacters.size(); i++)
 	{
 		m_vCharacters.at(i)->update(); //Update data and states
+	}
+	if (m_vUnits.size() > 0)
+	{
+		if (m_vUnits.at(0)->bManualControls)
+		{
+			m_vUnits.at(0)->lookAt(sf::Vector2f(mousePos));
+
+			if (mousePos.x > m_CurrentMap->getPosition().x &&
+				mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+				mousePos.y > m_CurrentMap->getPosition().y &&
+				mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
+			{
+				bDrawCrosshair = true;
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					m_vUnits.at(0)->shoot();
+				}
+			}
+			else
+			{
+				bDrawCrosshair = false;
+			}
+
+			//Window Collision
+			if (m_vUnits.at(0)->getRect().left + m_vUnits.at(0)->getRect().width > m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x)
+			{
+				m_vUnits.at(0)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x - (m_vUnits.at(0)->getRect().width/2), m_vUnits.at(0)->getPosition().y));
+			}
+			if (m_vUnits.at(0)->getRect().left < m_CurrentMap->getPosition().x)
+			{
+				m_vUnits.at(0)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + (m_vUnits.at(0)->getRect().width / 2), m_vUnits.at(0)->getPosition().y));
+			}
+			if (m_vUnits.at(0)->getRect().top + m_vUnits.at(0)->getRect().height > m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
+			{
+				m_vUnits.at(0)->setPosition(sf::Vector2f(m_vUnits.at(0)->getPosition().x, m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y - (m_vUnits.at(0)->getRect().height / 2)));
+			}
+			if (m_vUnits.at(0)->getRect().top < m_CurrentMap->getPosition().y)
+			{
+				m_vUnits.at(0)->setPosition(sf::Vector2f(m_vUnits.at(0)->getPosition().x, m_CurrentMap->getPosition().y + (m_vUnits.at(0)->getRect().height / 2)));
+			}
+			
+			//Wall Collision
+			for (int j = 0; j < m_vWalls.size(); j++)
+			{
+				CollideTool.AABBBoxCollision(m_vUnits.at(0), m_vWalls.at(j));
+			}
+
+			if (bDrawCrosshair)
+			{
+				Crosshair.setPosition(sf::Vector2f(mousePos));
+			}
+		}
+	}
+
+	for (int i = 0; i < m_vCharacters.size(); i++)
+	{
 		if (!m_vCharacters.at(i)->isDead())
 		{
 			m_vCharacters.at(i)->lazerEdgeChecks(); //Perform checks for the aiming
 			m_vCharacters.at(i)->bulletEdgeChecks(); //Perform checks for any of the shot bullets
 		}
+		
 	}
+	
 
 	//Perform checks between characters
 	characterInteractions(m_vUnits, m_vEnemies);
@@ -477,14 +536,10 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 			if (iShot != -1)
 			{
 				vCharSet2.at(iShot)->setHealth(vCharSet2.at(iShot)->getHealthData().lower - vCharSet1.at(i)->getWeapon()->getDamage());
-
-				if (vCharSet2.at(iShot)->getAimingState() != AIM)
-				{
-					vCharSet2.at(iShot)->setAimingState(SEARCH_SPIN);
-				}
 			}
 		}
 
+		
 		//Check against every character in the second container
 		for (int j = 0; j < vCharSet2.size(); j++)
 		{
@@ -495,11 +550,9 @@ void Game::characterInteractions(std::vector<Character*> vCharSet1, std::vector<
 				{
 					for (int k = 0; k < vCharSet2.at(j)->getSoundWaves()->size(); k++)
 					{
-						if (vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k)))
-						{
-							vCharSet1.at(i)->setPath(vCharSet1.at(i)->getPosition(), vCharSet2.at(j)->getSoundWaves()->at(k)->getPosition());
-						}
+						vCharSet1.at(i)->hearsSound(vCharSet2.at(j)->getSoundWaves()->at(k));
 					}
+					
 				}
 			}
 		}
@@ -515,20 +568,42 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 			mousePos.y > m_CurrentMap->getPosition().y &&
 			mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 		{
-			if (m_CurrentSettings->debugActive())
+			switch (keyCode.key.code)
 			{
-				switch (keyCode.key.code)
-				{
-					case sf::Keyboard::R:
+				case sf::Keyboard::M:
+					if (m_vUnits.size() > 0)
+					{
+						m_vUnits.at(0)->toggleManualControls();
+					}
+					break;
+
+				case sf::Keyboard::R:
+					if (m_vUnits.size() > 0)
+					{
+						if (m_vUnits.at(0)->bManualControls)
+						{
+							m_vUnits.at(0)->getWeapon()->reload();
+						}
+					}
+					if (m_CurrentSettings->debugActive())
+					{
 						m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
-						break;
-					case sf::Keyboard::G:
+					}
+					break;
+
+				case sf::Keyboard::G:
+					if (m_CurrentSettings->debugActive())
+					{
 						m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
-						break;
-					case sf::Keyboard::F:
+					}
+					break;
+
+				case sf::Keyboard::F:
+					if (m_CurrentSettings->debugActive())
+					{
 						m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
-						break;
-				}
+					}
+					break;
 			}
 		}
 	}
@@ -605,10 +680,15 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				break;
 
 			case sf::Mouse::Right:
-				if (m_vUnits.size() > 0)
+				if (mousePos.x > m_CurrentMap->getPosition().x &&
+					mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+					mousePos.y > m_CurrentMap->getPosition().y &&
+					mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 				{
-					m_vUnits.at(0)->setMovementState(MOVE_TO_SPOT);
-					m_vUnits.at(0)->setPath(m_vUnits.at(0)->getPosition(), (sf::Vector2f)mousePos); //Sets a path towards the clicked area
+					if (m_vUnits.size() > 0)
+					{
+						m_vUnits.at(0)->setPath(m_vUnits.at(0)->getPosition(), (sf::Vector2f)mousePos); //Sets a path towards the clicked area
+					}
 				}
 				break;
 		}
@@ -915,6 +995,14 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	for (int i = 0; i < m_vUnitUI.size(); i++)
 	{
 		target.draw(*m_vUnitUI.at(i));
+	}
+
+	if (m_vUnits.size() > 0)
+	{
+		if (m_vUnits.at(0)->bManualControls && bDrawCrosshair)
+		{
+			target.draw(Crosshair);
+		}
 	}
 
 	//Draws the UI

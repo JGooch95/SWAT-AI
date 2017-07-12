@@ -202,10 +202,14 @@ void Weapon::shoot()
 
 void Weapon::reload()
 {
-	//Plays a reload sound and starts the reload duration
-	m_ReloadSound.play();
-	m_bReloading = true;
-	m_ReloadClock.restart();
+	if (m_AmmoLevels.lower != m_AmmoLevels.upper)
+	{
+		setAmmo(0);
+		//Plays a reload sound and starts the reload duration
+		m_ReloadSound.play();
+		m_bReloading = true;
+		m_ReloadClock.restart();
+	}
 }
 
 //Setters

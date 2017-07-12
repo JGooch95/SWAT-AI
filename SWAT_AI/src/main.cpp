@@ -63,7 +63,8 @@ int main()
 		"Assets/Sprites/PathMaker.png",					//34
 		"Assets/Sprites/Grenade.png",					//35
 		"Assets/Sprites/Flashbang.png",					//36
-		"Assets/Sprites/Rock.png"						//37
+		"Assets/Sprites/Rock.png",						//37
+		"Assets/Sprites/Crosshair.png"					//38
 	});
 
 	//Loads the sounds
@@ -114,7 +115,7 @@ int main()
 
 			else if (event.type == sf::Event::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::D)
+				if (event.key.code == sf::Keyboard::Comma)
 				{
 					//Toggles Debug mode if the settings have been initialised
 					if (m_CurrentSettings != NULL)
@@ -133,13 +134,14 @@ int main()
 
 			if (currentScreen != NULL)
 			{
-				if (currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Game ||
-					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Menu ||
-					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Editor ||
-					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == S_Options ||
-					currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow)) == Exit)
+				int iScreenType = currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow));
+
+				if (iScreenType == S_Game ||
+					iScreenType == S_Menu ||
+					iScreenType == S_Editor ||
+					iScreenType == S_Options ||
+					iScreenType == Exit)
 				{
-					int iScreenType = currentScreen->processInput(event, sf::Mouse::getPosition(mainWindow));
 
 					if (m_CurrentSettings->getUpdateState())
 					{
@@ -197,10 +199,11 @@ int main()
 		delete currentScreen;
 		currentScreen = NULL;
 	}
-
-	delete m_Textures;
-	m_Textures = NULL;
-
+	if (m_Textures != NULL)
+	{
+		delete m_Textures;
+		m_Textures = NULL;
+	}
 	if (m_CurrentMap != NULL)
 	{
 		delete(m_CurrentMap);
@@ -211,8 +214,10 @@ int main()
 		delete(m_CurrentSettings);
 		m_CurrentSettings = NULL;
 	}
-
-	delete m_SoundManger;
-	m_SoundManger = NULL;
+	if (m_SoundManger != NULL)
+	{
+		delete m_SoundManger;
+		m_SoundManger = NULL;
+	}
 
 }
