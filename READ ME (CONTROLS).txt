@@ -11,8 +11,6 @@ W = Forward
 A = Left
 S = Back
 D = right
-
-Debug Mode Controls
-R = Throw Rock
+H = Throw Rock
 G = Throw Grenade
 F = Flashbang

@@ -409,6 +409,8 @@ void Game::update(sf::Vector2i mousePos)
 				mousePos.y > m_CurrentMap->getPosition().y &&
 				mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 			{
+				m_bDrawCrosshair = true;
+
 				//If left click is pressed shoot weapon
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{

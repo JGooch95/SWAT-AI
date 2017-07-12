@@ -11,6 +11,6 @@ W = Forward
 A = Left
 S = Back
 D = right
-
-Regular Controls
-right click = A* path finding move
+H = Throw Rock
+G = Throw Grenade
+F = Flashbang
