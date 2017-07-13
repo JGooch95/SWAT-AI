@@ -399,57 +399,60 @@ void Game::update(sf::Vector2i mousePos)
 	//Manual Mode
 	if (m_vUnits.size() > 0)
 	{
-		if (m_vUnits.at(0)->bManualControls)
+		if (!m_vUnits.at(0)->isDead())
 		{
-			m_vUnits.at(0)->lookAt(sf::Vector2f(mousePos)); //Aiming
-
-			//If the mouse is within the window draw the crosshair and allow shooting command
-			if (mousePos.x > m_CurrentMap->getPosition().x &&
-				mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
-				mousePos.y > m_CurrentMap->getPosition().y &&
-				mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
+			if (m_vUnits.at(0)->bManualControls)
 			{
-				m_bDrawCrosshair = true;
+				m_vUnits.at(0)->lookAt(sf::Vector2f(mousePos)); //Aiming
 
-				//If left click is pressed shoot weapon
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				//If the mouse is within the window draw the crosshair and allow shooting command
+				if (mousePos.x > m_CurrentMap->getPosition().x &&
+					mousePos.x < m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x &&
+					mousePos.y > m_CurrentMap->getPosition().y &&
+					mousePos.y < m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
 				{
-					m_vUnits.at(0)->shoot();
+					m_bDrawCrosshair = true;
+
+					//If left click is pressed shoot weapon
+					if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					{
+						m_vUnits.at(0)->shoot();
+					}
 				}
-			}
-			else
-			{
-				m_bDrawCrosshair = false;
-			}
+				else
+				{
+					m_bDrawCrosshair = false;
+				}
 
-			//Manual character Window Collision
-			if (m_vUnits.at(0)->getRect().left + m_vUnits.at(0)->getRect().width > m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x)
-			{
-				m_vUnits.at(0)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x - (m_vUnits.at(0)->getRect().width/2), m_vUnits.at(0)->getPosition().y));
-			}
-			if (m_vUnits.at(0)->getRect().left < m_CurrentMap->getPosition().x)
-			{
-				m_vUnits.at(0)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + (m_vUnits.at(0)->getRect().width / 2), m_vUnits.at(0)->getPosition().y));
-			}
-			if (m_vUnits.at(0)->getRect().top + m_vUnits.at(0)->getRect().height > m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
-			{
-				m_vUnits.at(0)->setPosition(sf::Vector2f(m_vUnits.at(0)->getPosition().x, m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y - (m_vUnits.at(0)->getRect().height / 2)));
-			}
-			if (m_vUnits.at(0)->getRect().top < m_CurrentMap->getPosition().y)
-			{
-				m_vUnits.at(0)->setPosition(sf::Vector2f(m_vUnits.at(0)->getPosition().x, m_CurrentMap->getPosition().y + (m_vUnits.at(0)->getRect().height / 2)));
-			}
-			
-			// Manual character wall Collision
-			for (int j = 0; j < m_vWalls.size(); j++)
-			{
-				CollideTool.AABBBoxCollision(m_vUnits.at(0), m_vWalls.at(j));
-			}
+				//Manual character Window Collision
+				if (m_vUnits.at(0)->getRect().left + m_vUnits.at(0)->getRect().width > m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x)
+				{
+					m_vUnits.at(0)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + m_CurrentMap->getWindowSize().x - (m_vUnits.at(0)->getRect().width / 2), m_vUnits.at(0)->getPosition().y));
+				}
+				if (m_vUnits.at(0)->getRect().left < m_CurrentMap->getPosition().x)
+				{
+					m_vUnits.at(0)->setPosition(sf::Vector2f(m_CurrentMap->getPosition().x + (m_vUnits.at(0)->getRect().width / 2), m_vUnits.at(0)->getPosition().y));
+				}
+				if (m_vUnits.at(0)->getRect().top + m_vUnits.at(0)->getRect().height > m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y)
+				{
+					m_vUnits.at(0)->setPosition(sf::Vector2f(m_vUnits.at(0)->getPosition().x, m_CurrentMap->getPosition().y + m_CurrentMap->getWindowSize().y - (m_vUnits.at(0)->getRect().height / 2)));
+				}
+				if (m_vUnits.at(0)->getRect().top < m_CurrentMap->getPosition().y)
+				{
+					m_vUnits.at(0)->setPosition(sf::Vector2f(m_vUnits.at(0)->getPosition().x, m_CurrentMap->getPosition().y + (m_vUnits.at(0)->getRect().height / 2)));
+				}
 
-			//Only update crosshair if its being drawn
-			if (m_bDrawCrosshair)
-			{
-				m_Crosshair.setPosition(sf::Vector2f(mousePos));
+				// Manual character wall Collision
+				for (int j = 0; j < m_vWalls.size(); j++)
+				{
+					CollideTool.AABBBoxCollision(m_vUnits.at(0), m_vWalls.at(j));
+				}
+
+				//Only update crosshair if its being drawn
+				if (m_bDrawCrosshair)
+				{
+					m_Crosshair.setPosition(sf::Vector2f(mousePos));
+				}
 			}
 		}
 	}
@@ -587,7 +590,10 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				case sf::Keyboard::M: //Toggle manual controls
 					if (m_vUnits.size() > 0)
 					{
-						m_vUnits.at(0)->toggleManualControls();
+						if (!m_vUnits.at(0)->isDead())
+						{
+							m_vUnits.at(0)->toggleManualControls();
+						}
 					}
 					break;
 
@@ -596,7 +602,10 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 					{
 						if (m_vUnits.at(0)->bManualControls)
 						{
-							m_vUnits.at(0)->getWeapon()->reload();
+							if (!m_vUnits.at(0)->isDead())
+							{
+								m_vUnits.at(0)->getWeapon()->reload();
+							}
 						}
 					}
 					break;
@@ -606,7 +615,10 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 					{
 						if (m_vUnits.at(0)->bManualControls)
 						{
-							m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+							if (!m_vUnits.at(0)->isDead())
+							{
+								m_vThrowables.push_back(new Throwable(Rock, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+							}
 						}
 					}
 					break;
@@ -616,7 +628,10 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 					{
 						if (m_vUnits.at(0)->bManualControls)
 						{
-							m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+							if (!m_vUnits.at(0)->isDead())
+							{
+								m_vThrowables.push_back(new Throwable(Grenade, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+							}
 						}
 					}
 					break;
@@ -626,7 +641,10 @@ int Game::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 					{
 						if (m_vUnits.at(0)->bManualControls)
 						{
-							m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+							if (!m_vUnits.at(0)->isDead())
+							{
+								m_vThrowables.push_back(new Throwable(Flashbang, sf::Vector2i(m_vUnits.at(0)->getPosition())));
+							}
 						}
 					}
 					break;
