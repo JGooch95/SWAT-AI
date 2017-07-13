@@ -644,17 +644,20 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 					{
 						//Eraser
 					case ' ':
-						//Check each path node of the selected character
-						for (int j = 0; j < iSelectedEnemy->path.size(); j++)
+						if (iSelectedEnemy != NULL)
 						{
-							if (iSelectedEnemy->path.at(j) == gridPos) //If clicked
+							//Check each path node of the selected character
+							for (int j = 0; j < iSelectedEnemy->path.size(); j++)
 							{
-								//Remove the path node
-								iSelectedEnemy->path.erase(iSelectedEnemy->path.begin() + j);
-								updatePathUI();
+								if (iSelectedEnemy->path.at(j) == gridPos) //If clicked
+								{
+									//Remove the path node
+									iSelectedEnemy->path.erase(iSelectedEnemy->path.begin() + j);
+									updatePathUI();
 
-								//Stop searching
-								j = iSelectedEnemy->path.size();
+									//Stop searching
+									j = iSelectedEnemy->path.size();
+								}
 							}
 						}
 						break;
