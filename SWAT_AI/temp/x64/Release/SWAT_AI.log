@@ -1,135 +1,13 @@
-﻿  AStar.cpp
-src\AStar.cpp(11): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\AStar.cpp(47): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\AStar.cpp(56): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(57): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(61): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(62): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(108): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(156): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-src\AStar.cpp(176): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(180): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(192): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(196): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(213): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(217): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(229): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(233): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(241): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\AStar.cpp(247): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Bar.cpp
-  AIController.cpp
-src\AIController.cpp(135): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  Button.cpp
-src\Button.cpp(10): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-  Character.cpp
+﻿  Character.cpp
 src\Character.cpp(128): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 src\Character.cpp(203): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
 src\Character.cpp(372): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 src\Character.cpp(377): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 src\Character.cpp(439): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 src\Character.cpp(652): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-  Collider.cpp
-  ContentScreen.cpp
-  Editor.cpp
-src\Editor.cpp(8): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Editor.cpp(12): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Editor.cpp(34): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Editor.cpp(36): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Editor.cpp(98): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(101): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(105): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(108): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(113): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(116): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(127): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(130): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(282): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\Editor.cpp(283): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-src\Editor.cpp(462): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(463): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(469): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(470): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(484): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-src\Editor.cpp(500): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-src\Editor.cpp(508): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(520): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(526): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(537): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(549): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(550): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(553): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(554): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(557): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(558): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(561): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(562): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(575): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-src\Editor.cpp(591): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-src\Editor.cpp(603): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(614): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(617): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(628): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
-src\Editor.cpp(639): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\Editor.cpp(657): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-src\Editor.cpp(831): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  EnemyAI.cpp
-  Entrance.cpp
-  FontManager.cpp
-  Game.cpp
-src\Game.cpp(8): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Game.cpp(12): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Game.cpp(229): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Game.cpp(232): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
-src\Game.cpp(481): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-  HUDWindow.cpp
-  main.cpp
-src\main.cpp(18): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-  Map.cpp
-src\Map.cpp(29): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\Map.cpp(73): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-src\Map.cpp(92): warning C4244: 'argument': conversion from 'unsigned __int64' to 'float', possible loss of data
-src\Map.cpp(92): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-src\Map.cpp(109): warning C4244: 'argument': conversion from 'float' to '::size_t', possible loss of data
-src\Map.cpp(122): warning C4244: 'argument': conversion from 'float' to '::size_t', possible loss of data
-src\Map.cpp(123): warning C4244: 'argument': conversion from 'float' to '::size_t', possible loss of data
-  Menu.cpp
-src\Menu.cpp(6): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-  Object.cpp
-src\Object.cpp(42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Options.cpp
-src\Options.cpp(6): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-src\Options.cpp(45): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\Options.cpp(53): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\Options.cpp(57): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\Options.cpp(63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-src\Options.cpp(66): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-src\Options.cpp(109): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-src\Options.cpp(117): warning C4552: '/': operator has no effect; expected operator with side-effect
-src\Options.cpp(165): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-src\Options.cpp(203): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-src\Options.cpp(207): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-src\Options.cpp(219): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  Settings.cpp
-src\Settings.cpp(54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-src\Settings.cpp(57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  Slider.cpp
-src\Slider.cpp(80): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-  Compiling...
-  SoundManager.cpp
-  Throwable.cpp
-  WaveEffect.cpp
-src\WaveEffect.cpp(29): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-src\WaveEffect.cpp(32): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-src\WaveEffect.cpp(35): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-src\WaveEffect.cpp(46): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-src\WaveEffect.cpp(49): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-src\WaveEffect.cpp(52): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-  TextureLoader.cpp
-  Weapon.cpp
-src\Weapon.cpp(189): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   Generating code
-c:\users\jonathon\desktop\uni p14141535\year three\imat3451 - computing project\swat_ai\swat_ai\src\character.cpp(709): warning C4715: 'Character::getNextLoadoutItem': not all control paths return a value
-  All 3287 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  78 of 3287 functions ( 2.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    14 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SWAT_AI.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3451 - Computing Project\SWAT_AI\x64\Release\SWAT_AI.exe

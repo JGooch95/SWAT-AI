@@ -199,8 +199,8 @@ void Character::update()
 		if (stepTaken())
 		{
 			m_StepSound.play();
-			sf::Vector2u CharacterTile(((int)getPosition().x - getPosition().x) / (int)m_CurrentMap->getTileSize().x,
-				((int)getPosition().y - getPosition().y) / (int)m_CurrentMap->getTileSize().y);
+			sf::Vector2u CharacterTile(((int)getPosition().x - m_CurrentMap->getPosition().x) / (int)m_CurrentMap->getTileSize().x,
+				((int)getPosition().y - m_CurrentMap->getPosition().y) / (int)m_CurrentMap->getTileSize().y);
 
 			//Changes the amount of sound footsteps make if the character treads on different materials
 			if (m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'B' ||
@@ -213,7 +213,7 @@ void Character::update()
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'K' ||
 				m_CurrentMap->getFloorData().at(CharacterTile.y).at(CharacterTile.x) == 'F')
 			{
-				 m_vWaves.push_back(new WaveEffect((getSize().x * 3) * 2, 3.0f, 1.0f, getPosition(), Sound));
+				 m_vWaves.push_back(new WaveEffect((getSize().x * 3) * 2.0f, 3.0f, 1.0f, getPosition(), Sound));
 			}
 			fDistanceSinceStep = 0;
 		}
