@@ -29,7 +29,7 @@ void AStar::setupLists()
 	m_Path.clear();
 
 	//Resets Grid data
-	for (int i = 0; i < m_vGrid.size(); i++)
+	for (int i = 0; i < m_vGrid.size(); ++i)
 	{
 		m_vGrid.at(i).parent = NULL;
 		m_vGrid.at(i).h = 0;
@@ -38,9 +38,9 @@ void AStar::setupLists()
 	}
 
 	//Adds all invalid map nodes to the closed list
-	for (int i = 0; i < m_CurrentMap->getMapData().size(); i++)
+	for (int i = 0; i < m_CurrentMap->getMapData().size(); ++i)
 	{
-		for (int j = 0; j < m_CurrentMap->getMapData().at(i).size(); j++)
+		for (int j = 0; j < m_CurrentMap->getMapData().at(i).size(); ++j)
 		{
 			if (m_CurrentMap->getMapData().at(i).at(j) == 'W' || m_CurrentMap->getMapData().at(i).at(j) == 'B')
 			{
@@ -77,7 +77,7 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 		}
 
 		//Calculates the Manhattan distance for every node to the end node.
-		for (int i = 0; i < m_vGrid.size(); i++)
+		for (int i = 0; i < m_vGrid.size(); ++i)
 		{
 			calculateManhattan(i, iEndTile);
 			m_vGrid.at(i).index = i;
@@ -100,7 +100,7 @@ std::deque<Node*> AStar::findPath(sf::Vector2f startPos, sf::Vector2f endPos)
 			{
 				int iLowestF = 1000;
 				//Checks for the lowest F value in the open list
-				for (int i = 0; i < m_vOpenList.size(); i++)
+				for (int i = 0; i < m_vOpenList.size(); ++i)
 				{
 					if (m_vOpenList.at(i)->f < iLowestF)
 					{
@@ -252,7 +252,7 @@ void AStar::calculateMoveCost(int iCurrentTile, int iEndTile)
 		if (m_bEndWall)
 		{
 			//Checks all the surrounding tiles for the end tile
-			for (int i = 0; i < m_viTilesToCheck.size(); i++)
+			for (int i = 0; i < m_viTilesToCheck.size(); ++i)
 			{
 				//If any of the surrounding tiles are the end tile parent it and set the path
 				if (iCurrentTile + m_viTilesToCheck.at(i) == iEndTile)
@@ -296,7 +296,7 @@ void AStar::makeCurrent(int iTile, int iCurrentTile, int iMoveCost)
 //Used to check if the end node is surrounded by impassable nodes
 bool AStar::validVacinity(int iEndTile)
 {
-	for (int i = 0; i < m_viTilesToCheck.size(); i++) // For every surrounding node
+	for (int i = 0; i < m_viTilesToCheck.size(); ++i) // For every surrounding node
 	{
 		if (iEndTile + m_viTilesToCheck.at(i) > 0 && iEndTile + m_viTilesToCheck.at(i) < m_vGrid.size())// If within the grid space
 		{
@@ -311,11 +311,11 @@ bool AStar::validVacinity(int iEndTile)
 
 AStar::~AStar()
 {
-	for (int i = 0; i < m_vOpenList.size(); i++)
+	for (int i = 0; i < m_vOpenList.size(); ++i)
 	{
 		m_vOpenList.at(i) = NULL;
 	}
-	for (int i = 0; i < m_vClosedList.size(); i++)
+	for (int i = 0; i < m_vClosedList.size(); ++i)
 	{
 		m_vClosedList.at(i) = NULL;
 	}

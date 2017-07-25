@@ -9,14 +9,14 @@ Weapon::Weapon()
 	m_AimLine = sf::VertexArray(sf::Lines, 2);
 	m_AimLine[0].position = m_MainSprite.getPosition();
 	m_AimLine[1].position = sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y - 2000.0f);
-	for (int i = 0; i < m_AimLine.getVertexCount(); i++)
+	for (int i = 0; i < m_AimLine.getVertexCount(); ++i)
 	{
 		m_AimLine[i].color = sf::Color(255, 0, 0, 255);
 	}
 	//Sets up the bullets
 	m_BulletRays.setPrimitiveType(sf::Lines);
 	m_BulletRays.resize(2);
-	for (int i = 0; i < m_BulletRays.getVertexCount(); i++)
+	for (int i = 0; i < m_BulletRays.getVertexCount(); ++i)
 	{
 		m_BulletRays[i].color = sf::Color(255, 255, 0, 255);
 	}

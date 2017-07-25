@@ -13,7 +13,7 @@ Menu::Menu(sf::Vector2u windowSize)
 	m_ContentBox.setFillColor(sf::Color(42,42,42, 255));
 
 	//Create the buttons
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; ++i)
 	{
 		m_Buttons.push_back(new Button());
 	}
@@ -23,7 +23,7 @@ Menu::Menu(sf::Vector2u windowSize)
 	float fButtonStart = m_ContentBox.getPosition().y + (m_ContentBox.getSize().y/ 3.0f) + fButtonGap; //The y position of where the buttons are kept
 
 	//Setup every button
-	for (int i = 0; i < m_Buttons.size(); i++)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons.at(i)->setColor(sf::Color(0, 0,0,0)); 
 		m_Buttons.at(i)->setBackgroundColor(sf::Color(0, 186, 255, 255));
@@ -56,7 +56,7 @@ Menu::Menu(sf::Vector2u windowSize)
 void Menu::update(sf::Vector2i mousePos)
 {
 	//Checks buttons for a hovering mouse
-	for (int i = 0; i < m_Buttons.size(); i++)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons.at(i)->update(mousePos);
 	}
@@ -70,7 +70,7 @@ int Menu::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 		{
 		case sf::Mouse::Left:
 			//Checks if the buttons have been clicked
-			for (int i = 0; i < m_Buttons.size(); i++)
+			for (int i = 0; i < m_Buttons.size(); ++i)
 			{
 				if (m_Buttons.at(i)->hovering(mousePos))
 				{
@@ -99,7 +99,7 @@ void Menu::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_ContentBox);
 	target.draw(m_TitleText);
 	
-	for (int i = 0; i < m_Buttons.size(); i++)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
 		target.draw(*m_Buttons.at(i));
 	}
@@ -107,7 +107,7 @@ void Menu::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 Menu::~Menu()
 {
-	for (int i = 0; i < m_Buttons.size(); i++)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
 		delete(m_Buttons.at(i));
 		m_Buttons.at(i) = NULL;

@@ -19,7 +19,7 @@ SoundManager* SoundManager::getInstance()
 void SoundManager::loadSounds(std::vector<std::string> vsNewSounds)
 {
 	//For every directory
-	for (int i = 0; i < vsNewSounds.size(); i++)
+	for (int i = 0; i < vsNewSounds.size(); ++i)
 	{
 		//Load the file and store it
 		m_vBuffers.push_back(sf::SoundBuffer());

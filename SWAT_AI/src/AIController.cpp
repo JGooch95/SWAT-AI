@@ -153,7 +153,7 @@ void AIController::move()
 			if (m_CurrentSettings->debugActive())
 			{
 				m_PathLine.resize(m_PatrolPath.size());
-				for (int i = 0; i < m_PatrolPath.size(); i++)
+				for (int i = 0; i < m_PatrolPath.size(); ++i)
 				{
 					m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
 						(((m_PatrolPath.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
@@ -179,7 +179,7 @@ void AIController::move()
 		if (m_CurrentSettings->debugActive())
 		{
 			m_PathLine.resize(m_Path.size());
-			for (int i = 0; i < m_Path.size(); i++)
+			for (int i = 0; i < m_Path.size(); ++i)
 			{
 				m_PathLine[i] = sf::Vertex(m_CurrentMap->getPosition() + sf::Vector2f(
 					(((m_Path.at(i)->index % (int)m_CurrentMap->getGridDims().x) * m_CurrentMap->getTileSize().x) + (m_CurrentMap->getTileSize().x / 2)),
@@ -212,7 +212,7 @@ void AIController::setTarget(Character * newTarget)
 void AIController::setPatrolPath(std::vector<int> viPathNodes)
 {
 	//Reads the patrol path loaded and creates the patrol path for use
-	for (int i = 0; i < viPathNodes.size(); i++)
+	for (int i = 0; i < viPathNodes.size(); ++i)
 	{
 		m_PatrolPath.push_back(new Node);
 		m_PatrolPath.at(m_PatrolPath.size() - 1)->index = viPathNodes.at(i);

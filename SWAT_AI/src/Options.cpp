@@ -28,7 +28,7 @@ Options::Options(sf::Vector2u windowSize)
 	}
 
 	//Creates the sliders
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; ++i)
 	{
 		m_vSliders.push_back(new Slider);
 
@@ -72,7 +72,7 @@ Options::Options(sf::Vector2u windowSize)
 
 	int iNumOfButtons = 2;
 	//Create the buttons
-	for (int i = 0; i < iNumOfButtons; i++)
+	for (int i = 0; i < iNumOfButtons; ++i)
 	{
 		m_vButtons.push_back(new Button());
 		m_vButtons.at(i)->setColor(sf::Color(0, 0, 0, 0));
@@ -93,7 +93,7 @@ Options::Options(sf::Vector2u windowSize)
 void Options::update(sf::Vector2i mousePos)
 {
 	//Updates all UI objects
-	for (int i = 0; i < m_vUI.size(); i++)
+	for (int i = 0; i < m_vUI.size(); ++i)
 	{
 		m_vUI.at(i)->update(mousePos);
 	}
@@ -135,7 +135,7 @@ void Options::update(sf::Vector2i mousePos)
 		//Check if any sliders are being clicked on
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 		{
-			for (int i = 0; i < m_vSliders.size(); i++)
+			for (int i = 0; i < m_vSliders.size(); ++i)
 			{
 				if (m_vSliders.at(i)->hovering(mousePos))
 				{
@@ -154,7 +154,7 @@ int Options::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 		{
 			case sf::Mouse::Left:
 				//Checks if the buttons have been clicked
-				for (int i = 0; i < m_vButtons.size(); i++)
+				for (int i = 0; i < m_vButtons.size(); ++i)
 				{
 					if (m_vButtons.at(i)->hovering(mousePos))
 					{
@@ -233,19 +233,19 @@ void Options::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_ContentBox);
 	target.draw(m_TitleText);
 
-	for (int i = 0; i < m_vButtons.size(); i++)
+	for (int i = 0; i < m_vButtons.size(); ++i)
 	{
 		target.draw(*m_vButtons.at(i));
 	}
-	for (int i = 0; i < m_vSliders.size(); i++)
+	for (int i = 0; i < m_vSliders.size(); ++i)
 	{
 		target.draw(*m_vSliders.at(i));
 	}
-	for (int i = 0; i < m_vTitles.size(); i++)
+	for (int i = 0; i < m_vTitles.size(); ++i)
 	{
 		target.draw(m_vTitles.at(i));
 	}
-	for (int i = 0; i < m_vDataText.size(); i++)
+	for (int i = 0; i < m_vDataText.size(); ++i)
 	{
 		target.draw(m_vDataText.at(i));
 	}
@@ -253,13 +253,13 @@ void Options::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 Options::~Options()
 {
-	for (int i = 0; i < m_vButtons.size(); i++)
+	for (int i = 0; i < m_vButtons.size(); ++i)
 	{
 		delete(m_vButtons.at(i));
 		m_vButtons.at(i) = NULL;
 	}
 
-	for (int i = 0; i < m_vSliders.size(); i++)
+	for (int i = 0; i < m_vSliders.size(); ++i)
 	{
 		delete(m_vSliders.at(i));
 		m_vSliders.at(i) = NULL;

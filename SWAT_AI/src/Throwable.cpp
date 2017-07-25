@@ -36,7 +36,7 @@ Throwable::Throwable(throwableType newType, sf::Vector2i startPos)
 	//Sets up the throwing line
 	m_ThrowLine.resize(2);
 	m_ThrowLine.setPrimitiveType(sf::Lines);
-	for (int i = 0; i < m_ThrowLine.getVertexCount(); i++)
+	for (int i = 0; i < m_ThrowLine.getVertexCount(); ++i)
 	{
 		m_ThrowLine[i].color = sf::Color(255, 255, 0, 255);
 	}

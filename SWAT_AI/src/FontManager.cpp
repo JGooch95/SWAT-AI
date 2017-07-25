@@ -19,7 +19,7 @@ FontManager*  FontManager::getInstance()
 void FontManager::loadFonts(std::vector<std::string> vsNewFonts)
 {
 	//For every directory
-	for (int i = 0; i < vsNewFonts.size(); i++)
+	for (int i = 0; i < vsNewFonts.size(); ++i)
 	{
 		//Load the file and store it
 		m_vFonts.push_back(new sf::Font());

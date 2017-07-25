@@ -21,7 +21,7 @@ void TextureLoader::loadTextures(std::vector<std::string> vsFileDirs)
 	sf::Texture CurrentTexture;
 
 	//Loads the textures into the vector of textures
-	for (int i = 0; i < vsFileDirs.size(); i++)
+	for (int i = 0; i < vsFileDirs.size(); ++i)
 	{
 		if (!CurrentTexture.loadFromFile(m_sBaseDirectory + vsFileDirs.at(i)))
 		{

@@ -36,7 +36,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	m_Sidebar.setSize(sf::Vector2f(windowSize.x - m_CurrentMap->getWindowSize().x, windowSize.y - m_Toolbar.getSize().y));
 
 	// Creates 4 new buttons for grid resizing
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; ++i)
 	{
 		m_vGridButtons.push_back(new Button);
 	}
@@ -53,7 +53,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	m_vUIText.at(4).setString("Tools: ");
 
 	//For every label
-	for (int i = 0; i < m_vUIText.size(); i++)
+	for (int i = 0; i < m_vUIText.size(); ++i)
 	{
 		//Setup the text sizing
 		m_vUIText.at(i).setFont(*m_Fonts->getFont(0));
@@ -74,7 +74,7 @@ Editor::Editor(sf::Vector2u windowSize)
 	}
 
 	//For the grid buttons
-	for (int i = 0; i < m_vGridButtons.size(); i++)
+	for (int i = 0; i < m_vGridButtons.size(); ++i)
 	{
 		//Set up their main data
 		m_vGridButtons.at(i)->setSize(sf::Vector2f(m_vUIText.at(i/2).getLocalBounds().height, m_vUIText.at(i / 2).getLocalBounds().height));
@@ -96,14 +96,14 @@ Editor::Editor(sf::Vector2u windowSize)
 	//Sets up the levelbits
 	m_vcLevelBits.clear();
 	m_vcLevelBits.resize(m_CurrentMap->getGridDims().x);
-	for (int i = 0; i < m_vcLevelBits.size(); i++)
+	for (int i = 0; i < m_vcLevelBits.size(); ++i)
 	{
 		m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
 
 	//Sets up the map objects array
 	m_vItems.resize(m_CurrentMap->getGridDims().x);
-	for (int i = 0; i < m_vItems.size(); i++)
+	for (int i = 0; i < m_vItems.size(); ++i)
 	{
 		m_vItems.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
@@ -111,13 +111,13 @@ Editor::Editor(sf::Vector2u windowSize)
 	//Sets up the floor bits and fills them with grass tiles
 	m_vcFloorBits.clear();
 	m_vcFloorBits.resize(m_CurrentMap->getGridDims().x);
-	for (int i = 0; i < m_vcFloorBits.size(); i++)
+	for (int i = 0; i < m_vcFloorBits.size(); ++i)
 	{
 		m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
-	for (int i = 0; i < m_vcFloorBits.size(); i++)
+	for (int i = 0; i < m_vcFloorBits.size(); ++i)
 	{
-		for (int j = 0; j < m_vcFloorBits.at(i).size(); j++)
+		for (int j = 0; j < m_vcFloorBits.at(i).size(); ++j)
 		{
 			m_vcFloorBits.at(i).at(j) = 'G';
 		}
@@ -125,13 +125,13 @@ Editor::Editor(sf::Vector2u windowSize)
 
 	//Sets up the floor tiles and fills them with grass tiles
 	m_vFloorTiles.resize(m_CurrentMap->getGridDims().x);
-	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); ++i)
 	{
 		m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().y);
 	}
-	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); ++i)
 	{
-		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); ++j)
 		{
 			m_vFloorTiles.at(i).at(j) = new Object();
 			m_vFloorTiles.at(i).at(j)->setTexture(m_Textures->getTexture(14));
@@ -178,7 +178,7 @@ void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std:
 		vButtonSet->resize(iTexIndex.size()); //Resize the button count
 
 		//The buttons under the label are then created 
-		for (int i = 0; i < vButtonSet->size(); i++)
+		for (int i = 0; i < vButtonSet->size(); ++i)
 		{
 			vButtonSet->at(i) = new Button();
 			vButtonSet->at(i)->setSize(m_vGridButtons.at(0)->getSize() * 2.0f);
@@ -202,7 +202,7 @@ void Editor::createButtons(std::vector<Button*>* vButtonSet, int iUIindex,  std:
 		}
 
 		//Set the button textures
-		for (int i = 0; i < iTexIndex.size(); i++)
+		for (int i = 0; i < iTexIndex.size(); ++i)
 		{
 			vButtonSet->at(i)->setTexture(m_Textures->getTexture(iTexIndex.at(i)));
 		}
@@ -221,7 +221,7 @@ void Editor::updatePathUI()
 	{
 		//Create Path UI
 		PathLine.resize(iSelectedEnemy->path.size());
-		for (int i = 0; i < iSelectedEnemy->path.size(); i++)
+		for (int i = 0; i < iSelectedEnemy->path.size(); ++i)
 		{
 			sf::CircleShape tempCircle;
 			tempCircle.setFillColor(sf::Color::Red);
@@ -252,19 +252,19 @@ void Editor::update(sf::Vector2i mousePos)
 	//Performs hover checks for all of the buttons for highlighting
 	m_ExitButton->update(mousePos);
 	m_SaveButton->update(mousePos);
-	for (int i = 0; i < m_vGridButtons.size(); i++)
+	for (int i = 0; i < m_vGridButtons.size(); ++i)
 	{
 		m_vGridButtons.at(i)->update(mousePos);
 	}
-	for (int i = 0; i < m_vObjectButtons.size(); i++)
+	for (int i = 0; i < m_vObjectButtons.size(); ++i)
 	{
 		m_vObjectButtons.at(i)->update(mousePos);
 	}
-	for (int i = 0; i < m_vToolButtons.size(); i++)
+	for (int i = 0; i < m_vToolButtons.size(); ++i)
 	{
 		m_vToolButtons.at(i)->update(mousePos);
 	}
-	for (int i = 0; i < m_vFloorButtons.size(); i++)
+	for (int i = 0; i < m_vFloorButtons.size(); ++i)
 	{
 		m_vFloorButtons.at(i)->update(mousePos);
 	}
@@ -329,7 +329,7 @@ void Editor::update(sf::Vector2i mousePos)
 							{
 								if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
 								{
-									for (int i = 0; i < m_vEnemyPaths.size(); i++)
+									for (int i = 0; i < m_vEnemyPaths.size(); ++i)
 									{
 										if (gridPos == m_vEnemyPaths.at(i).position)
 										{
@@ -404,9 +404,9 @@ void Editor::update(sf::Vector2i mousePos)
 void Editor::updateScaling()
 {
 	//Positions all items that exist within the world objects at their respective grid space
-	for (int i = 0; i < m_vItems.size(); i++)
+	for (int i = 0; i < m_vItems.size(); ++i)
 	{
-		for (int j = 0; j < m_vItems.at(i).size(); j++)
+		for (int j = 0; j < m_vItems.at(i).size(); ++j)
 		{
 			if (m_vItems.at(i).at(j) != NULL)
 			{
@@ -417,9 +417,9 @@ void Editor::updateScaling()
 	}
 
 	//Positions all floor items that exist within the world at their respective grid space
-	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); ++i)
 	{
-		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); ++j)
 		{
 			if (m_vFloorTiles.at(i).at(j) != NULL)
 			{
@@ -457,14 +457,14 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x + 1, m_CurrentMap->getGridDims().y));
 
 				//Increment every row of the map by adding a new item
-				for (int i = 0; i < m_vcLevelBits.size(); i++)
+				for (int i = 0; i < m_vcLevelBits.size(); ++i)
 				{
 					m_vcLevelBits.at(i).resize(m_CurrentMap->getGridDims().x);
 					m_vItems.at(i).resize(m_CurrentMap->getGridDims().x);
 				}
 
 				//Increment every row of the floor map by adding a new item
-				for (int i = 0; i < m_vcFloorBits.size(); i++)
+				for (int i = 0; i < m_vcFloorBits.size(); ++i)
 				{
 					m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
 					m_vFloorTiles.at(i).resize(m_CurrentMap->getGridDims().x);
@@ -479,7 +479,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x - 1, m_CurrentMap->getGridDims().y));
 
 				//Check if any path nodes are off the screen
-				for (int i = 0; i < m_vEnemyPaths.size(); i++)
+				for (int i = 0; i < m_vEnemyPaths.size(); ++i)
 				{
 					for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
 					{
@@ -491,11 +491,11 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				}
 
 				//Decrement the LevelBits vector
-				for (int i = 0; i < m_vcLevelBits.size(); i++)
+				for (int i = 0; i < m_vcLevelBits.size(); ++i)
 				{
 					if (m_vcLevelBits.at(i).at(m_vcLevelBits.at(i).size() - 1) == 'E')
 					{
-						for (int j = 0; j < m_vEnemyPaths.size(); j++)
+						for (int j = 0; j < m_vEnemyPaths.size(); ++j)
 						{
 							if (sf::Vector2i(m_vcLevelBits.at(i).size() - 1, i) == m_vEnemyPaths.at(j).position)
 							{
@@ -510,7 +510,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				updatePathUI();
 
 				//For the objects the pointers are cleared at the end of each row.
-				for (int i = 0; i < m_vItems.size(); i++)
+				for (int i = 0; i < m_vItems.size(); ++i)
 				{
 					if (m_vItems.at(i).at(m_vItems.at(i).size() - 1) != NULL)
 					{
@@ -521,13 +521,13 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				}
 
 				//Decrement the FloorBits vector
-				for (int i = 0; i < m_vcFloorBits.size(); i++)
+				for (int i = 0; i < m_vcFloorBits.size(); ++i)
 				{
 					m_vcFloorBits.at(i).resize(m_CurrentMap->getGridDims().x);
 				}
 
 				//For the objects the pointers are cleared at the end of each row.
-				for (int i = 0; i < m_vFloorTiles.size(); i++)
+				for (int i = 0; i < m_vFloorTiles.size(); ++i)
 				{
 					if (m_vFloorTiles.at(i).at(m_vFloorTiles.at(i).size() - 1) != NULL)
 					{
@@ -570,7 +570,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				m_CurrentMap->setDimensions(sf::Vector2f(m_CurrentMap->getGridDims().x, m_CurrentMap->getGridDims().y - 1));
 
 				//Check if any path nodes are off the screen
-				for (int i = 0; i < m_vEnemyPaths.size(); i++)
+				for (int i = 0; i < m_vEnemyPaths.size(); ++i)
 				{
 					for (int j = m_vEnemyPaths.at(i).path.size() - 1; j >= 0; j--)
 					{
@@ -582,11 +582,11 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				}
 
 				//Decrement the LevelBits vector
-				for (int i = 0; i < m_vcLevelBits.at(m_vcLevelBits.size() - 1).size(); i++)
+				for (int i = 0; i < m_vcLevelBits.at(m_vcLevelBits.size() - 1).size(); ++i)
 				{
 					if (m_vcLevelBits.at(m_vcLevelBits.size() - 1).at(i) == 'E')
 					{
-						for (int j = 0; j < m_vEnemyPaths.size(); j++)
+						for (int j = 0; j < m_vEnemyPaths.size(); ++j)
 						{
 							if (sf::Vector2i(i, m_vcLevelBits.size() - 1) == m_vEnemyPaths.at(j).position)
 							{
@@ -603,7 +603,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				m_vcLevelBits.resize(m_CurrentMap->getGridDims().y);
 
 				//Clear the pointers of all objects on the bottom row and decrement the row
-				for (int i = 0; i < m_vItems.at(m_vItems.size() - 1).size(); i++)
+				for (int i = 0; i < m_vItems.at(m_vItems.size() - 1).size(); ++i)
 				{
 					if (m_vItems.at(m_vItems.size() - 1).at(i) != NULL)
 					{
@@ -617,7 +617,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 				m_vcFloorBits.resize(m_CurrentMap->getGridDims().y);
 
 				//Clear the pointers of all objects on the bottom row and decrement the row
-				for (int i = 0; i < m_vFloorTiles.at(m_vItems.size() - 1).size(); i++)
+				for (int i = 0; i < m_vFloorTiles.at(m_vItems.size() - 1).size(); ++i)
 				{
 					if (m_vFloorTiles.at(m_vFloorTiles.size() - 1).at(i) != NULL)
 					{
@@ -647,7 +647,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 						if (iSelectedEnemy != NULL)
 						{
 							//Check each path node of the selected character
-							for (int j = 0; j < iSelectedEnemy->path.size(); j++)
+							for (int j = 0; j < iSelectedEnemy->path.size(); ++j)
 							{
 								if (iSelectedEnemy->path.at(j) == gridPos) //If clicked
 								{
@@ -668,7 +668,7 @@ int Editor::processInput(sf::Event keyCode, sf::Vector2i mousePos)
 						if (m_vcLevelBits.at(gridPos.y).at(gridPos.x) == 'E')
 						{
 							//Find the enemy path vector
-							for (int i = 0; i < m_vEnemyPaths.size(); i++)
+							for (int i = 0; i < m_vEnemyPaths.size(); ++i)
 							{
 								if (gridPos == m_vEnemyPaths.at(i).position)
 								{
@@ -779,10 +779,10 @@ void Editor::saveMap()
 	//Saves the object map 
 	std::ofstream File1;
 	File1.open("Assets/Maps/CustomMap.txt", std::ios::out);
-	for (int i = 0; i < m_vcLevelBits.size(); i++)
+	for (int i = 0; i < m_vcLevelBits.size(); ++i)
 	{
 		//For bits in row write bits
-		for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+		for (int j = 0; j < m_vcLevelBits.at(i).size(); ++j)
 		{
 			File1 << m_vcLevelBits.at(i).at(j);
 		}
@@ -796,10 +796,10 @@ void Editor::saveMap()
 
 	//Saves the floor map 
 	File1.open("Assets/Maps/CustomMapFloor.txt", std::ios::out);
-	for (int i = 0; i < m_vcFloorBits.size(); i++)
+	for (int i = 0; i < m_vcFloorBits.size(); ++i)
 	{
 		//For bits in row write bits
-		for (int j = 0; j < m_vcFloorBits.at(i).size(); j++)
+		for (int j = 0; j < m_vcFloorBits.at(i).size(); ++j)
 		{
 			File1 << m_vcFloorBits.at(i).at(j);
 		}
@@ -816,14 +816,14 @@ void Editor::saveMap()
 	int iEnemiesSaved = 0;
 
 	//Look for enemies within the map
-	for (int i = 0; i < m_vcLevelBits.size(); i++)
+	for (int i = 0; i < m_vcLevelBits.size(); ++i)
 	{
-		for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+		for (int j = 0; j < m_vcLevelBits.at(i).size(); ++j)
 		{
 			if (m_vcLevelBits.at(i).at(j) == 'E') //If an enemy is found
 			{
 				//Find its path
-				for (int k = 0; k < m_vEnemyPaths.size(); k++)
+				for (int k = 0; k < m_vEnemyPaths.size(); ++k)
 				{
 					if (sf::Vector2i(j, i) == m_vEnemyPaths.at(k).position)
 					{
@@ -855,9 +855,9 @@ void Editor::loadMap(std::string sDir)
 	EnemyData newEnemy;
 
 	//Clear the floor data
-	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); ++i)
 	{
-		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); ++j)
 		{
 			if (m_vFloorTiles.at(i).at(j) != NULL)
 			{
@@ -868,9 +868,9 @@ void Editor::loadMap(std::string sDir)
 	}
 
 	//Clear the item data
-	for (int i = 0; i < m_vItems.size(); i++)
+	for (int i = 0; i < m_vItems.size(); ++i)
 	{
-		for (int j = 0; j < m_vItems.at(i).size(); j++)
+		for (int j = 0; j < m_vItems.at(i).size(); ++j)
 		{
 			if (m_vItems.at(i).at(j) != NULL)
 			{
@@ -886,10 +886,10 @@ void Editor::loadMap(std::string sDir)
 
 	//Check each level bit and fill in the item vector with the correct objecta
 	m_vItems.resize(m_vcLevelBits.size());
-	for (int i = 0; i < m_vcLevelBits.size(); i++)
+	for (int i = 0; i < m_vcLevelBits.size(); ++i)
 	{
 		m_vItems.at(i).resize(m_vcLevelBits.at(i).size());
-		for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+		for (int j = 0; j < m_vcLevelBits.at(i).size(); ++j)
 		{
 			if (m_vcLevelBits.at(i).at(j) == 'W' || m_vcLevelBits.at(i).at(j) == 'P' || m_vcLevelBits.at(i).at(j) == 'E' ||
 				m_vcLevelBits.at(i).at(j) == 'D' || m_vcLevelBits.at(i).at(j) == 'B')
@@ -926,10 +926,10 @@ void Editor::loadMap(std::string sDir)
 
 	//Check each floor bit and fill in the floor vector with the correct objecta
 	m_vFloorTiles.resize(m_vcFloorBits.size());
-	for (int i = 0; i < m_vcFloorBits.size(); i++)
+	for (int i = 0; i < m_vcFloorBits.size(); ++i)
 	{
 		m_vFloorTiles.at(i).resize(m_vcFloorBits.at(i).size());
-		for (int j = 0; j < m_vcFloorBits.at(i).size(); j++)
+		for (int j = 0; j < m_vcFloorBits.at(i).size(); ++j)
 		{
 			if (m_vcFloorBits.at(i).at(j) == 'G' || m_vcFloorBits.at(i).at(j) == 'F' || m_vcFloorBits.at(i).at(j) == 'K' ||
 				m_vcFloorBits.at(i).at(j) == 'C' || m_vcFloorBits.at(i).at(j) == 'B' || m_vcFloorBits.at(i).at(j) == 'R' )
@@ -970,9 +970,9 @@ void Editor::loadMap(std::string sDir)
 		std::string sLine;
 		std::string sCurrentNum;
 
-		for (int i = 0; i < m_vcLevelBits.size(); i++)
+		for (int i = 0; i < m_vcLevelBits.size(); ++i)
 		{
-			for (int j = 0; j < m_vcLevelBits.at(i).size(); j++)
+			for (int j = 0; j < m_vcLevelBits.at(i).size(); ++j)
 			{
 				if (m_vcLevelBits.at(i).at(j) == 'E')
 				{
@@ -1023,9 +1023,9 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	target.draw(m_Sidebar);
 
 	//Floor Items
-	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); ++i)
 	{
-		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); ++j)
 		{
 			if (m_vFloorTiles.at(i).at(j) != NULL)
 			{
@@ -1035,9 +1035,9 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	}
 
 	//Draw main items
-	for (int i = 0; i < m_vItems.size(); i++)
+	for (int i = 0; i < m_vItems.size(); ++i)
 	{
-		for (int j = 0; j < m_vItems.at(i).size(); j++)
+		for (int j = 0; j < m_vItems.at(i).size(); ++j)
 		{
 			if (m_vItems.at(i).at(j) != NULL)
 			{
@@ -1051,32 +1051,32 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(Selector);
 		target.draw(PathLine);
-		for (int i = 0; i < m_vEnemyCircles.size(); i++)
+		for (int i = 0; i < m_vEnemyCircles.size(); ++i)
 		{
 			target.draw(m_vEnemyCircles.at(i));
 		}
 	}
 
 	//Buttons
-	for (int i = 0; i < m_vGridButtons.size(); i++)
+	for (int i = 0; i < m_vGridButtons.size(); ++i)
 	{
 		target.draw(*m_vGridButtons.at(i));
 	}
-	for (int i = 0; i < m_vObjectButtons.size(); i++)
+	for (int i = 0; i < m_vObjectButtons.size(); ++i)
 	{
 		target.draw(*m_vObjectButtons.at(i));
 	}
-	for (int i = 0; i < m_vToolButtons.size(); i++)
+	for (int i = 0; i < m_vToolButtons.size(); ++i)
 	{
 		target.draw(*m_vToolButtons.at(i));
 	}
-	for (int i = 0; i < m_vFloorButtons.size(); i++)
+	for (int i = 0; i < m_vFloorButtons.size(); ++i)
 	{
 		target.draw(*m_vFloorButtons.at(i));
 	}
 
 	//Button text
-	for (int i = 0; i < m_vUIText.size(); i++)
+	for (int i = 0; i < m_vUIText.size(); ++i)
 	{
 		target.draw(m_vUIText.at(i));
 	}
@@ -1089,30 +1089,30 @@ void Editor::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 Editor::~Editor()
 {
-	for (int i = 0; i < m_vGridButtons.size(); i++)
+	for (int i = 0; i < m_vGridButtons.size(); ++i)
 	{
 		delete(m_vGridButtons.at(i));
 		m_vGridButtons.at(i) = NULL;
 	}
 
-	for (int i = 0; i < m_vObjectButtons.size(); i++)
+	for (int i = 0; i < m_vObjectButtons.size(); ++i)
 	{
 		delete(m_vObjectButtons.at(i));
 		m_vObjectButtons.at(i) = NULL;
 	}
-	for (int i = 0; i < m_vFloorButtons.size(); i++)
+	for (int i = 0; i < m_vFloorButtons.size(); ++i)
 	{
 		delete(m_vFloorButtons.at(i));
 		m_vFloorButtons.at(i) = NULL;
 	}
-	for (int i = 0; i < m_vToolButtons.size(); i++)
+	for (int i = 0; i < m_vToolButtons.size(); ++i)
 	{
 		delete(m_vToolButtons.at(i));
 		m_vToolButtons.at(i) = NULL;
 	}
-	for (int i = 0; i < m_vFloorTiles.size(); i++)
+	for (int i = 0; i < m_vFloorTiles.size(); ++i)
 	{
-		for (int j = 0; j < m_vFloorTiles.at(i).size(); j++)
+		for (int j = 0; j < m_vFloorTiles.at(i).size(); ++j)
 		{
 			if (m_vFloorTiles.at(i).at(j) != NULL)
 			{
@@ -1122,9 +1122,9 @@ Editor::~Editor()
 		}
 	}
 
-	for (int i = 0; i < m_vItems.size(); i++)
+	for (int i = 0; i < m_vItems.size(); ++i)
 	{
-		for (int j = 0; j < m_vItems.at(i).size(); j++)
+		for (int j = 0; j < m_vItems.at(i).size(); ++j)
 		{
 			if (m_vItems.at(i).at(j) != NULL)
 			{

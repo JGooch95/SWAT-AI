@@ -15,7 +15,7 @@ HUDWindow::HUDWindow()
 	//Sets up the bars
 	m_UIBars.resize(2);
 	m_UIText.resize(m_UIBars.size());
-	for (int i = 0; i < m_UIBars.size(); i++)
+	for (int i = 0; i < m_UIBars.size(); ++i)
 	{
 		m_UIBars.at(i) = new Bar();
 		m_UIBars.at(i)->setBarColor(sf::Color(255, 0, 0, 255));
@@ -33,7 +33,7 @@ HUDWindow::HUDWindow()
 
 	//Sets up the loadout buttons
 	m_LoadoutButton.resize(2);
-	for (int i = 0; i < m_LoadoutButton.size(); i++)
+	for (int i = 0; i < m_LoadoutButton.size(); ++i)
 	{
 		m_LoadoutButton.at(i) = new Button();
 		m_LoadoutButton.at(i)->setBackgroundColor(sf::Color(70, 70, 70, 255));
@@ -116,7 +116,7 @@ void HUDWindow::scaleUI()
 	m_ClassButton.setSize(sf::Vector2f(m_BackDrop.getSize().y / 4.0f, m_BackDrop.getSize().y / 4.0f));
 
 	//Health and ammo bars
-	for (int i = 0; i < m_UIBars.size(); i++)
+	for (int i = 0; i < m_UIBars.size(); ++i)
 	{
 		//Bars
 		m_UIBars.at(i)->setSize(sf::Vector2f(m_BackDrop.getSize().x - (m_BackDrop.getSize().x / 5.0f), m_BackDrop.getSize().y / 10.0f));
@@ -136,7 +136,7 @@ void HUDWindow::scaleUI()
 	}
 
 	//Loadout buttons
-	for (int i = 0; i < m_LoadoutButton.size(); i++)
+	for (int i = 0; i < m_LoadoutButton.size(); ++i)
 	{
 		m_LoadoutButton.at(i)->setPosition(sf::Vector2f(m_ClassButton.getPosition().x + ((i+1) * (m_ClassButton.getSize().x*m_ClassButton.getScale().x)) + ((m_ClassButton.getSize().x*m_ClassButton.getScale().x) / 4.0f), m_ClassButton.getPosition().y + ((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 4.0f)));
 		m_LoadoutButton.at(i)->setSize(sf::Vector2f((m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2.0f, (m_ClassButton.getSize().y * m_ClassButton.getScale().y) / 2.0f));
@@ -167,23 +167,23 @@ void HUDWindow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	target.draw(m_BackDrop);
 	
-	for (int i = 0; i < m_UIBars.size(); i++)
+	for (int i = 0; i < m_UIBars.size(); ++i)
 	{
 		target.draw(*m_UIBars.at(i));
 	}
 
-	for (int i = 0; i < m_Icons.size(); i++)
+	for (int i = 0; i < m_Icons.size(); ++i)
 	{
 		target.draw(m_Icons.at(i));
 	}
 	target.draw(m_ClassButton);
 
-	for (int i = 0; i < m_LoadoutButton.size(); i++)
+	for (int i = 0; i < m_LoadoutButton.size(); ++i)
 	{
 		target.draw(*m_LoadoutButton.at(i));
 	}
 
-	for (int i = 0; i < m_UIText.size(); i++)
+	for (int i = 0; i < m_UIText.size(); ++i)
 	{
 		target.draw(*m_UIText.at(i));
 	}
@@ -192,7 +192,7 @@ void HUDWindow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 HUDWindow::~HUDWindow()
 {
-	for (int i = 0; i < m_LoadoutButton.size(); i++)
+	for (int i = 0; i < m_LoadoutButton.size(); ++i)
 	{
 		delete m_LoadoutButton.at(i);
 		m_LoadoutButton.at(i) = NULL;

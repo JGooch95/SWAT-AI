@@ -58,7 +58,7 @@ Character::Character()
 	m_OrientationLine = sf::VertexArray(sf::Lines, 2);
 	m_OrientationLine[0].position = m_MainSprite.getPosition();
 	m_OrientationLine[1].position = sf::Vector2f(m_MainSprite.getPosition().x, m_MainSprite.getPosition().y - (m_MainSprite.getLocalBounds().height / 2));
-	for (int i = 0; i < m_OrientationLine.getVertexCount(); i++)
+	for (int i = 0; i < m_OrientationLine.getVertexCount(); ++i)
 	{
 		m_OrientationLine[i].color = sf::Color(255, 0, 255, 255);
 	}
@@ -66,7 +66,7 @@ Character::Character()
 	//Sets up the movement indication line
 	m_MovementLine.setPrimitiveType(sf::LinesStrip);
 	m_MovementLine.resize(2);
-	for (int i = 0; i < m_MovementLine.getVertexCount(); i++)
+	for (int i = 0; i < m_MovementLine.getVertexCount(); ++i)
 	{
 		m_MovementLine[i].color = sf::Color(0, 255, 255, 255);
 	}
@@ -74,7 +74,7 @@ Character::Character()
 	//Sets up the collision indication line
 	m_CollisionLine.setPrimitiveType(sf::LinesStrip);
 	m_CollisionLine.resize(2);
-	for (int i = 0; i < m_CollisionLine.getVertexCount(); i++)
+	for (int i = 0; i < m_CollisionLine.getVertexCount(); ++i)
 	{
 		m_CollisionLine[i].color = sf::Color(255, 255, 0, 255);
 	}
@@ -134,7 +134,7 @@ Character::Character()
 void Character::update()
 {
 	//Updates any sound waves that are expanding
-	for (int i = 0; i <  m_vWaves.size(); i++)
+	for (int i = 0; i <  m_vWaves.size(); ++i)
 	{
 		if ( m_vWaves.at(i) != NULL)
 		{
@@ -352,7 +352,7 @@ void Character::visionCalculation()
 	}
 
 	//Generate the rays
-	for (int i = 0; i < m_CurrentMap->m_vCorners.size(); i++)
+	for (int i = 0; i < m_CurrentMap->m_vCorners.size(); ++i)
 	{
 		//Create a ray pointing towards the corner given
 		sf::Vector2f rayVect = (*m_CurrentMap->m_vCorners.at(i)) - m_MainSprite.getPosition();
@@ -382,7 +382,7 @@ void Character::visionCalculation()
 
 	//Check for ray collisions
 	//Edges of vision cone
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; ++i)
 	{
 		//Set the lowest intersect to the rays location
 		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
@@ -391,7 +391,7 @@ void Character::visionCalculation()
 	}
 
 	//For every ray
-	for (int i = 2; i < vRays.size(); i++)
+	for (int i = 2; i < vRays.size(); ++i)
 	{
 		//Set the lowest intersect to the rays location
 		std::vector<sf::Vector2f> viewRay = { m_MainSprite.getPosition(), vRays.at(i).vect };
@@ -402,12 +402,12 @@ void Character::visionCalculation()
 		vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0.0f, 360.0f);
 	}
 
-	for (int i = 2; i < vRays.size(); i++)
+	for (int i = 2; i < vRays.size(); ++i)
 	{
 		vRays.at(i).angle = Util::setWithinRange(vRays.at(i).angle, 0, 360);
 	}
 
-	for (int i =0; i < vFinalRays.size(); i++)
+	for (int i =0; i < vFinalRays.size(); ++i)
 	{
 		vFinalRays.at(i).angle = Util::setWithinRange(vFinalRays.at(i).angle, 0, 360);
 	}
@@ -416,7 +416,7 @@ void Character::visionCalculation()
 	if (vFinalRays.at(0).angle > vFinalRays.at(1).angle)
 	{
 		//Put the rays into a consecutive form
-		for (int i = 2; i < vRays.size(); i++)
+		for (int i = 2; i < vRays.size(); ++i)
 		{
 			if (vRays.at(i).angle > vFinalRays.at(0).angle)
 			{
@@ -427,7 +427,7 @@ void Character::visionCalculation()
 	}
 
 	//Check if the rays lie within the range
-	for (int i = 2; i < vRays.size(); i++)
+	for (int i = 2; i < vRays.size(); ++i)
 	{
 		if (vRays.at(i).angle >= vFinalRays.at(0).angle && vRays.at(i).angle <= vFinalRays.at(1).angle)
 		{
@@ -453,7 +453,7 @@ void Character::visionCalculation()
 	m_VisionRays[0] = newVertex;
 
 	//For every ray create a triangle 
-	for (int i = 0; i < vFinalRays.size(); i++)
+	for (int i = 0; i < vFinalRays.size(); ++i)
 	{
 		newVertex.position = vFinalRays.at(i).vect;
 		m_VisionRays[i + 1] = newVertex;
@@ -503,7 +503,7 @@ int Character::rayChecks(std::vector<Character*> vCharSet, int iType)
 	sf::Vector2f lowestIntersect(Ray.at(1));
 
 	int iOutput = -1;
-	for (int i = 0; i < vCharSet.size(); i++)
+	for (int i = 0; i < vCharSet.size(); ++i)
 	{
 		if (!vCharSet.at(i)->isDead())
 		{
@@ -593,7 +593,7 @@ void Character::setLoadoutItem(int iIndex, loadoutItem itemType)
 		bSame = false;
 
 		//For every loadout slot
-		for (int i = 0; i <  m_vLoadout.size(); i++)
+		for (int i = 0; i <  m_vLoadout.size(); ++i)
 		{
 			if (i != iIndex) //If the slot isnt the current slot being changed
 			{
@@ -613,7 +613,7 @@ void Character::setLoadoutItem(int iIndex, loadoutItem itemType)
 	m_Weapon1.setScope(false);
 
 	//For every loadout slot
-	for (int i = 0; i <  m_vLoadout.size(); i++)
+	for (int i = 0; i <  m_vLoadout.size(); ++i)
 	{
 		//If theyre any of the items given then activate the attachments
 		switch (m_vLoadout.at(i))
@@ -806,7 +806,7 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 Character::~Character()
 {
-	for (int i = 0; i <  m_vWaves.size(); i++)
+	for (int i = 0; i <  m_vWaves.size(); ++i)
 	{
 		if ( m_vWaves.at(i) != NULL)
 		{

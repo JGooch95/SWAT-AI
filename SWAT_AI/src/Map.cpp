@@ -74,7 +74,7 @@ void Map::load(MapType newMap, std::string sDir)
 			}
 
 			//For every bit read it into the data vector
-			for (int i = 0; i < sLine.length(); i++)
+			for (int i = 0; i < sLine.length(); ++i)
 			{
 				//Adds the bit to the row of the appropriate vector
 				switch (newMap)
@@ -186,7 +186,7 @@ sf::Vector2f Map::getPosition()
 void Map::clearEdges(std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeVector)
 {
 	//Clears the pointers for each point of an edge
-	for (int i = 0; i < EdgeVector->size(); i++)
+	for (int i = 0; i < EdgeVector->size(); ++i)
 	{
 		if (EdgeVector->at(i).first != NULL)
 		{
@@ -204,7 +204,7 @@ void Map::clearEdges(std::vector<std::pair<sf::Vector2f*, sf::Vector2f*>>* EdgeV
 void Map::clearCorners(std::vector<sf::Vector2f*>* CornerVector)
 {
 	//Clears the pointer of each corner
-	for (int i = 0; i < CornerVector->size(); i++)
+	for (int i = 0; i < CornerVector->size(); ++i)
 	{
 		if (CornerVector->at(i) != NULL)
 		{
@@ -221,7 +221,7 @@ void Map::clearAllEdgeData()
 	clearCorners(&m_vWallCorners);
 
 	//Sets the pointers to null as all edges are sorted
-	for (int i = 0; i < m_vCorners.size(); i++)
+	for (int i = 0; i < m_vCorners.size(); ++i)
 	{
 		if (m_vCorners.at(i) != NULL)
 		{
