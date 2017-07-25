@@ -19,11 +19,11 @@ class HUDWindow : public sf::Drawable
 		FontManager* m_Fonts; //!< Holds the location of all of the fonts
 
 		sf::RectangleShape m_BackDrop; //!< A box to stand as a background for the button
-		std::vector<Bar*> m_UIBars; //!< The health and ammo bars
+		std::vector<Bar> m_UIBars; //!< The health and ammo bars
 		std::vector<Object> m_Icons; //!< Holds the icons to go beside the bars
-		std::vector<sf::Text*> m_UIText; //!< Holds the text to be put on the bars
+		std::vector<sf::Text> m_UIText; //!< Holds the text to be put on the bars
 		Button m_ClassButton; //!< Button used for switching classes
-		std::vector<Button*> m_LoadoutButton; //!< Button holding the current loadout slot of the unit
+		std::vector<Button> m_LoadoutButton; //!< Button holding the current loadout slot of the unit
 
 		/// \brief Draws all of the HUDWindow's entities to the screen.
 		/// \param target Holds where to draw the entities to.		   
